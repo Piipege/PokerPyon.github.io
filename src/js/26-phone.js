@@ -82,6 +82,10 @@ function saveLobby(){ const o={}; LOBBY_IDS.forEach(id=>{ const el=$(id); if(el)
 LOBBY_IDS.forEach(id=>$(id)?.addEventListener('change', ()=>{ saveLobby(); syncHelpSets(); }));
 function syncHelpSets(){ $('hSet').hidden=!$('hOn').checked; $('sSet').hidden=!$('sOn').checked; }
 syncHelpSets();
+// open / closed table: two big choices that drive the hidden publicOn checkbox
+function syncPub(){ document.querySelectorAll('input[name="pubMode"]').forEach(r=>{ r.checked = (r.value==='1')===$('publicOn').checked; r.closest('.segopt').classList.toggle('on', r.checked); }); }
+document.querySelectorAll('input[name="pubMode"]').forEach(r=>r.addEventListener('change', ()=>{ $('publicOn').checked = r.value==='1'; syncPub(); saveLobby(); }));
+syncPub();
 function showQuick(){
   const last=store.get('pion-last'), b=$('bQuick');
   if(!last || savedHost()){ b.hidden=true; return; }

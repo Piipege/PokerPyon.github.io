@@ -111,6 +111,11 @@
                 <select id="botLvl"><option value="1">Новичок</option><option value="2" selected>Любитель</option><option value="3">Профи</option><option value="4">Акула</option><option value="0">Все разные</option></select>
               </label>
             </div>
+            <fieldset class="seg" id="pubSeg"><legend>Кто может зайти</legend>
+              <label class="segopt"><input type="radio" name="pubMode" value="1"><b>🌐 Открытый</b><span>Стол виден всем в «Войти к друзьям»</span></label>
+              <label class="segopt"><input type="radio" name="pubMode" value="0"><b>🔒 Закрытый</b><span>Только по ссылке или коду</span></label>
+              <input type="checkbox" id="publicOn" checked hidden>
+            </fieldset>
             <label class="check strong" for="hOn"><input type="checkbox" id="hOn"> Режим помощи</label>
             <fieldset class="helpset" id="hSet" hidden><legend>Подсказки</legend>
               <label class="check" for="hOdds"><input type="checkbox" id="hOdds" checked> Шансы на победу</label>
@@ -122,7 +127,7 @@
             <details class="more"><summary>Ещё настройки</summary>
             <div class="split">
               <label class="field" for="stackN">Стартовый стек
-                <select id="stackN"><option>500</option><option selected>1000</option><option>2000</option><option>5000</option></select>
+                <select id="stackN"><option value="500">500 (25 BB)</option><option value="1000" selected>1000 (50 BB)</option><option value="2000">2000 (100 BB)</option><option value="5000">5000 (250 BB)</option></select>
               </label>
               <label class="field" for="blindMode">Блайнды
                 <select id="blindMode"><option value="0" selected>Фиксированные</option><option value="10">Растут каждые 10 раздач</option><option value="6">Растут каждые 6 раздач</option></select>
@@ -134,9 +139,9 @@
                 <select id="bombSize"><option value="2">2 больших блайнда</option><option value="3">3 больших блайнда</option><option value="5" selected>5 больших блайндов</option><option value="10">10 больших блайндов</option></select>
               </label>
             </div>
+            <p class="hint small">Докупка всегда равна стартовому стеку в больших блайндах: когда блайнды растут, растёт и докупка.</p>
             <label class="field" for="tableName">Название стола (необязательно)<input id="tableName" maxlength="24" placeholder="Например, Пятничный покер" autocomplete="off"></label>
             <label class="check" for="botRebuy"><input type="checkbox" id="botRebuy" checked> Боты докупаются, когда проигрывают все фишки</label>
-            <label class="check" for="publicOn"><input type="checkbox" id="publicOn" checked> Открытый стол — виден всем в лобби</label>
             </details>
             <button class="btn primary" id="bCreate">Создать стол</button>
           </div>

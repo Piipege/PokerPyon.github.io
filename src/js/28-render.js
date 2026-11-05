@@ -299,7 +299,7 @@ function renderControls(){
   if(MODE==='host' && !S.started){ showNext=true; nextLabel='Начать игру'; nextDisabled = seats().filter(s=>s.stack>0&&!s.left).length<2; }
   $('bNext').hidden = !showNext || !$('overlay').hidden; $('bNext').textContent=t(nextLabel); $('bNext').disabled=nextDisabled;
   const canRebuy = MODE!=='offline' && p && p.stack<=0 && !(p.rebuy>p.rebuySeen) && (S.handOver || !p.inHand);
-  $('bRebuy').hidden = !canRebuy; $('bRebuy').textContent=t('Докупиться на {0}', S.start);
+  $('bRebuy').hidden = !canRebuy; $('bRebuy').textContent=t('Докупиться на {0}', buyIn());
 
   if(p) $('bCall').textContent = toCall>0 ? (toCall>=p.stack ? t('Олл-ин {0}', fmt(p.stack)) : t('Колл {0}', fmt(toCall))) : t('Чек');
   let hint='', minor=false;

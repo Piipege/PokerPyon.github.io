@@ -9,8 +9,8 @@ async function startHand(){
     S.dealer = di>=0 ? di : Math.min(S.dealer, seats().length-1) - 1;
   }
   seats().forEach(s=>{
-    if(s.stack<=0 && s.rebuy>s.rebuySeen){ s.stack=S.start; s.rebuySeen=s.rebuy; log(L('{0} докупается на {1}', s.name, S.start)); }
-    if(s.bot && s.stack<=0 && S.botRebuy!==false){ s.stack=S.start; s.rebuys=(s.rebuys||0)+1; log(L('{0} докупается на {1}', s.name, S.start)); if(Math.random()<.5) botSay(s, pick(['Ещё разок!','Новая попытка','Я вернулся','Теперь точно отыграюсь'])); }
+    if(s.stack<=0 && s.rebuy>s.rebuySeen){ s.stack=buyIn(); s.rebuySeen=s.rebuy; log(L('{0} докупается на {1}', s.name, s.stack)); }
+    if(s.bot && s.stack<=0 && S.botRebuy!==false){ s.stack=buyIn(); s.rebuys=(s.rebuys||0)+1; log(L('{0} докупается на {1}', s.name, s.stack)); if(Math.random()<.5) botSay(s, pick(['Ещё разок!','Новая попытка','Я вернулся','Теперь точно отыграюсь'])); }
     s.out = s.stack<=0 || !!s.away;
   });
   const alive = seats().filter(p=>!p.out).length;

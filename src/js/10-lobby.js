@@ -50,7 +50,7 @@ function lobbyBroadcast(){
 function myTableInfo(){
   if(MODE!=='host' || !S || !S.public) return null;
   const me=seats().find(s=>s.uid===myUid);
-  return {code, name: S.tname || (me?me.name:'—'), tn: !!S.tname, humans:seats().filter(s=>!s.bot&&!s.left).length, bots:seats().filter(s=>s.bot).length, seats:seats().filter(s=>!s.left).length, max:MAX_SEATS, sb:S.sb, bb:S.bb, start:S.start, bomb:S.bombEvery||0, started:!!S.started};
+  return {code, name: S.tname || (me?me.name:'—'), tn: !!S.tname, humans:seats().filter(s=>!s.bot&&!s.left).length, bots:seats().filter(s=>s.bot).length, seats:seats().filter(s=>!s.left).length, max:MAX_SEATS, sb:S.sb, bb:S.bb, start:buyIn(), bomb:S.bombEvery||0, started:!!S.started};
 }
 function lobbyReg(){
   const t=myTableInfo(); if(!t) return;

@@ -2,8 +2,10 @@
 function mkSeat(o){
   return Object.assign({uid:'',name:'',bot:false,aggr:.5,loose:.08,stack:1000,bet:0,total:0,folded:true,allIn:false,out:false,acted:false,last:'',won:0,shown:null,handName:'',enc:null,inHand:false,left:false,rebuy:0,rebuySeen:0,pub:null}, o);
 }
+// the buy-in (rebuys and new players) is a fixed number of big blinds: when the blinds go up, so does it
+const buyIn = () => !S ? 1000 : Math.max(S.bb||BB, Math.round((S.startBB || (S.start||1000)/BB) * (S.bb||BB) / 10) * 10);
 function mkState(start){
-  return {v:2,start,seats:[],board:[],dealer:-1,street:'',currentBet:0,minRaise:BB,sb:SB,bb:BB,public:false,bombEvery:0,bombBB:5,bomb:false,ghost:null,canGhost:false,paused:false,waits:{},lvl:0,blindEvery:0,help:true,chat:[],aggr:-1,turn:-1,turnId:0,handNo:0,handOver:true,banner:'',best:[],log:[],collect:false,deadline:0,seqs:{},started:false,hostUid:'',hostPub:null,winFx:null,nextAt:0};
+  return {v:2,start,startBB:start/BB,seats:[],board:[],dealer:-1,street:'',currentBet:0,minRaise:BB,sb:SB,bb:BB,public:false,bombEvery:0,bombBB:5,bomb:false,ghost:null,canGhost:false,paused:false,waits:{},lvl:0,blindEvery:0,help:true,chat:[],aggr:-1,turn:-1,turnId:0,handNo:0,handOver:true,banner:'',best:[],log:[],collect:false,deadline:0,seqs:{},started:false,hostUid:'',hostPub:null,winFx:null,nextAt:0};
 }
 const seats = () => S.seats;
 const canAct = p => !p.out && !p.folded && !p.allIn;
