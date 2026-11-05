@@ -34,8 +34,8 @@ function pushProfile(){
   clearTimeout(profT);
   profT=setTimeout(()=>{
     if(!S) return;
-    if(MODE==='guest') sendHost({t:'profile', name:myName(), av:CFG.av});
-    else { const s=seats()[mySeat()]; if(s){ s.av={...CFG.av}; commit(); } }
+    if(MODE==='guest') sendHost({t:'profile', name:myName(), av:CFG.av, pf:mySummary()});
+    else { const s=seats()[mySeat()]; if(s){ s.av={...CFG.av}; s.pf=mySummary(); commit(); } }
   }, 250);
 }
 

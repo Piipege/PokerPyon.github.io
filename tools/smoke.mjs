@@ -142,6 +142,28 @@ console.log('hands against bots + coach');
     await p.evaluate(() => window.__pion.openCoach());
     await p.screenshot({ path: path.join(SHOTS, 'coach-desktop.png') });
   }
+  // profile: lifetime stats from IndexedDB, chart, achievements; player card at the table
+  await p.evaluate(() => { document.getElementById('coachOv').hidden = true; });
+  await p.waitForTimeout(800);
+  await p.click('#bProfile');
+  ok(await p.waitForFunction(() => /^\d+$/.test(document.querySelector('.ptile b')?.textContent || '') && +document.querySelector('.ptile b').textContent >= 6, null, { timeout: 8000 }).then(() => true, () => false), 'profile counts the played hands: ' + await p.locator('.ptile b').first().textContent().catch(() => '?'));
+  ok(await p.locator('#pfChart svg path.line').count() === 1, 'results chart is drawn');
+  const box = await p.locator('#pfChart svg').boundingBox();
+  await p.mouse.move(box.x + box.width * .6, box.y + box.height / 2);
+  ok(await p.locator('.ctip').isVisible(), 'chart tooltip appears on hover');
+  ok(await p.locator('.ach.on').count() >= 1, 'at least one achievement unlocked');
+  ok(await p.evaluate(() => !!JSON.parse(localStorage.getItem('pion-pf') || 'null')?.h), 'summary for the table is saved');
+  if(SHOTS) await p.screenshot({ path: path.join(SHOTS, 'profile-desktop.png') });
+  await p.click('#profClose');
+  await p.locator('#seats .seat:not(.me) .plate').first().click();
+  ok(await p.locator('#pcardOv').isVisible() && /Бот|уровень/.test(await p.locator('#pcardBody').textContent()), 'tapping a bot opens its card');
+  await p.click('#pcardClose');
+  await p.locator('#seats .seat.me .plate').click();
+  ok(/За всё время/.test(await p.locator('#pcardBody').textContent()), 'my card shows lifetime stats');
+  await p.click('#pcardClose');
+  const reload = await p.evaluate(async () => { localStorage.setItem('pion-hist', '[]'); return true; });
+  await p.reload(); await p.waitForFunction(() => window.__pion); await p.click('#bProfile2');
+  ok(await p.waitForFunction(() => +(document.querySelector('.ptile b')?.textContent || 0) >= 6, null, { timeout: 8000 }).then(() => true, () => false), 'stats survive a reload even with the history list cleared');
   await p.context().close();
 }
 
@@ -161,6 +183,14 @@ console.log('coach in English, on a phone');
   const fits = await p.evaluate(() => { const b = document.querySelector('.coachbox').getBoundingClientRect(); return b.left >= 0 && b.right <= innerWidth + 1 && document.documentElement.scrollWidth <= innerWidth; });
   ok(fits, 'coach window fits the phone screen');
   if(SHOTS) await p.screenshot({ path: path.join(SHOTS, 'coach-phone-en.png') });
+  await p.evaluate(() => { document.getElementById('coachOv').hidden = true; });
+  await p.waitForTimeout(600);
+  await p.click('#bProfile');
+  await p.waitForSelector('.ptile');
+  const txt2 = await p.locator('#profOv').textContent();
+  ok(!/[А-Яа-яЁё]{4,}/.test(txt2.replace(/Тест/g, '')), 'no Russian text left in the English profile');
+  ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth && document.querySelector('.profbox').getBoundingClientRect().right <= innerWidth + 1), 'profile fits the phone screen');
+  if(SHOTS) await p.screenshot({ path: path.join(SHOTS, 'profile-phone-en.png') });
   await p.context().close();
 }
 

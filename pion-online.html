@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <title>Покерный стол «Пион»</title>
-<link rel="preload" href="assets/app.812316327e.js" as="script">
+<link rel="preload" href="assets/app.1c14a26673.js" as="script">
 <link rel="preload" href="assets/peerjs.f69f573cb6.js" as="script">
 <style>
 /* extra scripts: Noto Sans Georgian, Noto Sans Hebrew (SIL OFL) */
@@ -729,6 +729,63 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
 /* language pickers: language names in their own scripts would pull Georgian, Hebrew and extended
    Latin/Cyrillic font files for everyone; the system font draws them without a download */
 #langSel,#cfgLang,#langSel option,#cfgLang option{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+/* profile window and player cards */
+.profbox{width:min(820px,100%);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px)}
+.profbody{overflow:auto;display:flex;flex-direction:column;gap:16px;padding-inline-end:4px;min-height:0}
+.profbody h5{font-family:var(--f-display);font-size:calc(13px*var(--fs));font-weight:500;letter-spacing:.06em;margin:0 0 8px;color:var(--text-2)}
+.profbody section{min-width:0}
+.phead{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.pava{width:64px;height:64px;border-radius:50%;overflow:hidden;flex:none;background:var(--panel-2);border:2px solid var(--line)}
+.pava svg{width:100%;height:100%;display:block}
+.pwho{flex:1 1 160px;display:flex;flex-direction:column;gap:4px;align-items:flex-start;min-width:0}
+.pwho h4{font-family:var(--f-display);font-size:calc(20px*var(--fs));margin:0;overflow-wrap:anywhere}
+.ptiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.ptile{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.ptile .slabel{color:var(--muted)}
+.ptile b{font:600 calc(20px*var(--fs)) var(--f-num);color:var(--ivory);overflow-wrap:anywhere}
+.ptile .muted{font-size:calc(12px*var(--fs))}
+.win{color:var(--ok)} .loss{color:#ff8fa8}
+:root[data-theme="light"] .loss{color:#b0164a}
+.chartbox{position:relative;width:100%}
+.chartbox svg{display:block;overflow:visible;touch-action:pan-y}
+.chartbox .grid{stroke:var(--line);stroke-width:1}
+.chartbox .zero{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4}
+.chartbox .tick{fill:var(--muted);font:500 calc(11px*var(--fs)) var(--f-num)}
+.chartbox{--chart:#e05a97}
+:root[data-theme="light"] .chartbox{--chart:#c4246c}
+@media (prefers-color-scheme: light){:root[data-theme="auto"] .chartbox{--chart:#c4246c}}
+.chartbox .line{fill:none;stroke:var(--chart);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.chartbox .end,.chartbox .dot{fill:var(--chart);stroke:var(--panel);stroke-width:2}
+.chartbox .cross{stroke:var(--muted);stroke-width:1}
+.ctip{position:absolute;top:-6px;pointer-events:none;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:6px 10px;display:flex;flex-direction:column;font-size:calc(12px*var(--fs));box-shadow:0 8px 20px #0006;white-space:nowrap;color:var(--text-2)}
+.ctip b{font:600 calc(14px*var(--fs)) var(--f-num);color:var(--ivory)}
+.ptables{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.ptable{width:100%;border-collapse:collapse;font-size:calc(13px*var(--fs))}
+.ptable th{text-align:start;font-weight:500;color:var(--muted);padding:4px 6px;border-bottom:1px solid var(--line)}
+.ptable td{padding:6px;border-bottom:1px solid var(--line);font-family:var(--f-num)}
+.ptable td:first-child{font-family:var(--f-body)}
+.ptable th:not(:first-child),.ptable td:not(:first-child){text-align:end}
+.achs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.ach{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:8px 10px;opacity:.5;filter:grayscale(1)}
+.ach.on{opacity:1;filter:none;background:var(--panel-2);border-color:var(--pink)}
+.ach .aic{font-size:22px;flex:none}
+.ach span:last-of-type{display:flex;flex-direction:column;min-width:0}
+.ach small{color:var(--muted);font-size:calc(12px*var(--fs))}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.prow{display:flex;gap:8px 20px;flex-wrap:wrap;color:var(--text-2)}
+.small{font-size:calc(12px*var(--fs))}
+.pcard{width:min(380px,100%);gap:12px}
+.pcard .pcrow{display:flex;flex-direction:column;gap:4px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;align-items:flex-start}
+.pcard .pcrow b{font-family:var(--f-num)}
+.seat .plate{cursor:pointer}
+.lobbyprof{align-self:flex-start}
+@media (max-width:620px), (orientation:landscape) and (max-height:500px){
+  #bProfile{font-size:0;padding:6px 9px;min-width:34px}
+  #bProfile::before{content:"👤";font-size:calc(15px*var(--fs))}
+  .profbox{padding:12px}
+  .ptiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ptile b{font-size:calc(17px*var(--fs))}
+}
 </style>
 </head>
 <body>
@@ -743,6 +800,7 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
       <span class="mhide">Раздача <b id="handNo">—</b></span>
       <span class="mhide">Улица <b id="street">—</b></span>
       <select class="lang" id="langSel" aria-label="Язык"></select>
+      <button class="btn small ghost" id="bProfile">Профиль</button>
       <button class="btn small ghost" id="bLearn">Обучение</button>
       <button class="btn small ghost" id="bSettings">Настройки</button>
       <button class="btn small ghost" id="bKeys">Клавиши</button>
@@ -782,6 +840,7 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
               <input id="nick" maxlength="16" autocomplete="nickname" placeholder="Например, Лиза">
             </label>
           </div>
+          <button class="btn small ghost lobbyprof" id="bProfile2" type="button">Мой профиль и статистика</button>
           <button class="btn primary" id="bResume" hidden></button>
           <button class="btn primary" id="bQuick" hidden></button>
           <div class="tabs" role="tablist">
@@ -970,6 +1029,18 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
     <div class="row"><button class="btn small" id="sessCopy" type="button">Скопировать текст</button><button class="btn small" id="sessImg" type="button">Сохранить картинкой</button><button class="btn small primary" id="sessClose" type="button">Закрыть</button></div>
   </div>
 </div>
+<div id="profOv" class="overlay fixed" hidden>
+  <div class="box profbox" role="dialog" aria-modal="true" aria-labelledby="profTitle">
+    <div class="sethead"><h3 id="profTitle">Мой профиль</h3><button class="btn small primary" id="profClose">Закрыть</button></div>
+    <div class="profbody" id="profBody"></div>
+  </div>
+</div>
+<div id="pcardOv" class="overlay fixed" hidden>
+  <div class="box pcard" role="dialog" aria-modal="true" aria-label="Карточка игрока">
+    <div id="pcardBody"></div>
+    <button class="btn small" id="pcardClose">Закрыть</button>
+  </div>
+</div>
 <div id="coachOv" class="overlay fixed" hidden>
   <div class="box coachbox" role="dialog" aria-modal="true" aria-labelledby="coachTitle">
     <div class="sethead"><h3 id="coachTitle">Разбор с тренером</h3><select id="coachSel" class="coachsel" aria-label="Раздача"></select><button class="btn small primary" id="coachClose">Закрыть</button></div>
@@ -1058,6 +1129,6 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
     </div>
   </div>
 </div>
-<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.827356bae9.js","uk":"assets/lang-uk.e5ef1f23bf.js","ka":"assets/lang-ka.b3491eafc3.js","fr":"assets/lang-fr.11e9900be0.js","de":"assets/lang-de.d9b809f580.js","ro":"assets/lang-ro.35f34acf2a.js","he":"assets/lang-he.6966f49550.js","kk":"assets/lang-kk.fcd7351ec9.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.812316327e.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
+<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.c9eab101e2.js","uk":"assets/lang-uk.a6e027052f.js","ka":"assets/lang-ka.dade58e902.js","fr":"assets/lang-fr.05a3a619b1.js","de":"assets/lang-de.fde3d21ec1.js","ro":"assets/lang-ro.b63551c75a.js","he":"assets/lang-he.fcbb675e53.js","kk":"assets/lang-kk.9373e33eaf.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.1c14a26673.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
 </body>
 </html>

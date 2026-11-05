@@ -30,6 +30,7 @@ function histAdd(rec){
   SESS.push(rec);
   try{ localStorage.setItem('pion-hist', JSON.stringify(HIST)); }catch(e){}
   renderHandList();
+  profileSave([rec]);
 }
 const keyCard = k => ({r:Math.floor(k/4), s:k%4});
 const nameOf = (rec,u) => { const s=rec.seats.find(x=>x.u===u); return s ? (s.b?t(s.n):s.n) : '—'; };

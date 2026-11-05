@@ -21,6 +21,7 @@
 20-coach.js
 21-fair.js
 22-history.js
+23-profile.js
 23-emotes.js
 24-netq.js
 25-away.js

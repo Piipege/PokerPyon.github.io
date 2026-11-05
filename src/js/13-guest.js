@@ -64,7 +64,7 @@ function connectGuest(first){
     peer.on('error', onErr);
     joinTimer = setTimeout(()=>fail({type:'timeout'}), first ? 15000 : 12000);
     conn.on('open', ()=>{
-      conn.send({t:'join', uid:myUid, key:seatKey(), name:myName(), av:CFG.av});
+      conn.send({t:'join', uid:myUid, key:seatKey(), name:myName(), av:CFG.av, pf:mySummary()});
       // ICE says the path is broken long before the data channel notices
       const pc = conn.peerConnection;
       if(pc) pc.addEventListener('iceconnectionstatechange', ()=>{

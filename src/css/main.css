@@ -674,3 +674,60 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
 /* language pickers: language names in their own scripts would pull Georgian, Hebrew and extended
    Latin/Cyrillic font files for everyone; the system font draws them without a download */
 #langSel,#cfgLang,#langSel option,#cfgLang option{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+/* profile window and player cards */
+.profbox{width:min(820px,100%);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px)}
+.profbody{overflow:auto;display:flex;flex-direction:column;gap:16px;padding-inline-end:4px;min-height:0}
+.profbody h5{font-family:var(--f-display);font-size:calc(13px*var(--fs));font-weight:500;letter-spacing:.06em;margin:0 0 8px;color:var(--text-2)}
+.profbody section{min-width:0}
+.phead{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.pava{width:64px;height:64px;border-radius:50%;overflow:hidden;flex:none;background:var(--panel-2);border:2px solid var(--line)}
+.pava svg{width:100%;height:100%;display:block}
+.pwho{flex:1 1 160px;display:flex;flex-direction:column;gap:4px;align-items:flex-start;min-width:0}
+.pwho h4{font-family:var(--f-display);font-size:calc(20px*var(--fs));margin:0;overflow-wrap:anywhere}
+.ptiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.ptile{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.ptile .slabel{color:var(--muted)}
+.ptile b{font:600 calc(20px*var(--fs)) var(--f-num);color:var(--ivory);overflow-wrap:anywhere}
+.ptile .muted{font-size:calc(12px*var(--fs))}
+.win{color:var(--ok)} .loss{color:#ff8fa8}
+:root[data-theme="light"] .loss{color:#b0164a}
+.chartbox{position:relative;width:100%}
+.chartbox svg{display:block;overflow:visible;touch-action:pan-y}
+.chartbox .grid{stroke:var(--line);stroke-width:1}
+.chartbox .zero{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4}
+.chartbox .tick{fill:var(--muted);font:500 calc(11px*var(--fs)) var(--f-num)}
+.chartbox{--chart:#e05a97}
+:root[data-theme="light"] .chartbox{--chart:#c4246c}
+@media (prefers-color-scheme: light){:root[data-theme="auto"] .chartbox{--chart:#c4246c}}
+.chartbox .line{fill:none;stroke:var(--chart);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.chartbox .end,.chartbox .dot{fill:var(--chart);stroke:var(--panel);stroke-width:2}
+.chartbox .cross{stroke:var(--muted);stroke-width:1}
+.ctip{position:absolute;top:-6px;pointer-events:none;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:6px 10px;display:flex;flex-direction:column;font-size:calc(12px*var(--fs));box-shadow:0 8px 20px #0006;white-space:nowrap;color:var(--text-2)}
+.ctip b{font:600 calc(14px*var(--fs)) var(--f-num);color:var(--ivory)}
+.ptables{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.ptable{width:100%;border-collapse:collapse;font-size:calc(13px*var(--fs))}
+.ptable th{text-align:start;font-weight:500;color:var(--muted);padding:4px 6px;border-bottom:1px solid var(--line)}
+.ptable td{padding:6px;border-bottom:1px solid var(--line);font-family:var(--f-num)}
+.ptable td:first-child{font-family:var(--f-body)}
+.ptable th:not(:first-child),.ptable td:not(:first-child){text-align:end}
+.achs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.ach{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:8px 10px;opacity:.5;filter:grayscale(1)}
+.ach.on{opacity:1;filter:none;background:var(--panel-2);border-color:var(--pink)}
+.ach .aic{font-size:22px;flex:none}
+.ach span:last-of-type{display:flex;flex-direction:column;min-width:0}
+.ach small{color:var(--muted);font-size:calc(12px*var(--fs))}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.prow{display:flex;gap:8px 20px;flex-wrap:wrap;color:var(--text-2)}
+.small{font-size:calc(12px*var(--fs))}
+.pcard{width:min(380px,100%);gap:12px}
+.pcard .pcrow{display:flex;flex-direction:column;gap:4px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;align-items:flex-start}
+.pcard .pcrow b{font-family:var(--f-num)}
+.seat .plate{cursor:pointer}
+.lobbyprof{align-self:flex-start}
+@media (max-width:620px), (orientation:landscape) and (max-height:500px){
+  #bProfile{font-size:0;padding:6px 9px;min-width:34px}
+  #bProfile::before{content:"👤";font-size:calc(15px*var(--fs))}
+  .profbox{padding:12px}
+  .ptiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ptile b{font-size:calc(17px*var(--fs))}
+}

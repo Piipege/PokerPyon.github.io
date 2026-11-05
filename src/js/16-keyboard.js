@@ -23,13 +23,15 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     if(!$('setOv').hidden) closeSettings();
     else if(!$('keysOv').hidden) toggleKeys(false);
+    else if(!$('pcardOv').hidden) closeCard();
+    else if(!$('profOv').hidden) closeProfile();
     else if(!$('coachOv').hidden) closeCoach();
     else if(!$('replayOv').hidden) closeReplay();
     else if(!$('learnOv').hidden) closeLearn();
     else if(pre){ pre=null; render(); }
     return;
   }
-  if(!$('setOv').hidden || !$('coachOv').hidden || !$('learnOv').hidden) return;
+  if(!$('setOv').hidden || !$('coachOv').hidden || !$('learnOv').hidden || !$('profOv').hidden) return;
   const a = keyAction[e.code];
   if(!$('keysOv').hidden){ if(a==='help' || e.key==='?'){ toggleKeys(false); e.preventDefault(); } return; }
   if(a==='help' || e.key==='?'){ toggleKeys(true); e.preventDefault(); return; }
