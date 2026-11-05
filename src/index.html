@@ -344,6 +344,8 @@
       <label class="check" for="cfgContrast"><input type="checkbox" id="cfgContrast"> Высокий контраст: ярче текст и рамки</label>
       <label class="check" for="cfgCalm"><input type="checkbox" id="cfgCalm"> Меньше анимации</label>
       <label class="check" for="cfgFour"><input type="checkbox" id="cfgFour"> Четырёхцветная колода: ♦ синие, ♣ зелёные</label>
+      <button class="btn small" id="tourAgain" type="button">Показать подсказки для новичков снова</button>
+      <label class="check" for="cfgHide"><input type="checkbox" id="cfgHide"> Прятать свои карты: нажмите на них, чтобы посмотреть (удобно играть на людях)</label>
       <label class="check" for="cfgConfirm"><input type="checkbox" id="cfgConfirm"> Подтверждать ставки больше половины стека</label>
       <label class="check" for="cfgTips"><input type="checkbox" id="cfgTips"> Показывать подсказки режима помощи, если стол их разрешает</label>
       <label class="check" for="cfgSum"><input type="checkbox" id="cfgSum"> Показывать итоги после каждой раздачи</label>
@@ -361,7 +363,14 @@
       <label class="check"><input type="checkbox" data-sfx="turn"> Ваш ход</label>
       <label class="check"><input type="checkbox" data-sfx="win"> Выигрыш банка</label>
       <label class="check"><input type="checkbox" data-sfx="chat"> Сообщения в чате</label>
-      <label class="check" for="cfgVibe"><input type="checkbox" id="cfgVibe"> Вибрация, когда ваш ход (телефон)</label>
+      <fieldset class="helpset vibset"><legend>Вибрация (телефон)</legend>
+        <label class="check strong" for="cfgVibe"><input type="checkbox" id="cfgVibe"> Вибрация включена</label>
+        <label class="check"><input type="checkbox" data-vib="turn"> Ваш ход — два коротких</label>
+        <label class="check"><input type="checkbox" data-vib="win"> Вы выиграли банк — быстрая дробь</label>
+        <label class="check"><input type="checkbox" data-vib="timer"> Осталось 5 секунд на ход — два длинных</label>
+        <button class="btn small" id="vibTest" type="button">Проверить вибрацию</button>
+        <p class="hint small" id="vibNote" hidden>Этот браузер не поддерживает вибрацию (например, Safari на iPhone).</p>
+      </fieldset>
       <label class="check" for="cfgNotify"><input type="checkbox" id="cfgNotify"> Уведомление, когда ваш ход, если вкладка свёрнута</label>
       <label class="check" for="cfgWake"><input type="checkbox" id="cfgWake"> Не гасить экран во время игры</label>
       <button class="btn small" id="sndTest" type="button">Проверить звук</button>

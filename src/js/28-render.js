@@ -80,7 +80,10 @@ function render(){
     const status = s.left ? 'Ушёл' : s.offline ? 'Не в сети' : s.away ? 'Отошёл' : (s.out ? 'Без фишек' : (!s.inHand && S.handNo>0 && !S.handOver ? 'Ждёт' : s.last));
     if(status+'|'+LANG!==N.lastAct){ N.lastAct=status+'|'+LANG; N.act.textContent=t(status); N.act.style.animation='none'; void N.act.offsetWidth; N.act.style.animation=''; }
 
-    const cs = cardsFor(i);
+    // own cards can stay face down until you press them (setting «hide my cards»)
+    const cs0 = cardsFor(i), mine = s.uid===myUid, canPeek = mine && CFG.hideMine && !s.shown && cs0.some(Boolean);
+    const cs = canPeek && !peeking() ? cs0.map(()=>null) : cs0;
+    if(mine){ N.el.classList.toggle('peekable', canPeek); N.el.classList.toggle('peeking', canPeek && peeking()); document.body.classList.toggle('mehidden', canPeek && !peeking()); }
     N.el.classList.toggle('hidecards', s.uid!==myUid && cs.length>0 && cs.every(c=>!c));
     N.el.classList.toggle('showcards', s.uid!==myUid && cs.some(Boolean));
     const hl = c => c && isSD && s.won>0 && bestSet.has(cardKey(c));
@@ -163,6 +166,7 @@ function render(){
     const key=S.winFx.hand+'|'+S.winFx.items.map(it=>it.seat+':'+it.amount).join(',');
     if(key!==fxDone){
       fxDone=key; SFX.win(); setTimeout(()=>celebrate(S.winFx?S.winFx.items:[]), 900);
+      if((S.winFx?S.winFx.items:[]).some(x=>S.seats[x.seat] && S.seats[x.seat].uid===myUid)) buzz('win');
       S.winFx.items.forEach((it,k)=>{
         const p=pos[it.seat]; if(!p) return;
         const f=document.createElement('div'); f.className='fly'; f.dataset.den=denom(it.amount); f.textContent='+'+fmt(it.amount);
@@ -271,7 +275,7 @@ function renderPlus(mine, i, p){
     } else od.innerHTML=parts.join('');
     od.hidden=!parts.length;
   } else od.hidden=true;
-  highlightMade(on && HS.hMade && helpCache.fiveCards ? coreCards(helpCache.fiveCards, helpCache.cat) : null);
+  highlightMade(on && HS.hMade && helpCache.fiveCards && !document.body.classList.contains('mehidden') ? coreCards(helpCache.fiveCards, helpCache.cat) : null);
 }
 
 function renderControls(){
@@ -333,11 +337,13 @@ function renderControls(){
   $('hint').innerHTML=hint; $('hint').classList.toggle('minor', minor || !hint);
 }
 
+let timerBuzz=-1;
 setInterval(()=>{
   if(!S) return;
   if(S.deadline>0 && !S.handOver && seatNodes[S.turn]){
     const left=Math.max(0,S.deadline-Date.now());
     seatNodes[S.turn].bar.style.width=(left/TURN_MS*100)+'%';
+    if(left<5000 && left>0 && S.seats[S.turn].uid===myUid && timerBuzz!==S.turnId){ timerBuzz=S.turnId; buzz('timer'); }
   }
   const cd=document.getElementById('cd'); if(cd && S.nextAt) cd.textContent=Math.max(0,Math.ceil((S.nextAt-Date.now())/1000));
 }, 250);

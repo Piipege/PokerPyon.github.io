@@ -968,5 +968,20 @@
  "Стол для друзей": "Table for friends",
  "Ещё настройки": "More settings",
  "Игра с ботами": "Play with bots",
- "Меню": "Menu"
+ "Меню": "Menu",
+ "Выберите, как играть. Проще всего начать с ботов — это работает и без интернета.": "Choose how to play. The easiest start is with bots — it works offline too.",
+ "Здесь ваш профиль со статистикой, обучение с тренером и настройки: тема, звук, вибрация, размер текста.": "Here are your profile with stats, learning with the coach, and settings: theme, sound, vibration, text size.",
+ "Ваш ход. «Сбросить» — выйти из раздачи, «Чек» или «Колл» — продолжить, «Рейз» — повысить; ползунок задаёт ставку. Нажмите на игрока, чтобы увидеть его статистику.": "Your turn. «Fold» leaves the hand, «Check» or «Call» continues, «Raise» bets more; the slider sets the amount. Tap a player to see their stats.",
+ "Пропустить": "Skip",
+ "Понятно": "Got it",
+ "Подсказки покажутся снова в главном меню и на следующем ходу": "Tips will show again in the main menu and on your next turn",
+ "Показать подсказки для новичков снова": "Show beginner tips again",
+ "Прятать свои карты: нажмите на них, чтобы посмотреть (удобно играть на людях)": "Hide my cards: press them to look (handy when playing in public)",
+ "Вибрация (телефон)": "Vibration (phone)",
+ "Вибрация включена": "Vibration on",
+ "Ваш ход — два коротких": "Your turn — two short pulses",
+ "Вы выиграли банк — быстрая дробь": "You won the pot — a quick drumroll",
+ "Осталось 5 секунд на ход — два длинных": "5 seconds left to act — two long pulses",
+ "Проверить вибрацию": "Test vibration",
+ "Этот браузер не поддерживает вибрацию (например, Safari на iPhone).": "This browser doesn't support vibration (for example, Safari on iPhone)."
 }

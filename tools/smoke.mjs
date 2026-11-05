@@ -66,6 +66,43 @@ console.log('language switch loads its dictionary');
   await p.context().close();
 }
 
+console.log('beginner tour, hidden own cards, vibration');
+{
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  await ctx.addInitScript(() => { window.PION_TEST = 1; window.PION_TOUR = 1; window.__vib = []; Object.defineProperty(navigator, 'vibrate', { value: p => { window.__vib.push(JSON.stringify(p)); return true; }, configurable: true }); localStorage.setItem('pion-nick', 'Тест'); localStorage.setItem('pion-cfg', JSON.stringify({ lang: 'ru', speed: 'fast' })); });
+  const p = await ctx.newPage();
+  p.on('pageerror', e => { console.log('  ! page error: ' + e.message); failed++; });
+  await p.goto(URL); await p.waitForFunction(() => window.__pion);
+  ok(await p.waitForSelector('.tourcard', { timeout: 4000 }).then(() => true, () => false) && /1 \/ 3/.test(await p.locator('.tourcard').textContent()), 'tour starts on the first visit (1 / 3)');
+  ok(await p.locator('.ltiles.tourfocus').count() === 1, 'and points at the menu tiles');
+  await p.click('[data-tour="next"]');
+  ok(/2 \/ 3/.test(await p.locator('.tourcard').textContent()) && await p.locator('.hnav.tourfocus').count() === 1, 'second card points at profile / learning / settings');
+  await p.click('[data-tour="next"]');
+  ok(await p.locator('.tourcard').count() === 0, 'tour leaves the main menu');
+  await p.click('[data-ltab="solo"]'); await p.click('#bSolo');
+  ok(await p.waitForSelector('.tourcard', { timeout: 30000 }).then(() => true, () => false) && /3 \/ 3/.test(await p.locator('.tourcard').textContent()), 'third card appears on the first own turn');
+  ok(await p.evaluate(() => window.__vib.includes('[90,60,90]')), 'your turn vibrates with two short pulses');
+  await p.click('[data-tour="next"]');
+  // hide own cards
+  await p.evaluate(() => { const c = document.getElementById('cfgHide'); c.checked = true; c.dispatchEvent(new Event('change')); });
+  ok(await p.locator('.seat.me .cards .card.back').count() === 2, 'with the setting on, own cards lie face down');
+  const box = await p.locator('.seat.me .cards').boundingBox();
+  await p.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await p.mouse.down();
+  ok(await p.locator('.seat.me .cards .card:not(.back)').count() === 2, 'pressing shows them');
+  await p.mouse.up();
+  ok(await p.locator('.seat.me .cards .card:not(.back)').count() === 2, 'a short tap keeps them open for a moment');
+  await p.waitForTimeout(3400);
+  ok(await p.locator('.seat.me .cards .card.back').count() === 2 || await p.evaluate(() => !!window.__pion.S.seats.find(s => s.uid === window.__pion.myUid).shown), 'and then they hide again');
+  await p.evaluate(() => { const c = document.getElementById('cfgHide'); c.checked = false; c.dispatchEvent(new Event('change')); });
+  ok(await p.locator('.seat.me .cards .card.back').count() === 0, 'switching it off shows the cards as usual');
+  // vibration settings
+  await p.evaluate(() => { window.__vib = []; const w = document.querySelector('[data-vib="win"]'); w.checked = false; w.dispatchEvent(new Event('change')); document.getElementById('vibTest').click(); });
+  await p.waitForTimeout(2500);
+  const vib = await p.evaluate(() => window.__vib);
+  ok(vib.includes('[90,60,90]') && vib.includes('[250,120,250]') && !vib.includes('[40,40,40,40,180]'), 'vibration test plays only the enabled patterns: ' + vib.join(' '));
+  await ctx.close();
+}
+
 console.log('coach verdicts on fixed hands');
 {
   const p = await page();

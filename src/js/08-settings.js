@@ -15,7 +15,7 @@ function loadCfg(){
     tips: c.tips!==false, sumbox: c.sumbox!==false,
     fs: [1,1.15,1.3].includes(+c.fs) ? +c.fs : 1, contrast: !!c.contrast, calm: !!c.calm,
     helpOpen: !!c.helpOpen,
-    four: !!c.four, confirm: c.confirm!==false, vibe: c.vibe!==false, notify: !!c.notify, wake: c.wake!==false,
+    four: !!c.four, confirm: c.confirm!==false, vibe: c.vibe!==false, vib: Object.assign({turn:true, win:true, timer:true}, c.vib||{}), hideMine: !!c.hideMine, notify: !!c.notify, wake: c.wake!==false,
     turn: c.turn && typeof c.turn==='object' ? {url:String(c.turn.url||''), user:String(c.turn.user||''), pass:String(c.turn.pass||'')} : {url:'',user:'',pass:''},
     keys: Object.assign({}, DEF_KEYS, c.keys||{}),
     av: cleanAv(c.av) || randomAv(),

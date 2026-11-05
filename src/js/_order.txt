@@ -29,3 +29,4 @@
 27-lang.js
 28-render.js
 29-boot.js
+30-tour.js

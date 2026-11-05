@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <title>Покерный стол «Пион»</title>
-<link rel="preload" href="assets/app.183a65e8e5.js" as="script">
+<link rel="preload" href="assets/app.088114fbb4.js" as="script">
 <link rel="preload" href="assets/peerjs.f69f573cb6.js" as="script">
 <style>
 /* extra scripts: Noto Sans Georgian, Noto Sans Hebrew (SIL OFL) */
@@ -862,6 +862,21 @@ body.inlobby aside > section:last-child{border-top:0;padding-top:0}
   body.tight:not(.inlobby) .wrap{align-items:stretch}
 }
 .lobbybox:not([data-view="home"]) .pfline{display:none}
+/* own cards hidden until pressed */
+.seat.peekable .cards{cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;position:relative}
+.seat.peekable:not(.peeking) .cards::after{content:"👆";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:calc(var(--cw)*.42);filter:drop-shadow(0 2px 4px #000a);pointer-events:none;animation:peekHint 1.8s ease-in-out infinite}
+@keyframes peekHint{50%{transform:translate(-50%,-62%)}}
+body.mehidden #odds{visibility:hidden}
+.vibset{display:flex;flex-direction:column;gap:8px}
+.vibset .btn{align-self:flex-start}
+/* first-visit tour */
+.tourfocus{outline:3px solid var(--pink);outline-offset:4px;border-radius:14px;animation:tourRing 1.6s ease-in-out infinite;position:relative;z-index:61}
+@keyframes tourRing{50%{outline-color:transparent;outline-offset:8px}}
+.tourcard{position:fixed;z-index:62;width:min(340px,calc(100vw - 24px));background:var(--panel);border:1px solid var(--pink);border-radius:16px;padding:14px 16px;box-shadow:0 18px 44px #000b;display:flex;flex-direction:column;gap:10px;animation:fadeIn .3s var(--ease) both}
+.tourcard p{margin:0;line-height:1.45}
+.tourcard .row{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.tourcard .row .muted{margin-inline-end:auto;font-family:var(--f-num);font-size:calc(12px*var(--fs))}
+:root.calm .tourfocus{animation:none}
 </style>
 </head>
 <body>
@@ -1193,6 +1208,8 @@ body.inlobby aside > section:last-child{border-top:0;padding-top:0}
       <label class="check" for="cfgContrast"><input type="checkbox" id="cfgContrast"> Высокий контраст: ярче текст и рамки</label>
       <label class="check" for="cfgCalm"><input type="checkbox" id="cfgCalm"> Меньше анимации</label>
       <label class="check" for="cfgFour"><input type="checkbox" id="cfgFour"> Четырёхцветная колода: ♦ синие, ♣ зелёные</label>
+      <button class="btn small" id="tourAgain" type="button">Показать подсказки для новичков снова</button>
+      <label class="check" for="cfgHide"><input type="checkbox" id="cfgHide"> Прятать свои карты: нажмите на них, чтобы посмотреть (удобно играть на людях)</label>
       <label class="check" for="cfgConfirm"><input type="checkbox" id="cfgConfirm"> Подтверждать ставки больше половины стека</label>
       <label class="check" for="cfgTips"><input type="checkbox" id="cfgTips"> Показывать подсказки режима помощи, если стол их разрешает</label>
       <label class="check" for="cfgSum"><input type="checkbox" id="cfgSum"> Показывать итоги после каждой раздачи</label>
@@ -1210,7 +1227,14 @@ body.inlobby aside > section:last-child{border-top:0;padding-top:0}
       <label class="check"><input type="checkbox" data-sfx="turn"> Ваш ход</label>
       <label class="check"><input type="checkbox" data-sfx="win"> Выигрыш банка</label>
       <label class="check"><input type="checkbox" data-sfx="chat"> Сообщения в чате</label>
-      <label class="check" for="cfgVibe"><input type="checkbox" id="cfgVibe"> Вибрация, когда ваш ход (телефон)</label>
+      <fieldset class="helpset vibset"><legend>Вибрация (телефон)</legend>
+        <label class="check strong" for="cfgVibe"><input type="checkbox" id="cfgVibe"> Вибрация включена</label>
+        <label class="check"><input type="checkbox" data-vib="turn"> Ваш ход — два коротких</label>
+        <label class="check"><input type="checkbox" data-vib="win"> Вы выиграли банк — быстрая дробь</label>
+        <label class="check"><input type="checkbox" data-vib="timer"> Осталось 5 секунд на ход — два длинных</label>
+        <button class="btn small" id="vibTest" type="button">Проверить вибрацию</button>
+        <p class="hint small" id="vibNote" hidden>Этот браузер не поддерживает вибрацию (например, Safari на iPhone).</p>
+      </fieldset>
       <label class="check" for="cfgNotify"><input type="checkbox" id="cfgNotify"> Уведомление, когда ваш ход, если вкладка свёрнута</label>
       <label class="check" for="cfgWake"><input type="checkbox" id="cfgWake"> Не гасить экран во время игры</label>
       <button class="btn small" id="sndTest" type="button">Проверить звук</button>
@@ -1231,6 +1255,6 @@ body.inlobby aside > section:last-child{border-top:0;padding-top:0}
     </div>
   </div>
 </div>
-<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.b9dcf1b271.js","uk":"assets/lang-uk.ce7c561bcc.js","ka":"assets/lang-ka.e54032bdf0.js","fr":"assets/lang-fr.3556b3ecc3.js","de":"assets/lang-de.775a819301.js","ro":"assets/lang-ro.b0aeb91dcd.js","he":"assets/lang-he.b2f4e0c171.js","kk":"assets/lang-kk.eedd7eec09.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.183a65e8e5.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
+<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.f751a8eeb2.js","uk":"assets/lang-uk.8f31de82e6.js","ka":"assets/lang-ka.15bee5fcd7.js","fr":"assets/lang-fr.f99bef15ec.js","de":"assets/lang-de.cb92764918.js","ro":"assets/lang-ro.d43d833bd4.js","he":"assets/lang-he.dc2d4ce8ec.js","kk":"assets/lang-kk.809e1b8c62.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.088114fbb4.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
 </body>
 </html>

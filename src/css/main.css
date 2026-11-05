@@ -807,3 +807,18 @@ body.inlobby aside > section:last-child{border-top:0;padding-top:0}
   body.tight:not(.inlobby) .wrap{align-items:stretch}
 }
 .lobbybox:not([data-view="home"]) .pfline{display:none}
+/* own cards hidden until pressed */
+.seat.peekable .cards{cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;position:relative}
+.seat.peekable:not(.peeking) .cards::after{content:"👆";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:calc(var(--cw)*.42);filter:drop-shadow(0 2px 4px #000a);pointer-events:none;animation:peekHint 1.8s ease-in-out infinite}
+@keyframes peekHint{50%{transform:translate(-50%,-62%)}}
+body.mehidden #odds{visibility:hidden}
+.vibset{display:flex;flex-direction:column;gap:8px}
+.vibset .btn{align-self:flex-start}
+/* first-visit tour */
+.tourfocus{outline:3px solid var(--pink);outline-offset:4px;border-radius:14px;animation:tourRing 1.6s ease-in-out infinite;position:relative;z-index:61}
+@keyframes tourRing{50%{outline-color:transparent;outline-offset:8px}}
+.tourcard{position:fixed;z-index:62;width:min(340px,calc(100vw - 24px));background:var(--panel);border:1px solid var(--pink);border-radius:16px;padding:14px 16px;box-shadow:0 18px 44px #000b;display:flex;flex-direction:column;gap:10px;animation:fadeIn .3s var(--ease) both}
+.tourcard p{margin:0;line-height:1.45}
+.tourcard .row{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.tourcard .row .muted{margin-inline-end:auto;font-family:var(--f-num);font-size:calc(12px*var(--fs))}
+:root.calm .tourfocus{animation:none}
