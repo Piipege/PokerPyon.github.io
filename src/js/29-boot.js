@@ -18,3 +18,9 @@ if(typeof Peer==='undefined'){
   if(hashCode && r && r.code===hashCode.toUpperCase()) setTimeout(()=>$('bResume').click(), 0);
   else if(hashCode && $('nick').value.trim()) setTimeout(()=>joinTable(hashCode), 0);
 }
+// test hook (tools/*.mjs set window.PION_TEST before the page loads)
+if(window.PION_TEST) window.__pion={GEN, LESSONS, DRILLS, TERMS, HIST:()=>HIST, reviewOf, coachAsk, openCoach, openLearn, get S(){ return S; }, get MODE(){ return MODE; }};
+// offline: on GitHub Pages (or any http server) a service worker keeps a copy of the game
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && !window.PION_TEST && !window.PION_PEER_OPTS){
+  addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+}

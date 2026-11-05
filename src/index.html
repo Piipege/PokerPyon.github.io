@@ -8,10 +8,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pion">
-<link rel="icon" href="@datauri(assets/icon.png)">
+<link rel="icon" href="@datauri(assets/icon-192.png)">
 <link rel="apple-touch-icon" href="@datauri(assets/apple-touch-icon.png)">
-<link rel="manifest" href="data:application/manifest+json;base64,@include(assets/manifest.b64)">
-<script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std"}catch(e){document.documentElement.dataset.theme="dark"}</script>
+<link rel="manifest" href="manifest.webmanifest">
+<script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <title>Покерный стол «Пион»</title>
 <script>@inline(vendor/peerjs.min.js)</script>
 <style>@inline(css/fonts.css)</style>
@@ -147,9 +147,9 @@
             <button class="btn primary" id="bSolo">Играть с ботами</button>
           </div>
           <div data-lpane="learn" class="part" hidden>
-            <p class="hint small">Курс из 10 уроков: от правил до выигрышной стратегии. В каждом уроке — короткая теория и практика на сгенерированных раздачах. После некоторых уроков можно сыграть с ботами-новичками под присмотром тренера.</p>
+            <p class="hint small">Курс из 14 уроков в трёх уровнях: от правил до выигрышной стратегии. В каждом уроке — короткая теория и практика на сгенерированных раздачах. Есть бесконечные тренажёры и тренер, который разбирает ваши сыгранные раздачи и отвечает на вопросы.</p>
             <div class="hint" id="learnProg2"></div>
-            <button class="btn primary" id="bLearn2" type="button">Открыть курс</button>
+            <div class="row"><button class="btn primary" id="bLearn2" type="button">Открыть курс</button><button class="btn" id="bDrills" type="button">Тренажёры</button><button class="btn" id="bCoach2" type="button">Разбор с тренером</button></div>
           </div>
           <div class="err" id="lobbyErr"></div>
           <div class="hint" id="netNote">Загружаем игру по сети…</div>
@@ -256,6 +256,15 @@
     <div class="row"><button class="btn small" id="sessCopy" type="button">Скопировать текст</button><button class="btn small" id="sessImg" type="button">Сохранить картинкой</button><button class="btn small primary" id="sessClose" type="button">Закрыть</button></div>
   </div>
 </div>
+<div id="coachOv" class="overlay fixed" hidden>
+  <div class="box coachbox" role="dialog" aria-modal="true" aria-labelledby="coachTitle">
+    <div class="sethead"><h3 id="coachTitle">Разбор с тренером</h3><select id="coachSel" class="coachsel" aria-label="Раздача"></select><button class="btn small primary" id="coachClose">Закрыть</button></div>
+    <div class="scene coachhand" id="coachHand" hidden></div>
+    <div class="coachlog" id="coachLog" aria-live="polite"></div>
+    <div class="qchips" id="coachChips"></div>
+    <form class="coachform" id="coachForm" autocomplete="off"><input id="coachIn" maxlength="300" placeholder="Спросите тренера: «почему пас на флопе — ошибка?», «что такое ауты?»" aria-label="Вопрос тренеру"><button class="btn primary" type="submit">Спросить</button></form>
+  </div>
+</div>
 <div id="learnOv" class="overlay fixed" hidden>
   <div class="box learnbox" role="dialog" aria-modal="true" aria-labelledby="learnTitle">
     <div class="sethead"><h3 id="learnTitle">Обучение</h3><span class="hint" id="learnProg"></span><button class="btn small primary" id="learnClose">Закрыть</button></div>
@@ -293,6 +302,9 @@
     </div>
     <div data-spane="view" class="part" hidden>
       <label class="field" for="cfgLang">Язык<select id="cfgLang"></select></label>
+      <label class="field" for="cfgFs">Размер текста<select id="cfgFs"><option value="1">Обычный</option><option value="1.15">Крупный</option><option value="1.3">Очень крупный</option></select></label>
+      <label class="check" for="cfgContrast"><input type="checkbox" id="cfgContrast"> Высокий контраст: ярче текст и рамки</label>
+      <label class="check" for="cfgCalm"><input type="checkbox" id="cfgCalm"> Меньше анимации</label>
       <label class="check" for="cfgFour"><input type="checkbox" id="cfgFour"> Четырёхцветная колода: ♦ синие, ♣ зелёные</label>
       <label class="check" for="cfgConfirm"><input type="checkbox" id="cfgConfirm"> Подтверждать ставки больше половины стека</label>
       <label class="check" for="cfgTips"><input type="checkbox" id="cfgTips"> Показывать подсказки режима помощи, если стол их разрешает</label>

@@ -13,6 +13,7 @@ function loadCfg(){
     lang: LANGS.some(x=>x[0]===c.lang) ? c.lang : guessLang(),
     table: ['pion','lavender','sakura','emerald','midnight','cherry'].includes(c.table)?c.table:'pion', back: ['pion','lilac','classic','stars','mono'].includes(c.back)?c.back:'pion', face: c.face==='big'?'big':'std',
     tips: c.tips!==false, sumbox: c.sumbox!==false,
+    fs: [1,1.15,1.3].includes(+c.fs) ? +c.fs : 1, contrast: !!c.contrast, calm: !!c.calm,
     helpOpen: !!c.helpOpen,
     four: !!c.four, confirm: c.confirm!==false, vibe: c.vibe!==false, notify: !!c.notify, wake: c.wake!==false,
     turn: c.turn && typeof c.turn==='object' ? {url:String(c.turn.url||''), user:String(c.turn.user||''), pass:String(c.turn.pass||'')} : {url:'',user:'',pass:''},

@@ -38,7 +38,8 @@ function renderHandList(){
   ul.innerHTML = HIST.slice().reverse().map((r,k)=>{
     const w=r.win&&r.win[0];
     const label = w ? t('{0} +{1}', nameOf(r,w.u), fmtWin(w.amt, r.bb)) + (w.hn?' · '+t(w.hn):'') : '';
-    return `<li><button type="button" class="hrow" data-rp="${HIST.length-1-k}"><span class="hno">№${r.no}</span><span>${esc(label)}</span><span class="hgo">▶</span></button></li>`;
+    const ix=HIST.length-1-k, rev=r.mine && r.seats.some(s=>s.u===myUid);
+    return `<li class="hli"><button type="button" class="hrow" data-rp="${ix}"><span class="hno">№${r.no}</span><span>${esc(label)}</span><span class="hgo">▶</span></button>${rev?`<button type="button" class="hcoach" data-coach="${ix}" title="${esc(t('Разбор с тренером'))}" aria-label="${esc(t('Разбор с тренером'))}">🎓</button>`:''}</li>`;
   }).join('') || `<li class="empty">${t('Здесь появятся сыгранные раздачи')}</li>`;
 }
 function renderSummary(){
@@ -49,12 +50,13 @@ function renderSummary(){
     const sh=r.shown[w.u];
     return `<div class="srow2"><b class="win">🏆 ${esc(nameOf(r,w.u))} +${esc(fmtWin(w.amt, r.bb))}</b>${w.hn?`<span>${esc(t(w.hn))}</span>`:`<span class="muted">${t('без вскрытия')}</span>`}${sh?`<span class="mini">${sh.c.map(k=>fmtCard(keyCard(k))).join(' ')}</span>`:''}</div>`;
   }).join('') + Object.entries(r.shown).filter(([u])=>!(r.win||[]).some(w=>w.u===u)).map(([u,sh])=>`<div class="srow2 other"><span>${esc(nameOf(r,u))}</span><span>${esc(t(sh.hn))}</span><span class="mini">${sh.c.map(k=>fmtCard(keyCard(k))).join(' ')}</span></div>`).join('');
-  box.innerHTML=`<div class="sumhead"><b>${t('Итоги раздачи №{0}', r.no)}</b><span class="row"><button type="button" class="btn small" data-sum="replay">${t('Повтор')}</button><button type="button" class="btn small ghost" data-sum="close" aria-label="${t('Закрыть')}">✕</button></span></div>${rows}`;
+  box.innerHTML=`<div class="sumhead"><b>${t('Итоги раздачи №{0}', r.no)}</b><span class="row">${r.mine?`<button type="button" class="btn small" data-sum="coach">${t('Разбор')}</button>`:''}<button type="button" class="btn small" data-sum="replay">${t('Повтор')}</button><button type="button" class="btn small ghost" data-sum="close" aria-label="${t('Закрыть')}">✕</button></span></div>${rows}`;
   box.hidden=false;
 }
 let sumClosed=-1;
 document.addEventListener('click', e=>{
-  const b=e.target.closest('[data-sum]'); if(b){ if(b.dataset.sum==='close'){ sumClosed=HIST[HIST.length-1]?.no; renderSummary(); } else openReplay(HIST.length-1); return; }
+  const b=e.target.closest('[data-sum]'); if(b){ if(b.dataset.sum==='close'){ sumClosed=HIST[HIST.length-1]?.no; renderSummary(); } else if(b.dataset.sum==='coach') openCoach(HIST.length-1); else openReplay(HIST.length-1); return; }
+  const c=e.target.closest('[data-coach]'); if(c){ openCoach(+c.dataset.coach); return; }
   const h=e.target.closest('[data-rp]'); if(h) openReplay(+h.dataset.rp);
 });
 

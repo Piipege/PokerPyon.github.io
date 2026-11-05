@@ -21,6 +21,23 @@ const LESSONS=[
   {id:8, gen:['l8river','l8river','l8size','l8river','l8river'], play:true},
   {id:9, gen:['l9style','l9style','l9counter','l9tp','l9counter']},
   {id:10, gen:['l5pre','l6outs','l7dec','l10roll','l10tilt'], play:true},
+  {id:11, gen:['l11name','l11open','l11last','l11open','l11wide']},
+  {id:12, gen:['l12tex','l12cbet','l12tex','l12multi','l12size'], play:true},
+  {id:13, gen:['l13set','l13set','l13draw','l13reverse','l13set']},
+  {id:14, gen:['l14nuts','l14nuts','l14pair','l14kick','l14nuts']},
+];
+// the course in three levels; the numbers are lesson ids, in the order they are taught
+const LEVELS=[{n:'Основы', ids:[1,2,3,4]}, {n:'Стратегия', ids:[5,11,6,7,13]}, {n:'Мастерство', ids:[8,12,14,9,10]}];
+const ORDER=LEVELS.flatMap(l=>l.ids.map(id=>id-1));
+// endless drills: the same generators as in the lessons, one question after another
+const DRILLS=[
+  {id:'pre', n:'Префлоп: рейз или пас', d:'Позиция и стартовая рука', gen:['l5pre','l11open']},
+  {id:'outs', n:'Ауты', d:'Сколько карт улучшат руку', gen:['l6outs']},
+  {id:'odds', n:'Шансы банка', d:'Колл или пас по цене ставки', gen:['l7need','l7dec']},
+  {id:'win', n:'Кто выигрывает', d:'Сравните две руки на столе', gen:['l3win']},
+  {id:'name', n:'Комбинации', d:'Назовите комбинацию', gen:['l2name']},
+  {id:'nuts', n:'Натсы', d:'Лучшая возможная рука на столе', gen:['l14nuts']},
+  {id:'tex', n:'Текстура флопа', d:'Сухой или мокрый флоп', gen:['l12tex']},
 ];
 const rint=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const shuf=a=>{ for(let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } return a; };
@@ -110,58 +127,171 @@ const GEN = {
   l9tp(){ return {q:'Тайт-пассивный игрок неожиданно сделал рейз. Что это обычно значит?', ...mc('Очень сильная рука',['Блеф','Случайность','Ничего не значит']), exp:'Пассивные игроки редко повышают. Если такой игрок рейзит, у него почти всегда сильная рука.'}; },
   l10roll(){ return {q:'Сколько бай-инов советуют держать в банкролле для выбранных ставок?', ...mc('20 и больше',['1–2','5','Неважно']), exp:'Запас в 20+ бай-инов переживёт неизбежные серии проигрышей.'}; },
   l10tilt(){ return {q:'Вы проиграли три больших банка подряд и злитесь. Что лучше сделать?', ...mc('Сделать перерыв',['Поднять ставки, чтобы отыграться','Играть все руки подряд','Пойти олл-ин вслепую']), exp:'Решения на эмоциях (тильт) стоят дороже всего. Перерыв возвращает ясную голову.'}; },
+  l11name(){ const q=[['Как называется место дилера?','Баттон'],['Как называется место справа от баттона?','Катофф'],['Кто сидит сразу слева от баттона?','Малый блайнд'],['Как называют первого, кто ходит до флопа (сразу после большого блайнда)?','Ранняя позиция']][rint(0,3)];
+    return {q:q[0], ...mc(q[1], ['Баттон','Катофф','Малый блайнд','Большой блайнд','Ранняя позиция'].filter(x=>x!==q[1]).sort(()=>Math.random()-.5)), exp:'Порядок за столом от дилера по часовой стрелке: баттон, малый блайнд, большой блайнд, ранние позиции, средние, катофф — и снова баттон.'}; },
+  l11open(){
+    const P=[['ep','Ранняя позиция'],['mp','Средняя позиция'],['co','Катофф'],['btn','Баттон']];
+    for(let i=0;i<400;i++){
+      const [pk,pn]=P[rint(0,3)], thr=OPEN_THR[pk], h=deal(2), pc=pctOf(h[0],h[1]);
+      if(Math.abs(pc-thr)<.04) continue;
+      return {q:L('Позиция: {0}. До вас все сбросили. Рейз или пас?', pn), scene:scene([['Ваши карты',cardsRow(h)]]), opts:['Рейз','Пас'], ans: pc<=thr?0:1,
+        exp:L('Это топ {0}% рук. С позиции «{1}» разумно открывать примерно лучшие {2}%.', Math.max(1,Math.round(pc*100)), pn, Math.round(thr*100))};
+    }
+  },
+  l11last(){ return {q:'Кто ходит последним до флопа, если никто не повышал?', ...mc('Большой блайнд',['Баттон','Малый блайнд','Ранняя позиция']), exp:'До флопа первым ходит игрок после большого блайнда, а большой блайнд — последним. После флопа последним ходит баттон.'}; },
+  l11wide(){ return {q:'С какой позиции можно разыгрывать больше всего рук?', ...mc('Баттон',['Ранняя позиция','Средняя позиция','Большой блайнд']), exp:'На баттоне вы ходите последним на всех улицах после флопа, поэтому с него играют до 40% рук.'}; },
+  _tex(){
+    for(let i=0;i<500;i++){
+      const f=deal(3), sm=Math.max(...[0,1,2,3].map(x=>f.filter(c=>c.s===x).length)), rs=[...new Set(f.map(c=>c.r))].sort((a,b)=>a-b);
+      const rsA = rs.includes(14) ? [1,...rs] : rs;
+      let close=0; for(let k=1;k<rsA.length;k++) if(rsA[k]-rsA[k-1]<=2) close++;
+      const span = rs.length===3 ? rs[2]-rs[0] : 99;
+      const wet = sm===3 || (sm===2 && (span<=4 || close>=2)) || (rs.length===3 && span<=4);
+      const dry = sm===1 && close===0;
+      if(wet||dry) return {f, wet};
+    }
+  },
+  l12tex(){ const x=GEN._tex(); return {q:'Какой это флоп?', scene:scene([['Флоп',cardsRow(x.f)]]), opts:['Сухой','Мокрый'], ans:x.wet?1:0,
+    exp: x.wet ? 'Мокрый: карты связаны по рангу или по масти, у соперников много дро. Ставьте крупнее, чтобы дро платили за шанс.' : 'Сухой: карты разномастные и далеко друг от друга, дро почти нет. Хватит маленькой ставки, около ⅓ банка.'}; },
+  l12cbet(){ return {q:'Вы рейзили до флопа, против вас один соперник, флоп сухой. Что чаще всего лучше?', ...mc('Продолженная ставка ⅓–½ банка',['Чек и пас на любую ставку','Олл-ин','Чек всегда']), exp:'Соперник на сухом флопе чаще всего ни во что не попал. Небольшая продолженная ставка (c-bet) часто забирает банк сразу.'}; },
+  l12multi(){ return {q:'Вы рейзили до флопа, но в банке ещё трое соперников, флоп мокрый, а вы ни во что не попали. Что лучше?', ...mc('Чек',['Продолженная ставка в банк','Олл-ин','Минимальная ставка']), exp:'Против нескольких соперников на мокром флопе кто-то почти наверняка попал. Блеф здесь стоит дорого — лучше чек.'}; },
+  l12size(){ const wet=Math.random()<.5; return {q:L('Флоп {0}. Какой размер продолженной ставки обычно разумен?', wet?'мокрый':'сухой'), ...mc(wet?'½–¾ банка':'Около ⅓ банка', ['½–¾ банка','Около ⅓ банка','Два банка','Минимальная ставка']), exp:'На сухом флопе хватает ⅓ банка. На мокром ставят ½–¾: соперники с дро должны платить за шанс собрать руку.'}; },
+  l13set(){
+    for(let i=0;i<60;i++){
+      const r=rint(2,9), raise=rint(3,5)*20, ratio=[6,8,10,20,25,30,40][rint(0,6)], stack=raise*ratio;
+      const pair=[{r,s:rint(0,1)},{r,s:rint(2,3)}];
+      return {q:L('У вас пара, соперник рейзит до {0}. У вас обоих по {1} фишек. Колл ради сета выгоден?', raise, stack), scene:scene([['Ваши карты',cardsRow(pair)]]), opts:['Да, колл','Нет, пас'], ans: ratio>=15?0:1,
+        exp:L('Сет собирается примерно в 1 случае из 8. Колл ради сета окупается, если стеки хотя бы в 15 раз больше колла. Здесь в {0} раз. {1}', ratio, ratio>=15?'Неявные шансы есть — колл.':'Слишком мало, чтобы окупить промахи — пас.')};
+    }
+  },
+  l13draw(){ return {q:'У вас флеш-дро на тёрне, прямых шансов банка не хватает. Когда колл всё же может быть оправдан?', ...mc('У соперника большой стек, и он заплатит, если флеш соберётся',['Всегда — флеш собирается часто','Если у соперника короткий стек','Никогда']), exp:'Это неявные шансы: на будущих ставках вы выиграете больше, чем лежит в банке сейчас. С коротким стеком соперника их нет.'}; },
+  l13reverse(){ return {q:'Что такое обратные неявные шансы?', ...mc('Даже собрав руку, вы можете проиграть крупный банк руке сильнее',['Шанс, что соперник сбросит','Вероятность собрать дро','Выигрыш с блефа']), exp:'Например, младший флеш или стрит на одном конце: собрали — и платите старшему флешу. Такие дро стоят меньше, чем кажется.'}; },
+  l14nuts(){
+    for(let i=0;i<50;i++){
+      const b=deal(5), known=new Set(b.map(cardKey)), rest=freshDeck().filter(c=>!known.has(cardKey(c)));
+      let top=-1;
+      for(let x=0;x<rest.length;x++) for(let y=x+1;y<rest.length;y++){ const c=best([rest[x],rest[y],...b]).cat; if(c>top) top=c; }
+      if(top===8 && Math.random()<.6) continue;
+      return {q:'Какая лучшая возможная комбинация (натсы) на этом столе?', scene:scene([['Стол',cardsRow(b.sort((p,q)=>q.r-p.r))]]), ...mc(HAND_NAMES[top], shuf(HAND_NAMES.filter((_,k)=>k!==top && Math.abs(k-top)<=3))),
+        exp:L('Натсы здесь — {0}. Проверяйте: есть ли на столе пара (возможны фулл-хаус и каре), три карты одной масти (флеш), три карты рядом (стрит).', HAND_NAMES[top])};
+    }
+  },
+  l14pair(){ return {q:'На столе спарилась карта (лежит пара). Какие комбинации стали возможны?', ...mc('Фулл-хаус и каре',['Только флеш','Только стрит','Никакие новые']), exp:'Без пары на столе фулл-хаус и каре невозможны. Когда стол спарился, ваш стрит или флеш может уже проигрывать.'}; },
+  l14kick(){
+    for(let i=0;i<200;i++){
+      const ks=shuf([13,12,11,10]).slice(0,2).sort((x,y)=>y-x), lows=shuf([2,3,4,5,6,7,8,9]).slice(0,4);
+      const board=[{r:14,s:0},...lows.map((r,k)=>({r,s:(k+1)%4}))];
+      const A=[{r:14,s:1},{r:ks[0],s:rint(0,3)}], B=[{r:14,s:2},{r:ks[1],s:rint(0,3)}];
+      if(best(A.concat(board)).cat!==1 || best(B.concat(board)).cat!==1) continue;
+      const swap=Math.random()<.5;
+      return {q:'Кто выигрывает?', scene:scene([['Стол',cardsRow(board)],['Игрок A',cardsRow(swap?B:A)],['Игрок B',cardsRow(swap?A:B)]]), opts:['Игрок A','Игрок B','Ничья, банк делится'], ans: swap?1:0,
+        exp:L('У обоих пара тузов, решает кикер: {0} старше {1}.', RL[ks[0]]||ks[0], RL[ks[1]]||ks[1])};
+    }
+  },
 };
 
-let course={i:0, view:'theory', qs:[], qi:0, score:0, picked:null};
+let course={i:0, view:'theory', qs:[], qi:0, score:0, picked:null, drill:null, streak:0, solved:0};
 function loadProgress(){ try{ return JSON.parse(localStorage.getItem('pion-course')||'{}')||{}; }catch(e){ return {}; } }
 function saveProgress(p){ store.set('pion-course', JSON.stringify(p)); }
+const lessonDone = (prog, l) => (prog['l'+l.id]||0)>=4;
 function openLearn(i){ $('learnOv').hidden=false; if(i!=null){ course.i=i; course.view='theory'; } renderLearn(); }
 function closeLearn(){ $('learnOv').hidden=true; }
 function startPractice(){ const les=LESSONS[course.i]; course.qs=les.gen.map(g=>GEN[g]()); course.qi=0; course.score=0; course.picked=null; course.view='practice'; renderLearn(); }
+function startDrill(id){ course.drill=DRILLS.find(d=>d.id===id); course.streak=0; course.solved=0; course.view='drill'; nextDrillQ(); }
+function nextDrillQ(){ const g=pick(course.drill.gen); course.qs=[GEN[g]()]; course.qi=0; course.picked=null; renderLearn(); }
+function drillBest(){ try{ return JSON.parse(localStorage.getItem('pion-drills')||'{}')||{}; }catch(e){ return {}; } }
+function questionHTML(q, answered){
+  return `${q.scene||''}<p class="q">${esc(tr(q.q))}</p>
+    <div class="opts">${q.opts.map((o,k)=>`<button type="button" class="btn opt${answered?(k===q.ans?' ok':k===course.picked?' bad':''):''}" data-opt="${k}" ${answered?'disabled':''}>${esc(tr(o))}</button>`).join('')}</div>
+    ${answered?`<div class="fb ${course.picked===q.ans?'ok':'bad'}" role="status"><b>${t(course.picked===q.ans?'Верно!':'Неверно.')}</b> ${esc(tr(q.exp))}</div>`:''}`;
+}
 function renderLearn(){
-  const prog=loadProgress(), done=LESSONS.filter(l=>(prog['l'+l.id]||0)>=4).length;
+  const prog=loadProgress(), done=LESSONS.filter(l=>lessonDone(prog,l)).length;
   $('learnProg').textContent=t('Пройдено: {0} из {1}', done, LESSONS.length);
-  $('lessons').innerHTML=LESSONS.map((l,k)=>`<button type="button" class="lsn" data-l="${k}" aria-current="${k===course.i}"><span class="ln">${(prog['l'+l.id]||0)>=4?'✓':l.id}</span><span>${esc(t('c'+l.id+'.title'))}</span></button>`).join('');
-  const les=LESSONS[course.i], box=$('lesson');
-  const head=`<div class="eyebrow">${t('Урок {0} из {1}', les.id, LESSONS.length)}</div><h4>${esc(t('c'+les.id+'.title'))}</h4>`;
+  const cur = v => course.view===v || (v==='drills' && course.view==='drill');
+  $('lessons').innerHTML=LEVELS.map(lv=>{
+    const n=lv.ids.filter(id=>lessonDone(prog, LESSONS[id-1])).length;
+    return `<div class="lvl"><span>${esc(t(lv.n))}</span><i>${n}/${lv.ids.length}</i></div>`+lv.ids.map(id=>{ const k=id-1, l=LESSONS[k]; return `<button type="button" class="lsn" data-l="${k}" aria-current="${['theory','practice','result'].includes(course.view) && k===course.i}"><span class="ln">${lessonDone(prog,l)?'✓':ORDER.indexOf(k)+1}</span><span>${esc(t('c'+l.id+'.title'))}</span></button>`; }).join('');
+  }).join('')+`<div class="lvl"><span>${t('Практика')}</span></div>
+    <button type="button" class="lsn" data-view="drills" aria-current="${cur('drills')}"><span class="ln">∞</span><span>${t('Тренажёры')}</span></button>
+    <button type="button" class="lsn" data-view="coach"><span class="ln">🎓</span><span>${t('Разбор с тренером')}</span></button>`;
+  const box=$('lesson');
+  if(course.view==='drills'){
+    const bests=drillBest();
+    box.innerHTML=`<div class="eyebrow">${t('Практика')}</div><h4>${t('Тренажёры')}</h4><p class="hint">${t('Бесконечные вопросы на одну тему. Отвечайте подряд без ошибок — серия растёт, лучший результат сохраняется.')}</p>
+      <div class="drills">${DRILLS.map(d=>`<button type="button" class="drill" data-drill="${d.id}"><b>${esc(t(d.n))}</b><span>${esc(t(d.d))}</span>${bests[d.id]?`<i>${t('Рекорд: {0}', bests[d.id])}</i>`:''}</button>`).join('')}</div>
+      <div class="coachcta"><span class="cav" aria-hidden="true">🎓</span><div><b>${t('Разбор с тренером')}</b><p class="hint">${t('Тренер разберёт ваши сыгранные раздачи: где были ошибки, какие были шансы и что почитать. Ему можно задавать вопросы.')}</p></div><button type="button" class="btn primary" data-act="coach">${t('Открыть разбор')}</button></div>`;
+    return;
+  }
+  if(course.view==='drill'){
+    const q=course.qs[0], answered=course.picked!=null, best=drillBest()[course.drill.id]||0;
+    box.innerHTML=`<div class="eyebrow">${t('Тренажёр')}</div><h4>${esc(t(course.drill.n))}</h4>
+      <div class="qhead"><span>${t('Серия: {0}', course.streak)} · ${t('Рекорд: {0}', best)}</span><span>${t('Решено: {0}', course.solved)}</span></div>
+      ${questionHTML(q, answered)}
+      <div class="row">${answered?`<button type="button" class="btn primary" data-act="drillNext">${t('Следующий вопрос')}</button>`:''}<button type="button" class="btn ghost" data-view="drills">${t('Все тренажёры')}</button></div>`;
+    return;
+  }
+  const les=LESSONS[course.i];
+  const pos=ORDER.indexOf(course.i), lvl=LEVELS.find(l=>l.ids.includes(les.id));
+  const head=`<div class="eyebrow">${esc(t(lvl.n))} · ${t('Урок {0} из {1}', pos+1, LESSONS.length)}</div><h4>${esc(t('c'+les.id+'.title'))}</h4>`;
   const playBtn = les.play ? `<button type="button" class="btn" data-act="play">${t('Сыграть с ботами и тренером')}</button>` : '';
   if(course.view==='theory'){
     const paras=String(t('c'+les.id+'.body')).split(/\n\n/).map(p=>`<p>${esc(p).replace(/\n/g,'<br>')}</p>`).join('');
     const ex = les.ex ? `<div class="combos">${COMBO_EX.map((s,k)=>`<div class="combo"><span>${esc(t(HAND_NAMES[k]))}</span>${cardsRow(cardsOf(s))}</div>`).join('')}</div>` : '';
-    const best=prog['l'+les.id];
-    box.innerHTML=`${head}<div class="theory">${paras}</div>${ex}<div class="row">${best!=null?`<span class="hint">${t('Лучший результат: {0} из {1}', best, 5)}</span>`:''}</div><div class="row"><button type="button" class="btn primary" data-act="start">${t('Начать практику')}</button>${playBtn}</div>`;
+    const bestR=prog['l'+les.id];
+    box.innerHTML=`${head}<div class="theory">${paras}</div>${ex}<div class="row">${bestR!=null?`<span class="hint">${t('Лучший результат: {0} из {1}', bestR, 5)}</span>`:''}</div><div class="row"><button type="button" class="btn primary" data-act="start">${t('Начать практику')}</button>${playBtn}</div>`;
   } else if(course.view==='practice'){
     const q=course.qs[course.qi], answered=course.picked!=null;
     const dots=course.qs.map((_,k)=>`<i class="${k<course.qi?'d':k===course.qi?'c':''}"></i>`).join('');
-    box.innerHTML=`${head}<div class="qhead"><span>${t('Вопрос {0} из {1}', course.qi+1, course.qs.length)}</span><span class="dots">${dots}</span></div>${q.scene||''}<p class="q">${esc(tr(q.q))}</p>
-      <div class="opts">${q.opts.map((o,k)=>`<button type="button" class="btn opt${answered?(k===q.ans?' ok':k===course.picked?' bad':''):''}" data-opt="${k}" ${answered?'disabled':''}>${esc(tr(o))}</button>`).join('')}</div>
-      ${answered?`<div class="fb ${course.picked===q.ans?'ok':'bad'}"><b>${t(course.picked===q.ans?'Верно!':'Неверно.')}</b> ${esc(tr(q.exp))}</div><div class="row"><button type="button" class="btn primary" data-act="next">${t(course.qi+1<course.qs.length?'Дальше':'Результат')}</button></div>`:''}`;
+    box.innerHTML=`${head}<div class="qhead"><span>${t('Вопрос {0} из {1}', course.qi+1, course.qs.length)}</span><span class="dots">${dots}</span></div>${questionHTML(q, answered)}
+      ${answered?`<div class="row"><button type="button" class="btn primary" data-act="next">${t(course.qi+1<course.qs.length?'Дальше':'Результат')}</button></div>`:''}`;
   } else {
     const s=course.score, n=course.qs.length;
     const msg = s===n ? 'Отлично, всё верно!' : s>=4 ? 'Урок пройден. Можно двигаться дальше.' : 'Стоит перечитать теорию и попробовать ещё раз.';
-    const nextBtn = course.i<LESSONS.length-1 ? `<button type="button" class="btn primary" data-act="nextLesson">${t('Следующий урок')}</button>` : '';
+    const nextBtn = pos<ORDER.length-1 ? `<button type="button" class="btn primary" data-act="nextLesson">${t('Следующий урок')}</button>` : '';
     box.innerHTML=`${head}<div class="result"><div class="big">${s}/${n}</div><p>${t(msg)}</p></div><div class="row"><button type="button" class="btn" data-act="start">${t('Пройти практику ещё раз')}</button><button type="button" class="btn" data-act="theory">${t('Теория')}</button>${nextBtn}${playBtn}</div>`;
   }
+  box.scrollTop=0;
 }
-$('lessons').onclick=e=>{ const b=e.target.closest('[data-l]'); if(!b) return; course.i=+b.dataset.l; course.view='theory'; renderLearn(); };
+function learnNav(e){
+  const v=e.target.closest('[data-view]');
+  if(v){ if(v.dataset.view==='coach'){ closeLearn(); openCoach(); } else { course.view=v.dataset.view; renderLearn(); } return true; }
+  return false;
+}
+$('lessons').onclick=e=>{ if(learnNav(e)) return; const b=e.target.closest('[data-l]'); if(!b) return; course.i=+b.dataset.l; course.view='theory'; renderLearn(); };
 $('lesson').onclick=e=>{
-  const o=e.target.closest('[data-opt]'), a=e.target.closest('[data-act]');
-  if(o && course.view==='practice' && course.picked==null){ course.picked=+o.dataset.opt; if(course.picked===course.qs[course.qi].ans){ course.score++; SFX.chip(); } renderLearn(); return; }
+  const o=e.target.closest('[data-opt]'), a=e.target.closest('[data-act]'), dr=e.target.closest('[data-drill]');
+  if(learnNav(e)) return;
+  if(dr){ startDrill(dr.dataset.drill); return; }
+  if(o && (course.view==='practice' || course.view==='drill') && course.picked==null){
+    course.picked=+o.dataset.opt;
+    const right = course.picked===course.qs[course.qi].ans;
+    if(course.view==='drill'){
+      course.solved++;
+      if(right){ course.streak++; SFX.chip(); const b=drillBest(); if(course.streak>(b[course.drill.id]||0)){ b[course.drill.id]=course.streak; store.set('pion-drills', JSON.stringify(b)); } }
+      else course.streak=0;
+    } else if(right){ course.score++; SFX.chip(); }
+    renderLearn(); return;
+  }
   if(!a) return;
   const act=a.dataset.act;
   if(act==='start') startPractice();
   else if(act==='theory'){ course.view='theory'; renderLearn(); }
+  else if(act==='drillNext') nextDrillQ();
+  else if(act==='coach'){ closeLearn(); openCoach(); }
   else if(act==='next'){
     if(course.qi+1<course.qs.length){ course.qi++; course.picked=null; renderLearn(); }
     else { const p=loadProgress(), k='l'+LESSONS[course.i].id; p[k]=Math.max(p[k]||0, course.score); saveProgress(p); course.view='result'; if(course.score>=4) SFX.win(); renderLearn(); }
   }
-  else if(act==='nextLesson'){ course.i++; course.view='theory'; renderLearn(); }
+  else if(act==='nextLesson'){ course.i=ORDER[ORDER.indexOf(course.i)+1]; course.view='theory'; renderLearn(); }
   else if(act==='play'){ closeLearn(); if(!$('nick').value.trim()) $('nick').value=t('Ученик'); saveNick(); startSolo({coach:true}); }
 };
 $('learnClose').onclick=closeLearn;
 $('learnOv').addEventListener('click', e=>{ if(e.target.id==='learnOv') closeLearn(); });
 $('bLearn').onclick=()=>openLearn();
 $('bLearn2').onclick=()=>openLearn();
+$('bDrills').onclick=()=>{ course.view='drills'; openLearn(); };
+$('bCoach2').onclick=()=>openCoach();
 
 function coachTip(i, type){
   if(!S || !S.coach || MODE!=='offline') return;

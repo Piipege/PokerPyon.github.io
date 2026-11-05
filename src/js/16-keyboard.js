@@ -17,15 +17,19 @@ document.addEventListener('keydown',e=>{
   if(rebinding) return;
   const t=e.target, tag=t.tagName;
   if(t.id==='chatIn' && e.key==='Escape'){ t.blur(); return; }
+  if(t.id==='coachIn' && e.key==='Escape'){ closeCoach(); return; }
   if(['INPUT','SELECT','TEXTAREA'].includes(tag) && !['range','checkbox'].includes(t.type)) return;
   if(e.ctrlKey || e.metaKey || e.altKey) return;
   if(e.key==='Escape'){
     if(!$('setOv').hidden) closeSettings();
     else if(!$('keysOv').hidden) toggleKeys(false);
+    else if(!$('coachOv').hidden) closeCoach();
+    else if(!$('replayOv').hidden) closeReplay();
+    else if(!$('learnOv').hidden) closeLearn();
     else if(pre){ pre=null; render(); }
     return;
   }
-  if(!$('setOv').hidden) return;
+  if(!$('setOv').hidden || !$('coachOv').hidden || !$('learnOv').hidden) return;
   const a = keyAction[e.code];
   if(!$('keysOv').hidden){ if(a==='help' || e.key==='?'){ toggleKeys(false); e.preventDefault(); } return; }
   if(a==='help' || e.key==='?'){ toggleKeys(true); e.preventDefault(); return; }

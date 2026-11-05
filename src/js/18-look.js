@@ -3,7 +3,7 @@ const PATTERNS={none:'Без узора',dots:'Точки',waves:'Волны',di
 const CHIPSETS={pion:'Пион',casino:'Казино',neon:'Неон',candy:'Конфетные'};
 const SPEEDS={fast:'Быстро',normal:'Обычно',slow:'Медленно'};
 const SPEEDF=()=>({fast:.55,normal:1,slow:1.5})[CFG.speed]||1;
-const reducedMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reducedMotion=()=>CFG.calm || matchMedia('(prefers-reduced-motion: reduce)').matches;
 function denom(v){ const b=(S&&S.bb)||20; return v<b?1: v<5*b?2: v<25*b?3: v<100*b?4:5; }
 function currentSeason(){
   if(CFG.season==='off') return null;
@@ -108,6 +108,15 @@ document.addEventListener('click', e=>{
 });
 function applyTheme(){ document.documentElement.dataset.theme=CFG.theme; applyLook(); applyLook2(); document.querySelectorAll('#themeSeg button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.v===CFG.theme)); }
 $('themeSeg').onclick=e=>{ const b=e.target.closest('button[data-v]'); if(!b) return; CFG.theme=b.dataset.v; saveCfg(); applyTheme(); };
+function applyA11y(){
+  const d=document.documentElement;
+  if(CFG.fs>1) d.dataset.fs=String(CFG.fs); else delete d.dataset.fs;
+  if(CFG.contrast) d.dataset.contrast='1'; else delete d.dataset.contrast;
+  d.classList.toggle('calm', !!CFG.calm);
+}
+$('cfgFs').onchange=e=>{ CFG.fs=+e.target.value; saveCfg(); applyA11y(); seatSig=''; render(); };
+$('cfgContrast').onchange=e=>{ CFG.contrast=e.target.checked; saveCfg(); applyA11y(); };
+$('cfgCalm').onchange=e=>{ CFG.calm=e.target.checked; saveCfg(); applyA11y(); applyLook2(); };
 $('cfgBB').onchange=e=>{ CFG.bb=e.target.checked; saveCfg(); potShown=-1; render(); };
 $('cfgDelay').onchange=e=>{ CFG.delay=+e.target.value; saveCfg(); };
 $('cfgSound').onchange=e=>{ snd.on=e.target.checked; store.set('pion-sound', snd.on?'1':'0'); updSound(); };
@@ -136,6 +145,7 @@ document.addEventListener('keydown', e=>{
 
 function renderSettings(){
   renderAvEditor(); applyTheme();
+  $('cfgFs').value=String(CFG.fs); $('cfgContrast').checked=CFG.contrast; $('cfgCalm').checked=CFG.calm;
   $('cfgBB').checked=CFG.bb; $('cfgDelay').value=String(CFG.delay);
   $('cfgSound').checked=snd.on; $('cfgVol').value=Math.round(CFG.vol*100); $('hdrVol').value=Math.round(CFG.vol*100);
   $('cfgFour').checked=!!CFG.four; $('cfgTips').checked=!!CFG.tips; $('cfgSum').checked=!!CFG.sumbox; $('cfgConfirm').checked=!!CFG.confirm; $('cfgVibe').checked=!!CFG.vibe; $('cfgNotify').checked=!!CFG.notify; $('cfgWake').checked=!!CFG.wake;

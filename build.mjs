@@ -45,7 +45,13 @@ function processText(text, base){
 
 const html = processText(read(path.join(SRC, 'index.html')), SRC);
 fs.writeFileSync(OUT, html);
-console.log(`pion-online.html: ${(html.length/1024).toFixed(0)} KB`);
+console.log(`pion-online.html: ${(Buffer.byteLength(html)/1024).toFixed(0)} KB`);
+// files next to the page on GitHub Pages: install as an app and play offline (not needed for file://)
+const version = (await import('node:crypto')).createHash('sha256').update(html).digest('hex').slice(0, 12);
+fs.writeFileSync(path.join(ROOT, 'sw.js'), read(path.join(SRC, 'sw.js')).replace('__VERSION__', version));
+fs.copyFileSync(path.join(SRC, 'manifest.webmanifest'), path.join(ROOT, 'manifest.webmanifest'));
+fs.mkdirSync(path.join(ROOT, 'icons'), { recursive: true });
+for(const f of ['icon-192.png', 'icon-512.png']) fs.copyFileSync(path.join(SRC, 'assets', f), path.join(ROOT, 'icons', f));
 
 if(process.argv.includes('--check')){
   // 1) syntax of every inline script

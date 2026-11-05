@@ -1,10 +1,13 @@
 /* ---------- render ---------- */
-const mq = matchMedia('(max-width:620px)');
+// phone layout: narrow portrait screens and phones held sideways; `land` picks the wide seat geometry
+const mq = matchMedia('(max-width:620px), (orientation:landscape) and (max-height:500px)');
+const land = matchMedia('(orientation:landscape) and (max-height:500px)');
 mq.addEventListener?.('change',()=>{ seatSig=''; render(); });
+land.addEventListener?.('change',()=>{ seatSig=''; render(); });
 let seatNodes=[], seatSig='', boardHand=-1, fxDone='', potShown=0, potAnim=null, bannerText=null, logTop=null;
 
 function layout(n, me){
-  const narrow = mq.matches;
+  const narrow = mq.matches && !land.matches;
   const rx = narrow ? 37 : 42, ry = narrow ? 41 : 40, cy = narrow ? 50 : 49;
   const base = me>=0 ? me : 0;
   const out=[];
@@ -12,7 +15,7 @@ function layout(n, me){
   for(let i=0;i<n;i++){
     const k=((i-base)%n+n)%n;
     const a = k===0 ? Math.PI/2 : (dense ? Math.PI/2 + gap + (k-1)*(2*Math.PI-2*gap)/(n-2) : Math.PI/2 + k*2*Math.PI/n);
-    const rr = k===0 && narrow ? .82 : 1;
+    const rr = k===0 && narrow ? .82 : k===0 && land.matches ? .74 : 1;
     out[i]=[50+rx*Math.cos(a), cy+ry*rr*Math.sin(a)];
   }
   return out;
