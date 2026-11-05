@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const { chromium, devices } = require('playwright');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const URL = 'file://' + path.join(ROOT, 'pion-online.html');
+const URL = 'file://' + path.join(ROOT, process.env.PION_PAGE || 'pion-online.html');
 const SHOTS = process.argv.includes('--shots') ? path.join(ROOT, 'tools', 'shots') : null;
 if(SHOTS) fs.mkdirSync(SHOTS, { recursive: true });
 
@@ -53,6 +53,16 @@ console.log('course generators');
   for(let k = 0; k < 4; k++){ await p.click('#lesson [data-opt="0"]'); await p.click('[data-act="drillNext"]'); }
   ok(/Решено: 4/.test(await p.locator('.qhead').textContent()), 'drill counts answers');
   if(SHOTS){ await p.click('#lesson [data-opt="1"]'); await p.screenshot({ path: path.join(SHOTS, 'drill.png') }); }
+  await p.context().close();
+}
+
+console.log('language switch loads its dictionary');
+{
+  const p = await page();
+  await p.selectOption('#langSel', 'de');
+  ok(await p.waitForFunction(() => document.querySelector('#bSolo').textContent.trim() !== 'Играть с ботами', null, { timeout: 5000 }).then(() => true, () => false), 'switching to German translates the page: ' + (await p.locator('#bSolo').textContent()).trim());
+  await p.selectOption('#langSel', 'ru');
+  ok(await p.waitForFunction(() => document.querySelector('#bSolo').textContent.trim() === 'Играть с ботами', null, { timeout: 5000 }).then(() => true, () => false), 'and back to Russian');
   await p.context().close();
 }
 

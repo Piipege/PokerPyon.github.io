@@ -49,8 +49,8 @@ function equityRanged(hand, board, opps, iters){
       return [a,b];
     });
     const bd=board.concat(Array.from({length:need}, draw));
-    const mine=best(hand.concat(bd)).v; let win=true, ties=0;
-    for(const h of hands){ const v=best(h.concat(bd)).v; if(v>mine){win=false;break;} if(v===mine) ties++; }
+    const mine=val7(hand.concat(bd)); let win=true, ties=0;
+    for(const h of hands){ const v=val7(h.concat(bd)); if(v>mine){win=false;break;} if(v===mine) ties++; }
     if(win) score+=1/(ties+1);
   }
   return score/iters;
