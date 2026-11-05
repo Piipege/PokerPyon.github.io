@@ -1,0 +1,26 @@
+/* ---------- boot ---------- */
+myUid = myId();
+resetView();
+$('nick').value = store.get('pion-nick') || '';
+const hashCode = (location.hash.match(/^#t-([a-z0-9]{4})$/i)||[])[1];
+function savedHost(){ try{ const r=JSON.parse(localStorage.getItem('pion-host')||'null'); if(r && r.S && r.code && Date.now()-r.at < 12*3600e3) return r; }catch(e){} return null; }
+function showResume(){ try{ showQuick(); }catch(e){} const r=savedHost(), g=!r && savedGuest(); $('bResume').hidden=!(r||g); if(r) $('bResume').textContent=t('Вернуться к своему столу {0}', r.code); else if(g) $('bResume').textContent=t('Вернуться за стол {0}', g.code); }
+showResume();
+if(hashCode){ lobbyTab('open'); $('joinCode').value = hashCode.toUpperCase(); $('lobbyTitle').textContent=t('Вас позвали за стол'); }
+applyLang();
+if(typeof Peer==='undefined'){
+  $('netNote').textContent=t('Не загрузилась библиотека для игры по сети. Проверьте интернет и обновите страницу. С ботами можно играть и так.');
+  ['bCreate','bJoin','joinCode'].forEach(id=>$(id).disabled=true);
+} else {
+  $('netNote').textContent=t('Вкладка ведущего раздаёт карты: держите её открытой, лучше на компьютере.');
+  lobbyStart();
+  const r=savedHost();
+  if(hashCode && r && r.code===hashCode.toUpperCase()) setTimeout(()=>$('bResume').click(), 0);
+  else if(hashCode && $('nick').value.trim()) setTimeout(()=>joinTable(hashCode), 0);
+}
+// test hook (tools/*.mjs set window.PION_TEST before the page loads)
+if(window.PION_TEST) window.__pion={GEN, LESSONS, DRILLS, TERMS, HIST:()=>HIST, reviewOf, get myUid(){ return myUid; }, coachAsk, openCoach, openLearn, get S(){ return S; }, get MODE(){ return MODE; }};
+// offline: on GitHub Pages (or any http server) a service worker keeps a copy of the game
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && !window.PION_TEST && !window.PION_PEER_OPTS){
+  addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+}
