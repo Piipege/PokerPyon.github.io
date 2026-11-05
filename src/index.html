@@ -27,6 +27,7 @@
       <span class="mhide">Раздача <b id="handNo">—</b></span>
       <span class="mhide">Улица <b id="street">—</b></span>
       <select class="lang" id="langSel" aria-label="Язык"></select>
+      <button class="btn small ghost" id="bProfile">Профиль</button>
       <button class="btn small ghost" id="bLearn">Обучение</button>
       <button class="btn small ghost" id="bSettings">Настройки</button>
       <button class="btn small ghost" id="bKeys">Клавиши</button>
@@ -66,6 +67,7 @@
               <input id="nick" maxlength="16" autocomplete="nickname" placeholder="Например, Лиза">
             </label>
           </div>
+          <button class="btn small ghost lobbyprof" id="bProfile2" type="button">Мой профиль и статистика</button>
           <button class="btn primary" id="bResume" hidden></button>
           <button class="btn primary" id="bQuick" hidden></button>
           <div class="tabs" role="tablist">
@@ -252,6 +254,18 @@
     <h3>Итоги вечера</h3>
     <div id="sessBody"></div>
     <div class="row"><button class="btn small" id="sessCopy" type="button">Скопировать текст</button><button class="btn small" id="sessImg" type="button">Сохранить картинкой</button><button class="btn small primary" id="sessClose" type="button">Закрыть</button></div>
+  </div>
+</div>
+<div id="profOv" class="overlay fixed" hidden>
+  <div class="box profbox" role="dialog" aria-modal="true" aria-labelledby="profTitle">
+    <div class="sethead"><h3 id="profTitle">Мой профиль</h3><button class="btn small primary" id="profClose">Закрыть</button></div>
+    <div class="profbody" id="profBody"></div>
+  </div>
+</div>
+<div id="pcardOv" class="overlay fixed" hidden>
+  <div class="box pcard" role="dialog" aria-modal="true" aria-label="Карточка игрока">
+    <div id="pcardBody"></div>
+    <button class="btn small" id="pcardClose">Закрыть</button>
   </div>
 </div>
 <div id="coachOv" class="overlay fixed" hidden>

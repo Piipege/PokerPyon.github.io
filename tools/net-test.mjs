@@ -56,6 +56,13 @@ const seated = () => document.querySelector('#lobby').hidden && /Гость/.tes
 ok(await waitFor(guest, seated), 'guest joins and sees its seat');
 ok(await waitFor(host, () => /Гость/.test(document.querySelector('#seats').textContent)), 'host sees the guest');
 const seatsCount = () => document.querySelectorAll('#seats .seat').length;
+console.log('0. profile cards');
+await guest.evaluate(() => { localStorage.setItem('pion-pf', JSON.stringify({ h: 4242, bb100: 3.5, vp: 22, pr: 15, wsd: 55, acc: 81, ls: 7, since: 1700000000000 })); });
+await guest.evaluate(() => document.querySelector('#lobby') && document.getElementById('avRand')?.click());
+await host.waitForTimeout(1500);
+await host.locator('#seats .seat:not(.me)', { hasText: 'Гость' }).locator('.plate').click();
+ok(await host.waitForFunction(() => /4242/.test(document.querySelector('#pcardBody').textContent), null, { timeout: 8000 }).then(() => true, () => false), "host sees the guest's lifetime stats on its card");
+await host.click('#pcardClose');
 const n0 = await host.evaluate(seatsCount);
 
 console.log('1. data channel dies silently on the host side');

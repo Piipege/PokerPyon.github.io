@@ -79,7 +79,7 @@ async function createTable(resume){
     } else {
       const start = +$('stackN').value;
       S = mkState(start); S.hostUid=myUid; applyOpts('create');
-      S.seats.push(mkSeat({uid:myUid,name:myName(),av:{...CFG.av},stack:start,out:false}));
+      S.seats.push(mkSeat({uid:myUid,name:myName(),av:{...CFG.av},pf:mySummary(),stack:start,out:false}));
       BOTS.slice(0,+$('botsN').value).forEach((b,k)=>S.seats.push(mkSeat({...b,uid:'bot'+k,bot:true,lvl:botLevel(k,'botLvl'),stack:start,out:false})));
       S.banner='Стол открыт. Отправьте друзьям ссылку и нажмите «Начать игру»';
       log(L('Стол {0} открыт', code),'sep');
@@ -121,11 +121,11 @@ function onGuestMsg(c,m){
     const i=seats().findIndex(s=>s.uid===uid);
     if(i<0){
       if(seats().length>=MAX_SEATS){ try{ c.send({t:'full'}); }catch(e){} }
-      else { seats().push(mkSeat({uid,name:cleanName(m.name),av:cleanAv(m.av),stack:S.start,out:false,folded:true,inHand:false})); log(L('{0} садится за стол', cleanName(m.name))); }
+      else { seats().push(mkSeat({uid,name:cleanName(m.name),av:cleanAv(m.av),pf:cleanPf(m.pf),stack:S.start,out:false,folded:true,inHand:false})); log(L('{0} садится за стол', cleanName(m.name))); }
     } else {
       const s=seats()[i]; s.offline=false; s.missed=0;
       if(s.left){ s.left=false; log(L('{0} возвращается', s.name)); }
-      s.name=cleanName(m.name); s.av=cleanAv(m.av)||s.av;
+      s.name=cleanName(m.name); s.av=cleanAv(m.av)||s.av; s.pf=cleanPf(m.pf)||s.pf;
     }
     commit(); maybeAutoStart(); return;
   }
@@ -136,7 +136,7 @@ function onGuestMsg(c,m){
   if(m.t==='act'){
     if(!S.handOver && S.turn===i && m.turnId===S.turnId && ['fold','call','raise'].includes(m.type)) act(i, m.type, +m.to||0);
     else broadcast();
-  } else if(m.t==='profile'){ seats()[i].name=cleanName(m.name); seats()[i].av=cleanAv(m.av)||seats()[i].av; commit(); }
+  } else if(m.t==='profile'){ seats()[i].name=cleanName(m.name); seats()[i].av=cleanAv(m.av)||seats()[i].av; seats()[i].pf=cleanPf(m.pf)||seats()[i].pf; commit(); }
   else if(m.t==='ghost') ghostRun();
   else if(m.t==='wait') askWait(seats()[i].uid);
   else if(m.t==='chat') addChat(seats()[i].uid, seats()[i].name, m.text);

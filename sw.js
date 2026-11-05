@@ -1,8 +1,8 @@
 // Pion service worker: the installed app opens and plays offline (bots, course, coach).
 // The page: network first (fresh version when online, 4 s timeout), cache when offline.
 // assets/*: file names contain a content hash, so they never change — cache first.
-const CACHE = 'pion-59c8db6582';
-const PRECACHE = ["./pion-online.html","./assets/app.812316327e.js","./assets/peerjs.f69f573cb6.js"].concat(['./manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png']);
+const CACHE = 'pion-56a9d863a9';
+const PRECACHE = ["./pion-online.html","./assets/app.1c14a26673.js","./assets/peerjs.f69f573cb6.js"].concat(['./manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png']);
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
 });
