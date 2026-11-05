@@ -155,8 +155,10 @@ function renderSettings(){
 }
 
 /* lobby tabs */
-const lobbyTab = wireTabs('[data-ltab]','data-ltab','data-lpane',$('lobby'), v=>store.set('pion-ltab', v));
-lobbyTab(store.get('pion-ltab') || 'open');
+// main menu: four tiles; a tile opens its section, «Back» returns to the tiles
+const lobbyTab = wireTabs('[data-ltab]','data-ltab','data-lpane',$('lobby'), v=>{ $('lobby').querySelector('.lobbybox').dataset.view=v; });
+lobbyTab('home');
+$('lobbyBack').onclick=()=>lobbyTab('home');
 $('tables').onclick=e=>{ const b=e.target.closest('button[data-code]'); if(b && !b.disabled && checkNick()){ saveNick(); joinTable(b.dataset.code); } };
 $('lobbyAva').innerHTML=avatarSVG(CFG.av);
 applyTheme();

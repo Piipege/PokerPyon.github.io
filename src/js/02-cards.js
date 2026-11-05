@@ -62,6 +62,14 @@ function val7(cards){
   for(let r=14;r>=2 && k<slots;r--) if((mask & (1<<r)) && !(used & (1<<r))) v += r*B15[k++];
   return v;
 }
+// the cards that make the combination: none for a high card, only the matched ranks for pairs,
+// two pair, sets and quads (kickers stay plain), all five for straights, flushes and full houses
+function coreCards(five, cat){
+  if(!five || cat<=0) return [];
+  if(cat===4 || cat===5 || cat===6 || cat===8) return five;
+  const n={}; five.forEach(c=>n[c.r]=(n[c.r]||0)+1);
+  return five.filter(c=>n[c.r]>=2);
+}
 // best five cards and their value; `cards` (the five) is only worked out when someone asks for it
 function best(cards){
   const v=val7(cards);

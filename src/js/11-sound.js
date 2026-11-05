@@ -99,7 +99,7 @@ function showdown(){
   });
   contenders.forEach(p=>{ stOf(p).sd++; if(p.won>0) stOf(p).sdw++; });
   S.winFx = {hand:S.handNo, items:seats().map((p,i)=>({seat:i, amount:p.won})).filter(x=>x.amount>0)};
-  S.best = seats().filter(p=>p.won>0).flatMap(p=>sc.get(p).cards);
+  S.best = seats().filter(p=>p.won>0).flatMap(p=>{ const b=sc.get(p); return coreCards(b.cards, b.cat); });
   S.banner = msgs;
   settle();
   seats().forEach(p=>{p.total=0;p.bet=0;});

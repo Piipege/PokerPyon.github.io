@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <title>Покерный стол «Пион»</title>
-<link rel="preload" href="assets/app.1c14a26673.js" as="script">
+<link rel="preload" href="assets/app.183a65e8e5.js" as="script">
 <link rel="preload" href="assets/peerjs.f69f573cb6.js" as="script">
 <style>
 /* extra scripts: Noto Sans Georgian, Noto Sans Hebrew (SIL OFL) */
@@ -511,7 +511,7 @@ button,.btn,input,select{touch-action:manipulation}
   .banner{font-size:calc(12px*var(--fs));max-width:210px}
   .split{grid-template-columns:1fr}
   .meta .btn.small,.tables .btn.small,.stepper .btn.small,.sethead .btn.small{flex:none}
-  #bLearn,#bKeys{display:none}
+  #bKeys{display:none}
   .table.dense .seat{--cw:27px;width:70px}
   .table.dense .seat.me{--cw:44px;width:112px}
   .table.dense .seat .name,.table.dense .seat .stack{font-size:calc(10.5px*var(--fs))}
@@ -528,11 +528,7 @@ button,.btn,input,select{touch-action:manipulation}
   h1 span{display:none}
   .meta{gap:6px 8px;font-size:calc(11.5px*var(--fs))}
   #langSel{display:none}
-  #bSettings,#bSound,#bPanel,#bExit,#bCopy{font-size:0;padding:6px 9px;min-width:34px}
-  #bSettings::before{content:"⚙";font-size:calc(16px*var(--fs))}
-  #bSound::before{content:"🔇";font-size:calc(15px*var(--fs))}
-  #bSound[aria-pressed="true"]::before{content:"🔊"}
-  #bPanel::before{content:"💬";font-size:calc(15px*var(--fs))}
+  #bExit,#bCopy{font-size:0;padding:6px 9px;min-width:34px}
   #bExit::before{content:"✕";font-size:calc(14px*var(--fs))}
   #bCopy::before{content:"🔗";font-size:calc(14px*var(--fs))}
   #bPanel .cdot{position:absolute;margin:0;transform:translate(10px,-8px)}
@@ -545,8 +541,8 @@ button,.btn,input,select{touch-action:manipulation}
   #actRow .btn,#preRow .btn{min-height:46px;font-size:calc(15px*var(--fs));padding:8px 6px;white-space:nowrap}
   #preRow .pre-label{display:none}
   #bPause,#bAway{flex:none !important;font-size:0 !important;min-width:44px !important}
-  #bPause::before{content:"⏸";font-size:calc(17px*var(--fs))}
-  #bPause[aria-pressed="true"]::before{content:"▶"}
+  #bPause::before{content:"❚❚";letter-spacing:-2px;font-size:calc(15px*var(--fs))}
+  #bPause[aria-pressed="true"]::before{content:"▶\FE0E";letter-spacing:0}
   #bAway::before{content:"🚶";font-size:calc(16px*var(--fs))}
   #raiseRow{gap:6px;flex-wrap:nowrap}
   #raiseRow .raise{flex:1 1 auto;gap:6px}
@@ -780,12 +776,92 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
 .seat .plate{cursor:pointer}
 .lobbyprof{align-self:flex-start}
 @media (max-width:620px), (orientation:landscape) and (max-height:500px){
-  #bProfile{font-size:0;padding:6px 9px;min-width:34px}
-  #bProfile::before{content:"👤";font-size:calc(15px*var(--fs))}
   .profbox{padding:12px}
   .ptiles{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ptile b{font-size:calc(17px*var(--fs))}
 }
+
+/* ---------- header: the three main places stand out, sound and keys step back ---------- */
+.hnav{display:inline-flex;gap:6px;flex-wrap:wrap}
+.btn.nav{display:inline-flex;align-items:center;gap:7px;background:var(--panel-2);border-color:var(--line);color:var(--ivory);font-weight:600;padding:7px 13px}
+.btn.nav i{font-style:normal;font-size:calc(15px*var(--fs));line-height:1}
+.btn.nav:hover:not(:disabled){border-color:var(--pink)}
+.hmini{display:inline-flex;align-items:center;gap:4px;opacity:.8}
+.hmini:hover,.hmini:focus-within{opacity:1}
+.btn.icon{min-width:0;padding:5px 8px;font-size:calc(15px*var(--fs));line-height:1}
+.hmini .lang{font-size:calc(12px*var(--fs));padding:5px 6px}
+.hdrvol{width:72px}
+#bPanel .pico{font-style:normal;display:none}
+#bMenu{display:none}
+body.inlobby .gi,body.inlobby #bPanel{display:none}
+/* main menu: no game controls or empty chat behind it */
+body.inlobby .controls{display:none}
+body.inlobby aside > section:not(:last-child),body.inlobby aside > section:last-child > h2,body.inlobby #log{display:none}
+/* phone menu */
+.menupop{position:fixed;top:calc(52px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:55;width:min(300px,calc(100vw - 24px));background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:8px;display:flex;flex-direction:column;gap:4px;box-shadow:0 18px 40px #000a;animation:fadeIn .25s var(--ease) both}
+.mitem{display:flex;align-items:center;gap:12px;width:100%;text-align:start;background:transparent;border:0;border-radius:10px;padding:12px;font-size:calc(15px*var(--fs));font-weight:600;cursor:pointer;color:var(--ivory)}
+.mitem i{font-style:normal;width:24px;text-align:center;font-size:calc(17px*var(--fs))}
+.mitem:hover,.mitem:focus-visible{background:var(--hover)}
+.mitem.danger{color:#ff8fa8}
+.mitem[data-proxy="bSound"]{font-weight:500;color:var(--text-2)}
+/* ---------- main menu tiles ---------- */
+.lobbybox{gap:12px}
+.ltiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ltile{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:start;background:var(--panel-2);border:1px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;color:var(--ivory);transition:transform .2s var(--ease),border-color .3s,background .3s}
+.ltile:hover{transform:translateY(-2px);border-color:var(--pink);background:var(--hover)}
+.ltile i{font-style:normal;font-size:calc(24px*var(--fs));line-height:1;margin-bottom:4px}
+.ltile b{font-weight:700;font-size:calc(15px*var(--fs))}
+.ltile span{color:var(--muted);font-size:calc(12.5px*var(--fs));line-height:1.35}
+.ltile.primary{background:linear-gradient(140deg,var(--wine),var(--panel-2));border-color:var(--pink)}
+.ltile.primary span{color:var(--text-2)}
+.lobbybox:not([data-view="home"]) .ltiles,.lobbybox[data-view="home"] .lback{display:none}
+.lobbybox:not([data-view="home"]) #bResume,.lobbybox:not([data-view="home"]) #bQuick{display:none}
+.lback{align-self:flex-start;margin:-4px 0 -6px}
+.ptitle{font-family:var(--f-display);font-size:calc(16px*var(--fs));margin:0}
+.pfline{display:flex;align-items:center;gap:10px;width:100%;text-align:start;background:transparent;border:1px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;color:var(--text-2);font-size:calc(13.5px*var(--fs))}
+.pfline:hover{border-color:var(--pink);color:var(--ivory)}
+.pfline i{font-style:normal}
+.pfline span{flex:1;min-width:0}
+.pfline b{color:var(--pink);font-size:calc(18px*var(--fs));line-height:1}
+details.more{border:1px solid var(--line);border-radius:12px;padding:0 12px}
+details.more[open]{padding-bottom:12px}
+details.more summary{cursor:pointer;padding:10px 0;color:var(--text-2);font-weight:600;list-style:none}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::before{content:"＋ ";color:var(--pink)}
+details.more[open] summary::before{content:"－ "}
+details.more > *:not(summary){margin-top:8px}
+/* ---------- phone ---------- */
+@media (max-width:620px), (orientation:landscape) and (max-height:500px){
+  .btn.nav{padding:7px 10px}
+  /* in the game: a thin bar; the table, the action buttons and the numbers get the screen */
+  body:not(.inlobby) .hnav,body:not(.inlobby) .hmini,body:not(.inlobby) #bExit{display:none}
+  body:not(.inlobby) #bMenu{display:inline-flex}
+  body:not(.inlobby) header{min-height:0}
+  body:not(.inlobby) .meta{gap:6px}
+  #bPanel{font-size:0;padding:5px 8px;min-width:0}
+  #bPanel .pico{display:inline;font-size:calc(15px*var(--fs))}
+  #bMenu{font-size:calc(17px*var(--fs));padding:4px 10px}
+  /* in the main menu: the same places as on a computer, as labelled buttons */
+  body.inlobby .hmini{display:none}
+  body.inlobby header{flex-direction:column;align-items:stretch;gap:8px}
+  body.inlobby h1{text-align:center}
+  body.inlobby .meta{justify-content:center}
+  body.inlobby .hnav{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
+  body.inlobby .btn.nav{flex-direction:column;gap:3px;padding:8px 4px;font-size:calc(12px*var(--fs))}
+  body.inlobby .btn.nav i{font-size:calc(19px*var(--fs))}
+  .ltiles{gap:8px}
+  .ltile{padding:12px}
+}
+body.inlobby aside > section:last-child{border-top:0;padding-top:0}
+@media (max-width:620px), (orientation:landscape) and (max-height:500px){
+  body.inlobby aside{display:none}
+  body:not(.inlobby) #bPanel{margin-inline-start:auto}
+  body:not(.inlobby) .meta{flex:1;flex-wrap:nowrap}
+}
+@media (max-width:620px), (orientation:landscape) and (max-height:500px){
+  body.tight:not(.inlobby) .wrap{align-items:stretch}
+}
+.lobbybox:not([data-view="home"]) .pfline{display:none}
 </style>
 </head>
 <body>
@@ -796,22 +872,35 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
     <h1>Пион <span>·</span> <span class="sub">Техасский холдем</span></h1>
     <div class="meta">
       <span id="tableChip" class="chip" hidden>Стол <b id="tableCode"></b><span id="hostTag" class="tag" hidden>ведущий</span><button class="btn small ghost" id="bCopy">Позвать друзей</button></span>
-      <span>Блайнды <b id="blinds">10/20</b><span id="blindUp" class="up"></span></span>
-      <span class="mhide">Раздача <b id="handNo">—</b></span>
-      <span class="mhide">Улица <b id="street">—</b></span>
-      <select class="lang" id="langSel" aria-label="Язык"></select>
-      <button class="btn small ghost" id="bProfile">Профиль</button>
-      <button class="btn small ghost" id="bLearn">Обучение</button>
-      <button class="btn small ghost" id="bSettings">Настройки</button>
-      <button class="btn small ghost" id="bKeys">Клавиши</button>
-      <button class="btn small ghost" id="bSound" aria-pressed="false">Звук: выкл</button>
-      <input type="range" id="hdrVol" class="hdrvol" min="0" max="100" step="5" aria-label="Громкость" title="Громкость">
+      <span class="gi">Блайнды <b id="blinds">10/20</b><span id="blindUp" class="up"></span></span>
+      <span class="gi mhide">Раздача <b id="handNo">—</b></span>
+      <span class="gi mhide">Улица <b id="street">—</b></span>
       <span id="fairChip" class="fair" hidden></span>
       <span id="netChip" class="netchip" hidden></span>
-      <button class="btn small ghost" id="bPanel" type="button">Чат и история <i id="chatDot" class="cdot" hidden></i></button>
+      <nav class="hnav" aria-label="Меню">
+        <button class="btn small nav" id="bProfile" type="button"><i aria-hidden="true">👤</i><span>Профиль</span></button>
+        <button class="btn small nav" id="bLearn" type="button"><i aria-hidden="true">🎓</i><span>Обучение</span></button>
+        <button class="btn small nav" id="bSettings" type="button"><i aria-hidden="true">⚙️</i><span>Настройки</span></button>
+      </nav>
+      <span class="hmini">
+        <select class="lang" id="langSel" aria-label="Язык"></select>
+        <button class="btn small ghost icon" id="bSound" type="button" aria-pressed="false" title="Звук: выкл" aria-label="Звук: выкл">🔇</button>
+        <input type="range" id="hdrVol" class="hdrvol" min="0" max="100" step="5" aria-label="Громкость" title="Громкость">
+        <button class="btn small ghost icon" id="bKeys" type="button" title="Клавиши" aria-label="Клавиши">⌨️</button>
+      </span>
+      <button class="btn small ghost" id="bPanel" type="button"><i class="pico" aria-hidden="true">📊</i><span>Чат и статистика</span> <i id="chatDot" class="cdot" hidden></i></button>
+      <button class="btn small ghost icon" id="bMenu" type="button" aria-label="Меню" aria-expanded="false">☰</button>
       <button class="btn small ghost" id="bExit" hidden>Выйти</button>
     </div>
   </header>
+  <div id="menuPop" class="menupop" hidden>
+    <button class="mitem" type="button" data-proxy="bProfile"><i aria-hidden="true">👤</i>Профиль и статистика</button>
+    <button class="mitem" type="button" data-proxy="bLearn"><i aria-hidden="true">🎓</i>Обучение и тренер</button>
+    <button class="mitem" type="button" data-proxy="bSettings"><i aria-hidden="true">⚙️</i>Настройки</button>
+    <button class="mitem" type="button" data-proxy="bSound" id="mSound"><i aria-hidden="true">🔇</i><span>Звук: выкл</span></button>
+    <button class="mitem" type="button" data-proxy="bCopy" id="mCopy"><i aria-hidden="true">🔗</i>Позвать друзей</button>
+    <button class="mitem danger" type="button" data-proxy="bExit" id="mExit"><i aria-hidden="true">✕</i>Выйти из-за стола</button>
+  </div>
   <div id="netBar" class="netbar" role="status" aria-live="polite" hidden>
     <div class="nbtext"><b id="netBarText"></b><span id="netBarSub"></span></div>
     <button class="btn small primary" id="netBarRetry" type="button">Повторить сейчас</button>
@@ -832,7 +921,7 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
       <div id="fx"></div>
 
       <div id="lobby" class="overlay">
-        <div class="box">
+        <div class="box lobbybox" data-view="home">
           <h3 id="lobbyTitle">Садитесь за стол</h3>
           <div class="who">
             <button class="ava-btn" id="lobbyAva" type="button" title="Изменить аватар" aria-label="Изменить аватар"></button>
@@ -840,16 +929,18 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
               <input id="nick" maxlength="16" autocomplete="nickname" placeholder="Например, Лиза">
             </label>
           </div>
-          <button class="btn small ghost lobbyprof" id="bProfile2" type="button">Мой профиль и статистика</button>
+          <button class="pfline" id="bProfile2" type="button"><i aria-hidden="true">📊</i><span id="pfLine">Мой профиль и статистика</span><b aria-hidden="true">›</b></button>
           <button class="btn primary" id="bResume" hidden></button>
           <button class="btn primary" id="bQuick" hidden></button>
-          <div class="tabs" role="tablist">
-            <button class="tab" role="tab" data-ltab="open" aria-selected="true">Открытые столы</button>
-            <button class="tab" role="tab" data-ltab="create" aria-selected="false">Создать стол</button>
-            <button class="tab" role="tab" data-ltab="solo" aria-selected="false">С ботами</button>
-            <button class="tab" role="tab" data-ltab="learn" aria-selected="false">Обучение</button>
+          <div class="ltiles">
+            <button class="ltile primary" type="button" data-ltab="solo"><i aria-hidden="true">🤖</i><b>С ботами</b><span>Быстрая игра, работает и без интернета</span></button>
+            <button class="ltile" type="button" data-ltab="create"><i aria-hidden="true">🃏</i><b>Создать стол</b><span>Позовите друзей по ссылке</span></button>
+            <button class="ltile" type="button" data-ltab="open"><i aria-hidden="true">🤝</i><b>Войти к друзьям</b><span>Открытые столы и вход по коду</span></button>
+            <button class="ltile" type="button" data-ltab="learn"><i aria-hidden="true">🎓</i><b>Обучение</b><span>Уроки, тренажёры и разбор с тренером</span></button>
           </div>
-          <div data-lpane="open" class="part">
+          <button class="btn small ghost lback" type="button" id="lobbyBack">← Назад</button>
+          <div data-lpane="open" class="part" hidden>
+            <h4 class="ptitle">Войти к друзьям</h4>
             <ul class="tables" id="tables"><li class="empty">Ищем открытые столы…</li></ul>
             <div class="hint" id="tablesNote"></div>
             <div class="split">
@@ -860,6 +951,7 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
             </div>
           </div>
           <div data-lpane="create" class="part" hidden>
+            <h4 class="ptitle">Стол для друзей</h4>
             <div class="split">
               <label class="field" for="botsN">Ботов за столом
                 <select id="botsN"><option value="0">Без ботов</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
@@ -867,6 +959,17 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
               <label class="field" for="botLvl">Сила ботов
                 <select id="botLvl"><option value="1">Новичок</option><option value="2" selected>Любитель</option><option value="3">Профи</option><option value="4">Акула</option><option value="0">Все разные</option></select>
               </label>
+            </div>
+            <label class="check strong" for="hOn"><input type="checkbox" id="hOn"> Режим помощи</label>
+            <fieldset class="helpset" id="hSet" hidden><legend>Подсказки</legend>
+              <label class="check" for="hOdds"><input type="checkbox" id="hOdds" checked> Шансы на победу</label>
+              <label class="check" for="hMade"><input type="checkbox" id="hMade" checked> Собранная комбинация</label>
+              <label class="check" for="hDraws"><input type="checkbox" id="hDraws" checked> Шансы собрать комбинации</label>
+              <label class="check" for="hAdv"><input type="checkbox" id="hAdv"> Подсказка решения и ауты</label>
+              <p class="hint small">Подсказки видят все игроки за столом, каждый — только про свои карты. Статистика игроков видна всегда.</p>
+            </fieldset>
+            <details class="more"><summary>Ещё настройки</summary>
+            <div class="split">
               <label class="field" for="stackN">Стартовый стек
                 <select id="stackN"><option>500</option><option selected>1000</option><option>2000</option><option>5000</option></select>
               </label>
@@ -883,29 +986,17 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
             <label class="field" for="tableName">Название стола (необязательно)<input id="tableName" maxlength="24" placeholder="Например, Пятничный покер" autocomplete="off"></label>
             <label class="check" for="botRebuy"><input type="checkbox" id="botRebuy" checked> Боты докупаются, когда проигрывают все фишки</label>
             <label class="check" for="publicOn"><input type="checkbox" id="publicOn" checked> Открытый стол — виден всем в лобби</label>
-            <label class="check strong" for="hOn"><input type="checkbox" id="hOn"> Режим помощи</label>
-            <fieldset class="helpset" id="hSet" hidden><legend>Подсказки</legend>
-              <label class="check" for="hOdds"><input type="checkbox" id="hOdds" checked> Шансы на победу</label>
-              <label class="check" for="hMade"><input type="checkbox" id="hMade" checked> Собранная комбинация</label>
-              <label class="check" for="hDraws"><input type="checkbox" id="hDraws" checked> Шансы собрать комбинации</label>
-              <label class="check" for="hAdv"><input type="checkbox" id="hAdv"> Подсказка решения и ауты</label>
-              <p class="hint small">Подсказки видят все игроки за столом, каждый — только про свои карты. Статистика игроков видна всегда.</p>
-            </fieldset>
+            </details>
             <button class="btn primary" id="bCreate">Создать стол</button>
           </div>
           <div data-lpane="solo" class="part" hidden>
+            <h4 class="ptitle">Игра с ботами</h4>
             <div class="split">
               <label class="field" for="soloN">Ботов за столом
                 <select id="soloN"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
               </label>
               <label class="field" for="soloLvl">Сила ботов
                 <select id="soloLvl"><option value="1">Новичок</option><option value="2" selected>Любитель</option><option value="3">Профи</option><option value="4">Акула</option><option value="0">Все разные</option></select>
-              </label>
-              <label class="field" for="soloBlinds">Блайнды
-                <select id="soloBlinds"><option value="0" selected>Фиксированные</option><option value="10">Растут каждые 10 раздач</option><option value="6">Растут каждые 6 раздач</option></select>
-              </label>
-              <label class="field" for="soloBomb">Бомб-пот
-                <select id="soloBomb"><option value="0" selected>Выключен</option><option value="5">Каждые 5 раздач</option><option value="10">Каждые 10 раздач</option></select>
               </label>
             </div>
             <label class="check strong" for="sOn"><input type="checkbox" id="sOn"> Режим помощи</label>
@@ -916,10 +1007,21 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
               <label class="check" for="sAdv"><input type="checkbox" id="sAdv" checked> Подсказка решения и ауты</label>
               <p class="hint small">Подсказки видят все игроки за столом, каждый — только про свои карты. Статистика игроков видна всегда.</p>
             </fieldset>
+            <details class="more"><summary>Ещё настройки</summary>
+            <div class="split">
+              <label class="field" for="soloBlinds">Блайнды
+                <select id="soloBlinds"><option value="0" selected>Фиксированные</option><option value="10">Растут каждые 10 раздач</option><option value="6">Растут каждые 6 раздач</option></select>
+              </label>
+              <label class="field" for="soloBomb">Бомб-пот
+                <select id="soloBomb"><option value="0" selected>Выключен</option><option value="5">Каждые 5 раздач</option><option value="10">Каждые 10 раздач</option></select>
+              </label>
+            </div>
             <label class="check" for="soloRebuy"><input type="checkbox" id="soloRebuy" checked> Боты докупаются, когда проигрывают все фишки</label>
+            </details>
             <button class="btn primary" id="bSolo">Играть с ботами</button>
           </div>
           <div data-lpane="learn" class="part" hidden>
+            <h4 class="ptitle">Обучение</h4>
             <p class="hint small">Курс из 14 уроков в трёх уровнях: от правил до выигрышной стратегии. В каждом уроке — короткая теория и практика на сгенерированных раздачах. Есть бесконечные тренажёры и тренер, который разбирает ваши сыгранные раздачи и отвечает на вопросы.</p>
             <div class="hint" id="learnProg2"></div>
             <div class="row"><button class="btn primary" id="bLearn2" type="button">Открыть курс</button><button class="btn" id="bDrills" type="button">Тренажёры</button><button class="btn" id="bCoach2" type="button">Разбор с тренером</button></div>
@@ -1129,6 +1231,6 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
     </div>
   </div>
 </div>
-<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.c9eab101e2.js","uk":"assets/lang-uk.a6e027052f.js","ka":"assets/lang-ka.dade58e902.js","fr":"assets/lang-fr.05a3a619b1.js","de":"assets/lang-de.fde3d21ec1.js","ro":"assets/lang-ro.b63551c75a.js","he":"assets/lang-he.fcbb675e53.js","kk":"assets/lang-kk.9373e33eaf.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.1c14a26673.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
+<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.b9dcf1b271.js","uk":"assets/lang-uk.ce7c561bcc.js","ka":"assets/lang-ka.e54032bdf0.js","fr":"assets/lang-fr.3556b3ecc3.js","de":"assets/lang-de.775a819301.js","ro":"assets/lang-ro.b0aeb91dcd.js","he":"assets/lang-he.b2f4e0c171.js","kk":"assets/lang-kk.eedd7eec09.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.183a65e8e5.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
 </body>
 </html>

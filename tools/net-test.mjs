@@ -50,6 +50,7 @@ console.log('table', code);
 
 await guest.goto(URL);
 await guest.fill('#nick', 'Гость');
+await guest.click('[data-ltab="open"]');
 await guest.fill('#joinCode', code);
 await guest.click('#bJoin');
 const seated = () => document.querySelector('#lobby').hidden && /Гость/.test(document.querySelector('#seats').textContent);

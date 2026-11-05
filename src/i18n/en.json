@@ -953,5 +953,20 @@
  "Профиль": "Profile",
  "Мой профиль и статистика": "My profile and stats",
  "Мой профиль": "My profile",
- "Карточка игрока": "Player card"
+ "Карточка игрока": "Player card",
+ "Мой профиль · {0} раздач · VPIP {1}%": "My profile · {0} hands · VPIP {1}%",
+ "Чат и статистика": "Chat and stats",
+ "Профиль и статистика": "Profile and stats",
+ "Обучение и тренер": "Learning and coach",
+ "Выйти из-за стола": "Leave the table",
+ "Быстрая игра, работает и без интернета": "Quick game, works offline too",
+ "Позовите друзей по ссылке": "Invite friends with a link",
+ "Войти к друзьям": "Join friends",
+ "Открытые столы и вход по коду": "Open tables and joining by code",
+ "Уроки, тренажёры и разбор с тренером": "Lessons, drills and review with the coach",
+ "← Назад": "← Back",
+ "Стол для друзей": "Table for friends",
+ "Ещё настройки": "More settings",
+ "Игра с ботами": "Play with bots",
+ "Меню": "Menu"
 }

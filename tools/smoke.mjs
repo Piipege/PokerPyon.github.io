@@ -185,7 +185,7 @@ console.log('coach in English, on a phone');
   if(SHOTS) await p.screenshot({ path: path.join(SHOTS, 'coach-phone-en.png') });
   await p.evaluate(() => { document.getElementById('coachOv').hidden = true; });
   await p.waitForTimeout(600);
-  await p.click('#bProfile');
+  await p.click('#bMenu'); await p.click('[data-proxy="bProfile"]');
   await p.waitForSelector('.ptile');
   const txt2 = await p.locator('#profOv').textContent();
   ok(!/[А-Яа-яЁё]{4,}/.test(txt2.replace(/Тест/g, '')), 'no Russian text left in the English profile');
