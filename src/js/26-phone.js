@@ -8,8 +8,12 @@ async function wantWake(on){
 }
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ document.title=t('Покерный стол «Пион»'); wantWake(!!S); } });
 let titleT=null;
+/* vibration: a different pattern for each event, each one can be switched off */
+const VIB = {turn:[90,60,90], win:[40,40,40,40,180], timer:[250,120,250]};
+const canVibrate = () => typeof navigator.vibrate==='function';
+function buzz(kind){ if(CFG.vibe && CFG.vib[kind] && canVibrate()) try{ navigator.vibrate(VIB[kind]); }catch(e){} }
 function myTurnAlert(){
-  if(CFG.vibe && navigator.vibrate) try{ navigator.vibrate([90,60,90]); }catch(e){}
+  buzz('turn');
   if(document.hidden){
     clearInterval(titleT); let on=false;
     titleT=setInterval(()=>{ if(!document.hidden){ clearInterval(titleT); document.title=t('Покерный стол «Пион»'); return; } on=!on; document.title = on ? '● '+t('Ваш ход') : t('Покерный стол «Пион»'); }, 900);
@@ -44,7 +48,25 @@ $('cfgFour').onchange=e=>{ CFG.four=e.target.checked; saveCfg(); document.docume
 $('cfgConfirm').onchange=e=>{ CFG.confirm=e.target.checked; saveCfg(); };
 $('cfgTips').onchange=e=>{ CFG.tips=e.target.checked; saveCfg(); oddsKey=''; render(); };
 $('cfgSum').onchange=e=>{ CFG.sumbox=e.target.checked; saveCfg(); render(); };
-$('cfgVibe').onchange=e=>{ CFG.vibe=e.target.checked; saveCfg(); if(CFG.vibe && navigator.vibrate) navigator.vibrate(60); };
+$('cfgVibe').onchange=e=>{ CFG.vibe=e.target.checked; saveCfg(); syncVibUi(); if(CFG.vibe) buzz('turn'); };
+document.querySelectorAll('[data-vib]').forEach(el=>el.onchange=()=>{ CFG.vib[el.dataset.vib]=el.checked; saveCfg(); if(el.checked) buzz(el.dataset.vib); });
+$('vibTest').onclick=()=>{ const ks=Object.keys(VIB).filter(k=>CFG.vib[k]); ks.forEach((k,n)=>setTimeout(()=>buzz(k), n*1100)); };
+function syncVibUi(){
+  const ok=canVibrate();
+  $('cfgVibe').checked=!!CFG.vibe; $('cfgVibe').disabled=!ok;
+  document.querySelectorAll('[data-vib]').forEach(el=>{ el.checked=!!CFG.vib[el.dataset.vib]; el.disabled=!ok || !CFG.vibe; });
+  $('vibTest').disabled=!ok || !CFG.vibe; $('vibNote').hidden=ok;
+}
+
+/* own cards face down until pressed: a tap shows them for 3 s, holding shows them while held */
+const peek={hold:false, until:0, t:0, downAt:0};
+function peeking(){ return peek.hold || Date.now()<peek.until; }
+function peekOn(e){ const c=e.target.closest('.seat.peekable .cards'); if(!c) return; e.preventDefault(); peek.hold=true; peek.downAt=Date.now(); render(); }
+function peekOff(){ if(!peek.hold) return; peek.hold=false; if(Date.now()-peek.downAt<300){ peek.until=Date.now()+3000; clearTimeout(peek.t); peek.t=setTimeout(()=>{ if(S) render(); }, 3050); } render(); }
+$('seats').addEventListener('pointerdown', peekOn);
+addEventListener('pointerup', peekOff); addEventListener('pointercancel', peekOff);
+$('seats').addEventListener('contextmenu', e=>{ if(e.target.closest('.seat.peekable')) e.preventDefault(); });
+$('cfgHide').onchange=e=>{ CFG.hideMine=e.target.checked; saveCfg(); peek.until=0; if(S) render(); };
 $('cfgWake').onchange=e=>{ CFG.wake=e.target.checked; saveCfg(); wantWake(CFG.wake && !!S); if(!CFG.wake) wantWake(false); };
 $('cfgNotify').onchange=async e=>{
   CFG.notify=e.target.checked;

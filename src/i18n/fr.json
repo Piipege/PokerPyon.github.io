@@ -968,5 +968,20 @@
  "Стол для друзей": "Table entre amis",
  "Ещё настройки": "Plus de réglages",
  "Игра с ботами": "Jouer contre des bots",
- "Меню": "Menu"
+ "Меню": "Menu",
+ "Выберите, как играть. Проще всего начать с ботов — это работает и без интернета.": "Choisissez comment jouer. Le plus simple est de commencer avec des bots — cela marche aussi hors ligne.",
+ "Здесь ваш профиль со статистикой, обучение с тренером и настройки: тема, звук, вибрация, размер текста.": "Ici : votre profil avec les statistiques, l'apprentissage avec le coach et les réglages : thème, son, vibration, taille du texte.",
+ "Ваш ход. «Сбросить» — выйти из раздачи, «Чек» или «Колл» — продолжить, «Рейз» — повысить; ползунок задаёт ставку. Нажмите на игрока, чтобы увидеть его статистику.": "À vous. « Se coucher » quitte la main, « Parole » ou « Suivre » continue, « Relancer » mise plus ; le curseur règle le montant. Touchez un joueur pour voir ses statistiques.",
+ "Пропустить": "Passer",
+ "Понятно": "Compris",
+ "Подсказки покажутся снова в главном меню и на следующем ходу": "Les astuces réapparaîtront dans le menu principal et à votre prochain tour",
+ "Показать подсказки для новичков снова": "Revoir les astuces pour débutants",
+ "Прятать свои карты: нажмите на них, чтобы посмотреть (удобно играть на людях)": "Masquer mes cartes : appuyez dessus pour les voir (pratique en public)",
+ "Вибрация (телефон)": "Vibration (téléphone)",
+ "Вибрация включена": "Vibration activée",
+ "Ваш ход — два коротких": "À vous de jouer — deux impulsions courtes",
+ "Вы выиграли банк — быстрая дробь": "Vous avez gagné le pot — un roulement rapide",
+ "Осталось 5 секунд на ход — два длинных": "Plus que 5 secondes pour jouer — deux impulsions longues",
+ "Проверить вибрацию": "Tester la vibration",
+ "Этот браузер не поддерживает вибрацию (например, Safari на iPhone).": "Ce navigateur ne gère pas la vibration (par exemple Safari sur iPhone)."
 }

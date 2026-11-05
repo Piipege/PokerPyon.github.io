@@ -148,7 +148,7 @@ function renderSettings(){
   $('cfgFs').value=String(CFG.fs); $('cfgContrast').checked=CFG.contrast; $('cfgCalm').checked=CFG.calm;
   $('cfgBB').checked=CFG.bb; $('cfgDelay').value=String(CFG.delay);
   $('cfgSound').checked=snd.on; $('cfgVol').value=Math.round(CFG.vol*100); $('hdrVol').value=Math.round(CFG.vol*100);
-  $('cfgFour').checked=!!CFG.four; $('cfgTips').checked=!!CFG.tips; $('cfgSum').checked=!!CFG.sumbox; $('cfgConfirm').checked=!!CFG.confirm; $('cfgVibe').checked=!!CFG.vibe; $('cfgNotify').checked=!!CFG.notify; $('cfgWake').checked=!!CFG.wake;
+  $('cfgFour').checked=!!CFG.four; $('cfgTips').checked=!!CFG.tips; $('cfgSum').checked=!!CFG.sumbox; $('cfgConfirm').checked=!!CFG.confirm; $('cfgHide').checked=!!CFG.hideMine; syncVibUi(); $('cfgNotify').checked=!!CFG.notify; $('cfgWake').checked=!!CFG.wake;
   $('turnUrl').value=CFG.turn.url; $('turnUser').value=CFG.turn.user; $('turnPass').value=CFG.turn.pass;
   document.querySelectorAll('[data-sfx]').forEach(cb=>cb.checked=CFG.sfx[cb.dataset.sfx]!==false);
   renderRebind();

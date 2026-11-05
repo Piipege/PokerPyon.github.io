@@ -968,5 +968,20 @@
  "Стол для друзей": "Masă pentru prieteni",
  "Ещё настройки": "Mai multe setări",
  "Игра с ботами": "Joc cu boți",
- "Меню": "Meniu"
+ "Меню": "Meniu",
+ "Выберите, как играть. Проще всего начать с ботов — это работает и без интернета.": "Alege cum vrei să joci. Cel mai simplu e să începi cu boți — merge și fără internet.",
+ "Здесь ваш профиль со статистикой, обучение с тренером и настройки: тема, звук, вибрация, размер текста.": "Aici sunt profilul tău cu statistici, învățarea cu antrenorul și setările: temă, sunet, vibrație, mărimea textului.",
+ "Ваш ход. «Сбросить» — выйти из раздачи, «Чек» или «Колл» — продолжить, «Рейз» — повысить; ползунок задаёт ставку. Нажмите на игрока, чтобы увидеть его статистику.": "E rândul tău. «Fold» iese din mână, «Check» sau «Call» continuă, «Raise» mărește; cursorul stabilește suma. Atinge un jucător ca să-i vezi statisticile.",
+ "Пропустить": "Sari peste",
+ "Понятно": "Am înțeles",
+ "Подсказки покажутся снова в главном меню и на следующем ходу": "Sfaturile vor apărea din nou în meniul principal și la următoarea ta mutare",
+ "Показать подсказки для новичков снова": "Arată din nou sfaturile pentru începători",
+ "Прятать свои карты: нажмите на них, чтобы посмотреть (удобно играть на людях)": "Ascunde-mi cărțile: apasă pe ele ca să te uiți (util când joci în public)",
+ "Вибрация (телефон)": "Vibrație (telefon)",
+ "Вибрация включена": "Vibrație pornită",
+ "Ваш ход — два коротких": "E rândul tău — două impulsuri scurte",
+ "Вы выиграли банк — быстрая дробь": "Ai câștigat potul — un ropot rapid",
+ "Осталось 5 секунд на ход — два длинных": "Mai sunt 5 secunde pentru mutare — două impulsuri lungi",
+ "Проверить вибрацию": "Testează vibrația",
+ "Этот браузер не поддерживает вибрацию (например, Safari на iPhone).": "Acest browser nu suportă vibrația (de exemplu Safari pe iPhone)."
 }
