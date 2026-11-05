@@ -555,3 +555,13 @@ button,.btn,input,select{touch-action:manipulation}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+/* guest: connection lost strip */
+.netbar{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+  width:min(640px,calc(100% - 24px));padding:10px 14px;border-radius:14px;background:var(--panel-2);border:1px solid var(--pink);box-shadow:0 12px 34px #0008;animation:nbIn .4s var(--ease) both}
+@keyframes nbIn{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
+.netbar .nbtext{flex:1 1 260px;display:flex;flex-direction:column;gap:2px;font-size:14px;min-width:0}
+.netbar .nbtext b{font-weight:600}
+.netbar .nbtext span{color:var(--muted);font-size:13px}
+.netbar .nbtext b::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff6b6b;margin-inline-end:8px;vertical-align:1px;animation:nbPulse 1.2s ease-in-out infinite}
+@keyframes nbPulse{50%{opacity:.25}}
+body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}

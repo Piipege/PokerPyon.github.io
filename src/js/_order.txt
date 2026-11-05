@@ -11,6 +11,7 @@
 10-lobby.js
 11-sound.js
 12-net.js
+12-guest.js
 13-lobby-actions.js
 14-input.js
 15-keyboard.js

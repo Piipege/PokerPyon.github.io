@@ -16,7 +16,7 @@ function startSolo(opts){
 function exitToLobby(silent){
   try{ openSheet(false); closeReplay(); wantWake(false); }catch(e){}
   if(MODE==='host' && S && S.public && code) lobbyUnreg(code);
-  if(MODE==='guest' && !silent) sendHost({t:'leave'});
+  if(MODE==='guest' && !silent){ sendHost({t:'leave'}); forgetGuest(); }
   if(MODE==='host'){
     for(const c of conns.values()){ try{ c.send({t:'closed'}); }catch(e){} }
     try{ localStorage.removeItem('pion-host'); }catch(e){}
@@ -26,7 +26,7 @@ function exitToLobby(silent){
   setTimeout(stopNet, wasHost ? 400 : 0);
   MODE='lobby'; S=null; code=null; myCards=null; pending=null;
   setHash('');
-  $('overlay').hidden=true; $('lobby').hidden=false; resetView(); render(); showResume();
+  $('overlay').hidden=true; $('lobby').hidden=false; resetView(); render(); renderGuestNet(); showResume();
 }
 
 function setHash(c){

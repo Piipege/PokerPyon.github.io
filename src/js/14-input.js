@@ -54,7 +54,7 @@ $('bCopy').onclick=()=>{
   const msg = link ? t('Садись за мой покерный стол «Пион»: {0}', link) : t('Садись за мой покерный стол «Пион». Код стола: {0}', code);
   try{ navigator.clipboard.writeText(msg).then(()=>toast(t(link?'Ссылка-приглашение скопирована':'Код скопирован')),()=>toast(t('Код стола: {0}', code))); }catch(e){ toast(t('Код стола: {0}', code)); }
 };
-$('bResume').onclick=()=>{ const r=savedHost(); if(r){ saveNick(); createTable(r); } };
+$('bResume').onclick=()=>{ const r=savedHost(); if(r){ saveNick(); createTable(r); return; } const g=savedGuest(); if(g){ if(!checkNick()) return; saveNick(); joinTable(g.code); } };
 function botLevel(k,sel){ const v=+$(sel).value; return v || [2,3,1,4][k%4]; }
 function applyOpts(kind){
   store.set('pion-last', kind);
