@@ -102,6 +102,20 @@ ok(await waitFor(guest, () => !document.querySelector('#bResume').hidden && /В�
 await guest.click('#bResume');
 ok(await waitFor(guest, seated, 20000), 'one click brings the guest back');
 
+console.log('5b. a friend watches, then takes a seat');
+const wCtx = await browser.newContext(); await wCtx.addInitScript(init);
+const watcher = await wCtx.newPage(); watcher.on('pageerror', e => { console.log('  ! watcher page error: ' + e.message); failed++; });
+await watcher.goto(URL); await watcher.fill('#nick', 'Зритель');
+await watcher.click('[data-ltab="open"]'); await watcher.fill('#joinCode', code); await watcher.click('#bWatch');
+ok(await waitFor(watcher, () => document.querySelector('#lobby').hidden && !document.querySelector('#watchRow').hidden), 'watcher sees the table with «Take a seat»');
+ok(await waitFor(host, () => /1/.test(document.querySelector('#watchChip').textContent) && !document.querySelector('#watchChip').hidden), 'host shows one spectator');
+const nW = await host.evaluate(seatsCount);
+ok(nW === n0 && !(await host.evaluate(() => /Зритель/.test(document.querySelector('#seats').textContent))), 'the spectator does not take a seat');
+await watcher.click('#bSit');
+ok(await waitFor(host, () => /Зритель/.test(document.querySelector('#seats').textContent)), 'after «Take a seat» the friend sits at the table');
+ok(await waitFor(watcher, () => document.querySelector('#watchRow').hidden), 'and the spectator bar disappears');
+await wCtx.close();
+
 console.log('6. host closes the table');
 await host.click('#bExit'); await sleep(300); await host.click('#bExit');
 ok(await waitFor(guest, () => !document.querySelector('#lobby').hidden, 15000), 'guest returns to the lobby when the table is closed');

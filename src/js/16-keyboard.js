@@ -23,6 +23,7 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     if(!$('setOv').hidden) closeSettings();
     else if(!$('keysOv').hidden) toggleKeys(false);
+    else if(!$('sessOv').hidden) $('sessOv').hidden=true;
     else if(!$('pcardOv').hidden) closeCard();
     else if(!$('profOv').hidden) closeProfile();
     else if(!$('coachOv').hidden) closeCoach();

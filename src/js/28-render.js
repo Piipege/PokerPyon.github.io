@@ -311,8 +311,11 @@ function renderControls(){
     if(+$('amt').value<min || +$('amt').value>max) $('amt').value=min;
     $('amtOut').textContent=fmt(+$('amt').value);
     $('bRaise').textContent = t(S.currentBet===0 ? 'Бет' : 'Рейз');
-    ['bCall','bRaise'].forEach(id=>$(id).classList.remove('confirm'));
-    if(confirmArm && Date.now()-confirmArm.at<3500){ const id=confirmArm.type==='raise'?'bRaise':'bCall'; $(id).classList.add('confirm'); $(id).textContent=t('Точно? {0}', fmt(confirmArm.paid)); }
+    ['bCall','bRaise','bFold'].forEach(id=>$(id).classList.remove('confirm')); $('bFold').textContent=t('Сбросить');
+    if(confirmArm && Date.now()-confirmArm.at<3500){
+      if(confirmArm.type==='fold'){ $('bFold').classList.add('confirm'); $('bFold').textContent=t('Чек бесплатный. Всё равно пас?'); }
+      else { const id=confirmArm.type==='raise'?'bRaise':'bCall'; $(id).classList.add('confirm'); $(id).textContent=t('Точно? {0}', fmt(confirmArm.paid)); }
+    }
     const odds = toCall>0 ? Math.round(toCall/(potTotal()+toCall)*100) : 0;
     hint = t('Ваш ход'); minor=true;
   } else if(pending!==null){
@@ -335,6 +338,7 @@ function renderControls(){
     hint = tp ? t('Ходит {0}…', esc(tp.bot?t(tp.name):tp.name)) : t('Сдаём карты…'); minor=true;
   }
   $('hint').innerHTML=hint; $('hint').classList.toggle('minor', minor || !hint);
+  applyWatch();
 }
 
 let timerBuzz=-1;

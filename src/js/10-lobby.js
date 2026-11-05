@@ -73,7 +73,7 @@ function lobbyRender(){
     info.push(t('блайнды {0}/{1}', x.sb, x.bb), t('стек {0}', x.start));
     if(x.bomb) info.push(t('бомб-пот каждые {0}', x.bomb));
     info.push(t(x.started?'идёт игра':'ждут игроков'));
-    return `<li><div class="tinfo"><b>${esc(x.tn ? x.name : t('Стол {0}', x.name))}</b><span>${esc(info.join(' · '))}</span></div><button class="btn small primary" data-code="${esc(x.code)}" ${x.seats>=x.max?'disabled':''}>${t(x.seats>=x.max?'Мест нет':'Сесть')}</button></li>`;
+    return `<li><div class="tinfo"><b>${esc(x.tn ? x.name : t('Стол {0}', x.name))}</b><span>${esc(info.join(' · '))}</span></div><button class="btn small ghost" data-code="${esc(x.code)}" data-watch="1" title="${esc(t('Смотреть игру'))}" aria-label="${esc(t('Смотреть игру'))}">👁</button><button class="btn small primary" data-code="${esc(x.code)}" ${x.seats>=x.max?'disabled':''}>${t(x.seats>=x.max?'Мест нет':'Сесть')}</button></li>`;
   }).join('') : `<li class="empty">${t(lob.role ? 'Открытых столов пока нет. Создайте свой и отметьте «Открытый стол».' : 'Ищем открытые столы…')}</li>`;
 }
 

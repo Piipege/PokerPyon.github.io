@@ -989,5 +989,16 @@
  "Стол виден всем в «Войти к друзьям»": "Alle sehen den Tisch unter «Zu Freunden»",
  "🔒 Закрытый": "🔒 Privat",
  "Только по ссылке или коду": "Nur per Link oder Code",
- "Докупка всегда равна стартовому стеку в больших блайндах: когда блайнды растут, растёт и докупка.": "Der Rebuy entspricht immer dem Startstack in Big Blinds: Steigen die Blinds, steigt auch der Rebuy."
+ "Докупка всегда равна стартовому стеку в больших блайндах: когда блайнды растут, растёт и докупка.": "Der Rebuy entspricht immer dem Startstack in Big Blinds: Steigen die Blinds, steigt auch der Rebuy.",
+ "Смотрят: {0}": "Zuschauer: {0}",
+ "Ваш вечер": "Dein Abend",
+ "Крупнейший банк": "Größter Pot",
+ "Сыграйте хотя бы одну раздачу.": "Spiel mindestens eine Hand.",
+ "Мой вечер": "Mein Abend",
+ "Чек бесплатный. Всё равно пас?": "Checken kostet nichts. Trotzdem folden?",
+ "👁 Смотреть": "👁 Zuschauen",
+ "👁 Вы смотрите игру. Карты игроков видны только на вскрытии.": "👁 Du schaust zu. Die Karten der Spieler siehst du nur beim Showdown.",
+ "Сесть за стол": "Platz nehmen",
+ "Поделиться": "Teilen",
+ "Спрашивать, если вы сбрасываете, когда можно бесплатно сделать чек": "Nachfragen, wenn du foldest, obwohl du kostenlos checken könntest"
 }

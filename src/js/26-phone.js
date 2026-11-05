@@ -22,8 +22,15 @@ function myTurnAlert(){
 }
 let confirmArm=null;
 function needConfirm(type, to){
-  if(!CFG.confirm || !S) return false;
+  if(!S) return false;
   const p=seats()[mySeat()]; if(!p) return false;
+  // folding when a check costs nothing: a classic beginner misclick, so ask once
+  if(type==='fold' && CFG.foldWarn && S.currentBet-p.bet<=0){
+    if(confirmArm && confirmArm.type==='fold' && Date.now()-confirmArm.at<3500){ confirmArm=null; return false; }
+    confirmArm={type, at:Date.now(), paid:0}; render(); setTimeout(()=>{ if(confirmArm && Date.now()-confirmArm.at>=3500){ confirmArm=null; render(); } }, 3600);
+    return true;
+  }
+  if(!CFG.confirm) return false;
   const paid = type==='raise' ? Math.min(+to||0, p.bet+p.stack)-p.bet : type==='call' ? Math.min(S.currentBet-p.bet, p.stack) : 0;
   if(paid<=0 || paid < p.stack*0.5) return false;
   if(confirmArm && confirmArm.type===type && Date.now()-confirmArm.at<3500){ confirmArm=null; return false; }
@@ -104,3 +111,5 @@ $('bMenu').onclick=e=>{ e.stopPropagation(); toggleMenu(); };
 $('menuPop').onclick=e=>{ const b=e.target.closest('[data-proxy]'); if(!b) return; const id=b.dataset.proxy; if(id!=='bSound') toggleMenu(false); $(id).click(); if(id==='bSound') updSound(); };
 document.addEventListener('click', e=>{ if(!$('menuPop').hidden && !e.target.closest('#menuPop') && !e.target.closest('#bMenu')) toggleMenu(false); });
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('menuPop').hidden) toggleMenu(false); });
+
+$('cfgFoldWarn').onchange=e=>{ CFG.foldWarn=e.target.checked; saveCfg(); };

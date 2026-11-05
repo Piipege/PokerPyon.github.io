@@ -19,13 +19,13 @@ function saveGuest(){ if(code) store.set('pion-guest', JSON.stringify({code, at:
 function savedGuest(){ try{ const r=JSON.parse(localStorage.getItem('pion-guest')||'null'); if(r && r.code && Date.now()-r.at < 6*3600e3) return r; }catch(e){} return null; }
 function forgetGuest(){ try{ localStorage.removeItem('pion-guest'); }catch(e){} }
 
-async function joinTable(c){
+async function joinTable(c, watch){
   if(typeof Peer==='undefined') return setLobbyErr(t('Не загрузилась библиотека для игры по сети. Проверьте интернет и обновите страницу.'));
   c = String(c||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
   if(c.length!==4) return setLobbyErr(t('Код стола — четыре символа, например K7QM.'));
   setLobbyErr(''); $('bJoin').disabled=true; $('bJoin').textContent=t('Подключаемся…');
   try{
-    Object.assign(GN, {state:'ok', tries:0, lastMsg:Date.now(), outbox:[], hostGone:false, busy:false});
+    Object.assign(GN, {state:'ok', tries:0, lastMsg:Date.now(), outbox:[], hostGone:false, busy:false, watch:!!watch});
     await guestPeer();
     code = c;
     await connectGuest(true);
@@ -64,7 +64,7 @@ function connectGuest(first){
     peer.on('error', onErr);
     joinTimer = setTimeout(()=>fail({type:'timeout'}), first ? 15000 : 12000);
     conn.on('open', ()=>{
-      conn.send({t:'join', uid:myUid, key:seatKey(), name:myName(), av:CFG.av, pf:mySummary()});
+      conn.send({t:'join', uid:myUid, key:seatKey(), name:myName(), av:CFG.av, pf:mySummary(), watch:!!GN.watch});
       // ICE says the path is broken long before the data channel notices
       const pc = conn.peerConnection;
       if(pc) pc.addEventListener('iceconnectionstatechange', ()=>{
@@ -195,3 +195,14 @@ function renderGuestNet(){
 }
 $('netBarRetry').onclick=()=>guestRetryNow();
 $('netBarLeave').onclick=()=>{ forgetGuest(); exitToLobby(); };
+
+// a spectator takes a seat: the same connection sends a normal join
+function sitDown(){ if(MODE!=='guest' || mySeat()>=0) return; GN.watch=false; sendHost({t:'join', uid:myUid, key:seatKey(), name:myName(), av:CFG.av, pf:mySummary()}); }
+$('bSit').onclick=sitDown;
+function applyWatch(){
+  const watching = MODE==='guest' && !!S && mySeat()<0;
+  $('watchRow').hidden=!watching;
+  if(watching){ ['actRow','raiseRow','preRow','odds'].forEach(id=>$(id).hidden=true); $('hint').textContent=''; $('bSit').disabled = seats().filter(s=>!s.left).length>=MAX_SEATS; }
+  const w=S && S.watchers ? Object.values(S.watchers) : [];
+  $('watchChip').hidden=!w.length; $('watchChip').textContent='👁 '+w.length; $('watchChip').title=t('Смотрят: {0}', w.join(', '));
+}
