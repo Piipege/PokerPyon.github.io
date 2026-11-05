@@ -14,7 +14,7 @@ function applyLang(){
   if(!$('keysOv').hidden) renderKeysHelp();
   render();
 }
-function setLang(c){ CFG.lang=c; saveCfg(); applyLang(); }
+async function setLang(c){ CFG.lang=c; saveCfg(); await loadLang(c); if(CFG.lang===c) applyLang(); }
 fillLangSelects();
 $('langSel').onchange=e=>setLang(e.target.value);
 $('cfgLang').onchange=e=>setLang(e.target.value);

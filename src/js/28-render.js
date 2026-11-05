@@ -341,5 +341,6 @@ setInterval(()=>{
   }
   const cd=document.getElementById('cd'); if(cd && S.nextAt) cd.textContent=Math.max(0,Math.ceil((S.nextAt-Date.now())/1000));
 }, 250);
-addEventListener('resize', ()=>{ if(S) render(); });
+let resizeRaf=0; // phones fire many resize events while the address bar slides: one redraw per frame is enough
+addEventListener('resize', ()=>{ if(S && !resizeRaf) resizeRaf=requestAnimationFrame(()=>{ resizeRaf=0; if(S) render(); }); });
 

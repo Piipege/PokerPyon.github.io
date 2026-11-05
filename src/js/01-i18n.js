@@ -1,6 +1,14 @@
 /* ---------- languages: every visible string goes through t(); shared table data stores keys, not text ---------- */
 const LANGS=[['ru','Русский'],['en','English'],['uk','Українська'],['ka','ქართული'],['fr','Français'],['de','Deutsch'],['ro','Română'],['he','עברית'],['kk','Қазақша']]; // i18n-skip
-const I18N = window.PION_I18N || {};
+const I18N = window.PION_I18N = window.PION_I18N || {};
+// on the site each language is a separate file (window.PION_LANG_URL); the single-file build has them all
+function loadLang(c){
+  return new Promise(res=>{
+    const url=(window.PION_LANG_URL||{})[c];
+    if(I18N[c] || !url) return res();
+    const s=document.createElement('script'); s.src=url; s.onload=s.onerror=()=>res(); document.head.append(s);
+  });
+}
 let LANG='ru';
 function t(k, ...a){
   if(k==null) return '';
@@ -24,18 +32,15 @@ const I18N_NODES=[];
 function applyStatic(){ for(const x of I18N_NODES){ if(x.n) x.n.nodeValue = x.pre + t(x.k) + x.post; else x.el.setAttribute(x.at, t(x.k)); } }
 function guessLang(){ const l=(navigator.language||'ru').slice(0,2).toLowerCase(); const map={iw:'he'}; const c=map[l]||l; return LANGS.some(x=>x[0]===c) ? c : (l==='be'?'ru':'en'); }
 
-const tabId = Math.random().toString(36).slice(2,10);
 
 let MODE = 'lobby';          // lobby | offline | host | guest
 let S = null;                // public table state
 let H = {deck:[], hands:{}}; // dealer-only secrets: deck and hole cards
 let myUid = 'me';
-let db = null, userCap = null, code = null;
-let unsub = {table:null, joins:null, acts:null};
-let timers = {flow:null, turn:null, lease:null};
-let keys = null, myCards = null, myCardsFor = '';
+let code = null;
+let timers = {flow:null, turn:null};
+let myCards = null;
 let pending = null;
-let rebuyAsked = 0;
 
 const store = {
   get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },

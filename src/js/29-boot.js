@@ -8,6 +8,7 @@ function showResume(){ try{ showQuick(); }catch(e){} const r=savedHost(), g=!r &
 showResume();
 if(hashCode){ lobbyTab('open'); $('joinCode').value = hashCode.toUpperCase(); $('lobbyTitle').textContent=t('Вас позвали за стол'); }
 applyLang();
+if(!I18N[LANG]) loadLang(LANG).then(applyLang); // the page guessed another language than the settings say
 if(typeof Peer==='undefined'){
   $('netNote').textContent=t('Не загрузилась библиотека для игры по сети. Проверьте интернет и обновите страницу. С ботами можно играть и так.');
   ['bCreate','bJoin','joinCode'].forEach(id=>$(id).disabled=true);

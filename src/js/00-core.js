@@ -1,4 +1,4 @@
-const SB = 10, BB = 20, TURN_MS = 30000, LEASE_MS = 16000, MAX_SEATS = 9;
+const SB = 10, BB = 20, TURN_MS = 30000, MAX_SEATS = 9;
 const SUITS = ['♠','♥','♦','♣'];
 const RL = {11:'J',12:'Q',13:'K',14:'A'};
 const HAND_NAMES = ['Старшая карта','Пара','Две пары','Сет','Стрит','Флеш','Фулл-хаус','Каре','Стрит-флеш'];
