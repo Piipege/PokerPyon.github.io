@@ -103,6 +103,22 @@ console.log('beginner tour, hidden own cards, vibration');
   await ctx.close();
 }
 
+console.log('buy-in in big blinds, open / private table');
+{
+  const p = await page();
+  await p.click('[data-ltab="create"]');
+  const before = await p.evaluate(() => document.getElementById('publicOn').checked);
+  await p.click('.segopt:has(input[value="0"])');
+  ok(before === true && await p.evaluate(() => !document.getElementById('publicOn').checked) && await p.locator('.segopt.on input[value="0"]').count() === 1, 'choosing «Private» turns the open-table flag off');
+  await p.click('.segopt:has(input[value="1"])');
+  ok(await p.evaluate(() => document.getElementById('publicOn').checked), 'and «Open» turns it back on');
+  ok(await p.locator('#pubSeg').isVisible(), 'the choice is in the main options, not folded away');
+  await p.click('#lobbyBack'); await p.click('[data-ltab="solo"]'); await p.click('#bSolo');
+  const r = await p.evaluate(() => { const P = window.__pion, S = P.S, a = P.buyIn(); S.sb = 50; S.bb = 100; const b = P.buyIn(); S.sb = 250; S.bb = 500; const c = P.buyIn(); return [a, b, c]; });
+  ok(r[0] === 1000 && r[1] === 5000 && r[2] === 25000, `buy-in stays 50 BB as blinds rise: ${r.join(' → ')}`);
+  await p.context().close();
+}
+
 console.log('coach verdicts on fixed hands');
 {
   const p = await page();

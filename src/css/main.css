@@ -822,3 +822,12 @@ body.mehidden #odds{visibility:hidden}
 .tourcard .row{display:flex;align-items:center;gap:8px;justify-content:flex-end}
 .tourcard .row .muted{margin-inline-end:auto;font-family:var(--f-num);font-size:calc(12px*var(--fs))}
 :root.calm .tourfocus{animation:none}
+/* open / closed table choice */
+.seg{border:0;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg legend{padding:0;margin-bottom:6px;color:var(--muted);font-size:calc(13px*var(--fs))}
+.segopt{display:flex;flex-direction:column;gap:2px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;background:var(--panel-2);transition:border-color .3s,background .3s}
+.segopt input{position:absolute;opacity:0;pointer-events:none}
+.segopt b{font-weight:600}
+.segopt span{color:var(--muted);font-size:calc(12px*var(--fs));line-height:1.35}
+.segopt.on{border-color:var(--pink);background:var(--hover);box-shadow:0 0 0 1px var(--pink)}
+.segopt:focus-within{outline:2px solid var(--pink);outline-offset:2px}

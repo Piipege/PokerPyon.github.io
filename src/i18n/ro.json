@@ -983,5 +983,11 @@
  "Вы выиграли банк — быстрая дробь": "Ai câștigat potul — un ropot rapid",
  "Осталось 5 секунд на ход — два длинных": "Mai sunt 5 secunde pentru mutare — două impulsuri lungi",
  "Проверить вибрацию": "Testează vibrația",
- "Этот браузер не поддерживает вибрацию (например, Safari на iPhone).": "Acest browser nu suportă vibrația (de exemplu Safari pe iPhone)."
+ "Этот браузер не поддерживает вибрацию (например, Safari на iPhone).": "Acest browser nu suportă vibrația (de exemplu Safari pe iPhone).",
+ "Кто может зайти": "Cine poate intra",
+ "🌐 Открытый": "🌐 Deschisă",
+ "Стол виден всем в «Войти к друзьям»": "Toți văd masa în «Intră la prieteni»",
+ "🔒 Закрытый": "🔒 Privată",
+ "Только по ссылке или коду": "Doar cu linkul sau codul",
+ "Докупка всегда равна стартовому стеку в больших блайндах: когда блайнды растут, растёт и докупка.": "Recumpărarea este mereu egală cu stack-ul de start în big blinduri: când cresc blindurile, crește și recumpărarea."
 }

@@ -121,7 +121,7 @@ function onGuestMsg(c,m){
     const i=seats().findIndex(s=>s.uid===uid);
     if(i<0){
       if(seats().length>=MAX_SEATS){ try{ c.send({t:'full'}); }catch(e){} }
-      else { seats().push(mkSeat({uid,name:cleanName(m.name),av:cleanAv(m.av),pf:cleanPf(m.pf),stack:S.start,out:false,folded:true,inHand:false})); log(L('{0} садится за стол', cleanName(m.name))); }
+      else { seats().push(mkSeat({uid,name:cleanName(m.name),av:cleanAv(m.av),pf:cleanPf(m.pf),stack:buyIn(),out:false,folded:true,inHand:false})); log(L('{0} садится за стол', cleanName(m.name))); }
     } else {
       const s=seats()[i]; s.offline=false; s.missed=0;
       if(s.left){ s.left=false; log(L('{0} возвращается', s.name)); }
@@ -151,7 +151,7 @@ function maybeAutoStart(){ if(S && S.started && !S.paused && S.handOver && !time
 function doRebuy(i){
   const s=seats()[i]; if(!s || s.stack>0 || s.rebuy>s.rebuySeen) return;
   s.rebuy=(s.rebuy||0)+1;
-  if(S.handOver || !s.inHand){ s.stack=S.start; s.rebuySeen=s.rebuy; s.out=false; log(L('{0} докупается на {1}', s.name, S.start)); }
+  if(S.handOver || !s.inHand){ s.stack=buyIn(); s.rebuySeen=s.rebuy; s.out=false; log(L('{0} докупается на {1}', s.name, s.stack)); }
   commit(); maybeAutoStart();
 }
 

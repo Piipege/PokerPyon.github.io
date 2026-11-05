@@ -983,5 +983,11 @@
  "Вы выиграли банк — быстрая дробь": "Du hast den Pot gewonnen — ein schneller Trommelwirbel",
  "Осталось 5 секунд на ход — два длинных": "Noch 5 Sekunden für deinen Zug — zwei lange Impulse",
  "Проверить вибрацию": "Vibration testen",
- "Этот браузер не поддерживает вибрацию (например, Safari на iPhone).": "Dieser Browser unterstützt keine Vibration (zum Beispiel Safari auf dem iPhone)."
+ "Этот браузер не поддерживает вибрацию (например, Safari на iPhone).": "Dieser Browser unterstützt keine Vibration (zum Beispiel Safari auf dem iPhone).",
+ "Кто может зайти": "Wer beitreten kann",
+ "🌐 Открытый": "🌐 Offen",
+ "Стол виден всем в «Войти к друзьям»": "Alle sehen den Tisch unter «Zu Freunden»",
+ "🔒 Закрытый": "🔒 Privat",
+ "Только по ссылке или коду": "Nur per Link oder Code",
+ "Докупка всегда равна стартовому стеку в больших блайндах: когда блайнды растут, растёт и докупка.": "Der Rebuy entspricht immer dem Startstack in Big Blinds: Steigen die Blinds, steigt auch der Rebuy."
 }

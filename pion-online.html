@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <title>Покерный стол «Пион»</title>
-<link rel="preload" href="assets/app.088114fbb4.js" as="script">
+<link rel="preload" href="assets/app.60d2a97336.js" as="script">
 <link rel="preload" href="assets/peerjs.f69f573cb6.js" as="script">
 <style>
 /* extra scripts: Noto Sans Georgian, Noto Sans Hebrew (SIL OFL) */
@@ -877,6 +877,15 @@ body.mehidden #odds{visibility:hidden}
 .tourcard .row{display:flex;align-items:center;gap:8px;justify-content:flex-end}
 .tourcard .row .muted{margin-inline-end:auto;font-family:var(--f-num);font-size:calc(12px*var(--fs))}
 :root.calm .tourfocus{animation:none}
+/* open / closed table choice */
+.seg{border:0;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg legend{padding:0;margin-bottom:6px;color:var(--muted);font-size:calc(13px*var(--fs))}
+.segopt{display:flex;flex-direction:column;gap:2px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;background:var(--panel-2);transition:border-color .3s,background .3s}
+.segopt input{position:absolute;opacity:0;pointer-events:none}
+.segopt b{font-weight:600}
+.segopt span{color:var(--muted);font-size:calc(12px*var(--fs));line-height:1.35}
+.segopt.on{border-color:var(--pink);background:var(--hover);box-shadow:0 0 0 1px var(--pink)}
+.segopt:focus-within{outline:2px solid var(--pink);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -975,6 +984,11 @@ body.mehidden #odds{visibility:hidden}
                 <select id="botLvl"><option value="1">Новичок</option><option value="2" selected>Любитель</option><option value="3">Профи</option><option value="4">Акула</option><option value="0">Все разные</option></select>
               </label>
             </div>
+            <fieldset class="seg" id="pubSeg"><legend>Кто может зайти</legend>
+              <label class="segopt"><input type="radio" name="pubMode" value="1"><b>🌐 Открытый</b><span>Стол виден всем в «Войти к друзьям»</span></label>
+              <label class="segopt"><input type="radio" name="pubMode" value="0"><b>🔒 Закрытый</b><span>Только по ссылке или коду</span></label>
+              <input type="checkbox" id="publicOn" checked hidden>
+            </fieldset>
             <label class="check strong" for="hOn"><input type="checkbox" id="hOn"> Режим помощи</label>
             <fieldset class="helpset" id="hSet" hidden><legend>Подсказки</legend>
               <label class="check" for="hOdds"><input type="checkbox" id="hOdds" checked> Шансы на победу</label>
@@ -986,7 +1000,7 @@ body.mehidden #odds{visibility:hidden}
             <details class="more"><summary>Ещё настройки</summary>
             <div class="split">
               <label class="field" for="stackN">Стартовый стек
-                <select id="stackN"><option>500</option><option selected>1000</option><option>2000</option><option>5000</option></select>
+                <select id="stackN"><option value="500">500 (25 BB)</option><option value="1000" selected>1000 (50 BB)</option><option value="2000">2000 (100 BB)</option><option value="5000">5000 (250 BB)</option></select>
               </label>
               <label class="field" for="blindMode">Блайнды
                 <select id="blindMode"><option value="0" selected>Фиксированные</option><option value="10">Растут каждые 10 раздач</option><option value="6">Растут каждые 6 раздач</option></select>
@@ -998,9 +1012,9 @@ body.mehidden #odds{visibility:hidden}
                 <select id="bombSize"><option value="2">2 больших блайнда</option><option value="3">3 больших блайнда</option><option value="5" selected>5 больших блайндов</option><option value="10">10 больших блайндов</option></select>
               </label>
             </div>
+            <p class="hint small">Докупка всегда равна стартовому стеку в больших блайндах: когда блайнды растут, растёт и докупка.</p>
             <label class="field" for="tableName">Название стола (необязательно)<input id="tableName" maxlength="24" placeholder="Например, Пятничный покер" autocomplete="off"></label>
             <label class="check" for="botRebuy"><input type="checkbox" id="botRebuy" checked> Боты докупаются, когда проигрывают все фишки</label>
-            <label class="check" for="publicOn"><input type="checkbox" id="publicOn" checked> Открытый стол — виден всем в лобби</label>
             </details>
             <button class="btn primary" id="bCreate">Создать стол</button>
           </div>
@@ -1255,6 +1269,6 @@ body.mehidden #odds{visibility:hidden}
     </div>
   </div>
 </div>
-<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.f751a8eeb2.js","uk":"assets/lang-uk.8f31de82e6.js","ka":"assets/lang-ka.15bee5fcd7.js","fr":"assets/lang-fr.f99bef15ec.js","de":"assets/lang-de.cb92764918.js","ro":"assets/lang-ro.d43d833bd4.js","he":"assets/lang-he.dc2d4ce8ec.js","kk":"assets/lang-kk.809e1b8c62.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.088114fbb4.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
+<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.b6e6367d88.js","uk":"assets/lang-uk.42f10a9a24.js","ka":"assets/lang-ka.c291b58866.js","fr":"assets/lang-fr.403adf8069.js","de":"assets/lang-de.848500d097.js","ro":"assets/lang-ro.e9ae39753e.js","he":"assets/lang-he.16d5753ba6.js","kk":"assets/lang-kk.23ae032d92.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.60d2a97336.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
 </body>
 </html>
