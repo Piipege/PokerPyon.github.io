@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <title>Покерный стол «Пион»</title>
-<link rel="preload" href="assets/app.60d2a97336.js" as="script">
+<link rel="preload" href="assets/app.782e199713.js" as="script">
 <link rel="preload" href="assets/peerjs.f69f573cb6.js" as="script">
 <style>
 /* extra scripts: Noto Sans Georgian, Noto Sans Hebrew (SIL OFL) */
@@ -886,6 +886,14 @@ body.mehidden #odds{visibility:hidden}
 .segopt span{color:var(--muted);font-size:calc(12px*var(--fs));line-height:1.35}
 .segopt.on{border-color:var(--pink);background:var(--hover);box-shadow:0 0 0 1px var(--pink)}
 .segopt:focus-within{outline:2px solid var(--pink);outline-offset:2px}
+.myeve{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.myeve h5{font-family:var(--f-display);font-size:calc(14px*var(--fs));margin:0}
+.myeve .srow{--cw:40px}
+.facts{margin:10px 0 0;padding-inline-start:18px;color:var(--text-2);font-size:calc(13px*var(--fs))}
+#sessOv .box{width:min(620px,100%);max-height:calc(100dvh - 24px);overflow:auto}
+.watchrow{align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.watchrow span{color:var(--text-2);flex:1 1 200px}
+.watchchip{font-size:calc(12px*var(--fs));border-radius:999px;padding:3px 10px;border:1px solid var(--line);background:var(--panel-2);white-space:nowrap}
 </style>
 </head>
 <body>
@@ -901,6 +909,7 @@ body.mehidden #odds{visibility:hidden}
       <span class="gi mhide">Улица <b id="street">—</b></span>
       <span id="fairChip" class="fair" hidden></span>
       <span id="netChip" class="netchip" hidden></span>
+      <span id="watchChip" class="watchchip" hidden></span>
       <nav class="hnav" aria-label="Меню">
         <button class="btn small nav" id="bProfile" type="button"><i aria-hidden="true">👤</i><span>Профиль</span></button>
         <button class="btn small nav" id="bLearn" type="button"><i aria-hidden="true">🎓</i><span>Обучение</span></button>
@@ -972,6 +981,7 @@ body.mehidden #odds{visibility:hidden}
                 <input id="joinCode" class="code-in" maxlength="4" placeholder="K7QM" autocomplete="off">
               </label>
               <button class="btn" id="bJoin" style="align-self:end">Войти по коду</button>
+              <button class="btn ghost" id="bWatch" type="button" style="align-self:end">👁 Смотреть</button>
             </div>
           </div>
           <div data-lpane="create" class="part" hidden>
@@ -1097,6 +1107,7 @@ body.mehidden #odds{visibility:hidden}
       </div>
       <div class="sumbox" id="sumBox" hidden></div>
       <div class="odds" id="odds" hidden></div>
+      <div class="row watchrow" id="watchRow" hidden><span>👁 Вы смотрите игру. Карты игроков видны только на вскрытии.</span><button class="btn primary" id="bSit" type="button">Сесть за стол</button></div>
       <div class="hint" id="hint">Выберите, как играть: с ботами или с друзьями.</div>
     </div>
   </div>
@@ -1157,7 +1168,7 @@ body.mehidden #odds{visibility:hidden}
   <div class="box" role="dialog" aria-modal="true">
     <h3>Итоги вечера</h3>
     <div id="sessBody"></div>
-    <div class="row"><button class="btn small" id="sessCopy" type="button">Скопировать текст</button><button class="btn small" id="sessImg" type="button">Сохранить картинкой</button><button class="btn small primary" id="sessClose" type="button">Закрыть</button></div>
+    <div class="row"><button class="btn small" id="sessCopy" type="button">Скопировать текст</button><button class="btn small primary" id="sessShare" type="button" hidden>Поделиться</button><button class="btn small" id="sessImg" type="button">Сохранить картинкой</button><button class="btn small primary" id="sessClose" type="button">Закрыть</button></div>
   </div>
 </div>
 <div id="profOv" class="overlay fixed" hidden>
@@ -1224,6 +1235,7 @@ body.mehidden #odds{visibility:hidden}
       <label class="check" for="cfgFour"><input type="checkbox" id="cfgFour"> Четырёхцветная колода: ♦ синие, ♣ зелёные</label>
       <button class="btn small" id="tourAgain" type="button">Показать подсказки для новичков снова</button>
       <label class="check" for="cfgHide"><input type="checkbox" id="cfgHide"> Прятать свои карты: нажмите на них, чтобы посмотреть (удобно играть на людях)</label>
+      <label class="check" for="cfgFoldWarn"><input type="checkbox" id="cfgFoldWarn"> Спрашивать, если вы сбрасываете, когда можно бесплатно сделать чек</label>
       <label class="check" for="cfgConfirm"><input type="checkbox" id="cfgConfirm"> Подтверждать ставки больше половины стека</label>
       <label class="check" for="cfgTips"><input type="checkbox" id="cfgTips"> Показывать подсказки режима помощи, если стол их разрешает</label>
       <label class="check" for="cfgSum"><input type="checkbox" id="cfgSum"> Показывать итоги после каждой раздачи</label>
@@ -1269,6 +1281,6 @@ body.mehidden #odds{visibility:hidden}
     </div>
   </div>
 </div>
-<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.b6e6367d88.js","uk":"assets/lang-uk.42f10a9a24.js","ka":"assets/lang-ka.c291b58866.js","fr":"assets/lang-fr.403adf8069.js","de":"assets/lang-de.848500d097.js","ro":"assets/lang-ro.e9ae39753e.js","he":"assets/lang-he.16d5753ba6.js","kk":"assets/lang-kk.23ae032d92.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.60d2a97336.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
+<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.1a86cee2c6.js","uk":"assets/lang-uk.c2d27b555c.js","ka":"assets/lang-ka.8afbf9d704.js","fr":"assets/lang-fr.3cee93016e.js","de":"assets/lang-de.d5b26f3f2f.js","ro":"assets/lang-ro.8b9cdc186a.js","he":"assets/lang-he.75b6f04aaa.js","kk":"assets/lang-kk.466e7432c8.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.782e199713.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
 </body>
 </html>

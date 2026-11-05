@@ -28,6 +28,7 @@
       <span class="gi mhide">Улица <b id="street">—</b></span>
       <span id="fairChip" class="fair" hidden></span>
       <span id="netChip" class="netchip" hidden></span>
+      <span id="watchChip" class="watchchip" hidden></span>
       <nav class="hnav" aria-label="Меню">
         <button class="btn small nav" id="bProfile" type="button"><i aria-hidden="true">👤</i><span>Профиль</span></button>
         <button class="btn small nav" id="bLearn" type="button"><i aria-hidden="true">🎓</i><span>Обучение</span></button>
@@ -99,6 +100,7 @@
                 <input id="joinCode" class="code-in" maxlength="4" placeholder="K7QM" autocomplete="off">
               </label>
               <button class="btn" id="bJoin" style="align-self:end">Войти по коду</button>
+              <button class="btn ghost" id="bWatch" type="button" style="align-self:end">👁 Смотреть</button>
             </div>
           </div>
           <div data-lpane="create" class="part" hidden>
@@ -224,6 +226,7 @@
       </div>
       <div class="sumbox" id="sumBox" hidden></div>
       <div class="odds" id="odds" hidden></div>
+      <div class="row watchrow" id="watchRow" hidden><span>👁 Вы смотрите игру. Карты игроков видны только на вскрытии.</span><button class="btn primary" id="bSit" type="button">Сесть за стол</button></div>
       <div class="hint" id="hint">Выберите, как играть: с ботами или с друзьями.</div>
     </div>
   </div>
@@ -284,7 +287,7 @@
   <div class="box" role="dialog" aria-modal="true">
     <h3>Итоги вечера</h3>
     <div id="sessBody"></div>
-    <div class="row"><button class="btn small" id="sessCopy" type="button">Скопировать текст</button><button class="btn small" id="sessImg" type="button">Сохранить картинкой</button><button class="btn small primary" id="sessClose" type="button">Закрыть</button></div>
+    <div class="row"><button class="btn small" id="sessCopy" type="button">Скопировать текст</button><button class="btn small primary" id="sessShare" type="button" hidden>Поделиться</button><button class="btn small" id="sessImg" type="button">Сохранить картинкой</button><button class="btn small primary" id="sessClose" type="button">Закрыть</button></div>
   </div>
 </div>
 <div id="profOv" class="overlay fixed" hidden>
@@ -351,6 +354,7 @@
       <label class="check" for="cfgFour"><input type="checkbox" id="cfgFour"> Четырёхцветная колода: ♦ синие, ♣ зелёные</label>
       <button class="btn small" id="tourAgain" type="button">Показать подсказки для новичков снова</button>
       <label class="check" for="cfgHide"><input type="checkbox" id="cfgHide"> Прятать свои карты: нажмите на них, чтобы посмотреть (удобно играть на людях)</label>
+      <label class="check" for="cfgFoldWarn"><input type="checkbox" id="cfgFoldWarn"> Спрашивать, если вы сбрасываете, когда можно бесплатно сделать чек</label>
       <label class="check" for="cfgConfirm"><input type="checkbox" id="cfgConfirm"> Подтверждать ставки больше половины стека</label>
       <label class="check" for="cfgTips"><input type="checkbox" id="cfgTips"> Показывать подсказки режима помощи, если стол их разрешает</label>
       <label class="check" for="cfgSum"><input type="checkbox" id="cfgSum"> Показывать итоги после каждой раздачи</label>

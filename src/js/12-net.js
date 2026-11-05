@@ -100,6 +100,7 @@ function onConn(c){
     const uid=c.uid;
     if(uid && conns.get(uid)===c){
       conns.delete(uid);
+      if(S && S.watchers && S.watchers[uid]){ delete S.watchers[uid]; commit(); }
       const i=seats().findIndex(s=>s.uid===uid);
       if(i>=0 && MODE==='host'){ seats()[i].offline=true; commit(); }
     }
@@ -119,6 +120,13 @@ function onGuestMsg(c,m){
     const old=conns.get(uid); if(old && old!==c){ try{ old.close(); }catch(e){} }
     conns.set(uid,c);
     const i=seats().findIndex(s=>s.uid===uid);
+    // a spectator watches without a seat; the same connection can sit down later with a normal join
+    S.watchers=S.watchers||{};
+    if(m.watch && i<0){
+      if(Object.keys(S.watchers).length>=20 && !S.watchers[uid]){ try{ c.send({t:'full'}); }catch(e){} return; }
+      c.watch=true; S.watchers[uid]=cleanName(m.name); commit(); return;
+    }
+    c.watch=false; if(S.watchers[uid]){ delete S.watchers[uid]; }
     if(i<0){
       if(seats().length>=MAX_SEATS){ try{ c.send({t:'full'}); }catch(e){} }
       else { seats().push(mkSeat({uid,name:cleanName(m.name),av:cleanAv(m.av),pf:cleanPf(m.pf),stack:buyIn(),out:false,folded:true,inHand:false})); log(L('{0} садится за стол', cleanName(m.name))); }
@@ -128,6 +136,12 @@ function onGuestMsg(c,m){
       s.name=cleanName(m.name); s.av=cleanAv(m.av)||s.av; s.pf=cleanPf(m.pf)||s.pf;
     }
     commit(); maybeAutoStart(); return;
+  }
+  if(c.watch){ // spectators may chat, nothing else
+    if(m.t==='pong') netPong(c.uid, +m.ts);
+    else if(m.t==='chat' && S.watchers && S.watchers[c.uid]) addChat(c.uid, S.watchers[c.uid]+' 👁', m.text);
+    else if(m.t==='leave' && S.watchers){ delete S.watchers[c.uid]; commit(); }
+    return;
   }
   const i=seats().findIndex(s=>s.uid===c.uid); if(i<0 || seats()[i].bot) return;
   if(m.t==='pong'){ netPong(c.uid, +m.ts); return; }

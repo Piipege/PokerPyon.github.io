@@ -989,5 +989,16 @@
  "Стол виден всем в «Войти к друзьям»": "Tout le monde voit la table dans « Rejoindre des amis »",
  "🔒 Закрытый": "🔒 Privée",
  "Только по ссылке или коду": "Uniquement avec le lien ou le code",
- "Докупка всегда равна стартовому стеку в больших блайндах: когда блайнды растут, растёт и докупка.": "La recave est toujours égale au tapis de départ en grosses blindes : quand les blindes montent, la recave aussi."
+ "Докупка всегда равна стартовому стеку в больших блайндах: когда блайнды растут, растёт и докупка.": "La recave est toujours égale au tapis de départ en grosses blindes : quand les blindes montent, la recave aussi.",
+ "Смотрят: {0}": "Spectateurs : {0}",
+ "Ваш вечер": "Votre soirée",
+ "Крупнейший банк": "Plus gros pot",
+ "Сыграйте хотя бы одну раздачу.": "Jouez au moins une main.",
+ "Мой вечер": "Ma soirée",
+ "Чек бесплатный. Всё равно пас?": "Parole gratuite. Se coucher quand même ?",
+ "👁 Смотреть": "👁 Regarder",
+ "👁 Вы смотрите игру. Карты игроков видны только на вскрытии.": "👁 Vous regardez la partie. Les cartes des joueurs ne sont visibles qu'à l'abattage.",
+ "Сесть за стол": "Prendre place",
+ "Поделиться": "Partager",
+ "Спрашивать, если вы сбрасываете, когда можно бесплатно сделать чек": "Demander avant de se coucher quand on peut checker gratuitement"
 }

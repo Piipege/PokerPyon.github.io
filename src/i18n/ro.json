@@ -989,5 +989,16 @@
  "Стол виден всем в «Войти к друзьям»": "Toți văd masa în «Intră la prieteni»",
  "🔒 Закрытый": "🔒 Privată",
  "Только по ссылке или коду": "Doar cu linkul sau codul",
- "Докупка всегда равна стартовому стеку в больших блайндах: когда блайнды растут, растёт и докупка.": "Recumpărarea este mereu egală cu stack-ul de start în big blinduri: când cresc blindurile, crește și recumpărarea."
+ "Докупка всегда равна стартовому стеку в больших блайндах: когда блайнды растут, растёт и докупка.": "Recumpărarea este mereu egală cu stack-ul de start în big blinduri: când cresc blindurile, crește și recumpărarea.",
+ "Смотрят: {0}": "Privesc: {0}",
+ "Ваш вечер": "Seara ta",
+ "Крупнейший банк": "Cel mai mare pot",
+ "Сыграйте хотя бы одну раздачу.": "Joacă măcar o mână.",
+ "Мой вечер": "Seara mea",
+ "Чек бесплатный. Всё равно пас?": "Check-ul e gratuit. Fold oricum?",
+ "👁 Смотреть": "👁 Privește",
+ "👁 Вы смотрите игру. Карты игроков видны только на вскрытии.": "👁 Privești jocul. Cărțile jucătorilor se văd doar la showdown.",
+ "Сесть за стол": "Ia loc la masă",
+ "Поделиться": "Distribuie",
+ "Спрашивать, если вы сбрасываете, когда можно бесплатно сделать чек": "Întreabă înainte de fold când poți da check gratuit"
 }

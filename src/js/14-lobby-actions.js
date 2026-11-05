@@ -27,6 +27,7 @@ function exitToLobby(silent){
   MODE='lobby'; S=null; code=null; myCards=null; pending=null;
   setHash('');
   $('overlay').hidden=true; $('lobby').hidden=false; resetView(); render(); renderGuestNet(); showResume();
+  maybeRecap();
 }
 
 function setHash(c){

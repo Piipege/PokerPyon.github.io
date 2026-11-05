@@ -831,3 +831,11 @@ body.mehidden #odds{visibility:hidden}
 .segopt span{color:var(--muted);font-size:calc(12px*var(--fs));line-height:1.35}
 .segopt.on{border-color:var(--pink);background:var(--hover);box-shadow:0 0 0 1px var(--pink)}
 .segopt:focus-within{outline:2px solid var(--pink);outline-offset:2px}
+.myeve{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.myeve h5{font-family:var(--f-display);font-size:calc(14px*var(--fs));margin:0}
+.myeve .srow{--cw:40px}
+.facts{margin:10px 0 0;padding-inline-start:18px;color:var(--text-2);font-size:calc(13px*var(--fs))}
+#sessOv .box{width:min(620px,100%);max-height:calc(100dvh - 24px);overflow:auto}
+.watchrow{align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.watchrow span{color:var(--text-2);flex:1 1 200px}
+.watchchip{font-size:calc(12px*var(--fs));border-radius:999px;padding:3px 10px;border:1px solid var(--line);background:var(--panel-2);white-space:nowrap}

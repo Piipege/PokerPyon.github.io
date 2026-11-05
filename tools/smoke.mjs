@@ -119,6 +119,30 @@ console.log('buy-in in big blinds, open / private table');
   await p.context().close();
 }
 
+console.log('fold warning when checking is free');
+{
+  const p = await page();
+  await p.click('[data-ltab="solo"]'); await p.click('#bSolo');
+  let tested = false; const t0 = Date.now();
+  while(!tested && Date.now() - t0 < 60000){
+    const st = await p.evaluate(() => { const b = id => document.getElementById(id); const my = b('bFold') && !b('bFold').hidden && !b('bFold').disabled && b('bFold').offsetParent; return { my: !!my, free: my && /Чек/.test(b('bCall').textContent) }; });
+    if(st.free){
+      const hand = await p.evaluate(() => window.__pion.S.handNo);
+      await p.click('#bFold');
+      ok(await p.locator('#bFold.confirm').count() === 1 && /бесплатн/.test(await p.locator('#bFold').textContent()), 'first tap on Fold asks: ' + (await p.locator('#bFold').textContent()).trim());
+      ok(await p.evaluate(h => { const S = window.__pion.S, me = S.seats.find(s => s.uid === window.__pion.myUid); return S.handNo === h && !me.folded; }, hand), 'and does not fold yet');
+      await p.click('#bFold');
+      ok(await p.evaluate(h => { const S = window.__pion.S, me = S.seats.find(s => s.uid === window.__pion.myUid); return S.handNo !== h || me.folded; }, hand), 'second tap folds');
+      tested = true;
+    } else {
+      await p.evaluate(() => { const b = ['bCall', 'bNext'].map(id => document.getElementById(id)).find(b => b && !b.hidden && !b.disabled && b.offsetParent); if(b) b.click(); });
+      await p.waitForTimeout(150);
+    }
+  }
+  ok(tested, 'reached a turn where checking was free');
+  await p.context().close();
+}
+
 console.log('coach verdicts on fixed hands');
 {
   const p = await page();
@@ -161,7 +185,7 @@ console.log('hands against bots + coach');
   await p.click('#bSolo');
   // play: call or check most of the time, sometimes fold or raise; wait for 6 recorded hands
   const t0 = Date.now();
-  while(Date.now() - t0 < 120000){
+  while(Date.now() - t0 < 180000){
     const n = await p.evaluate(() => window.__pion.HIST().length);
     if(n >= 6) break;
     const acted = await p.evaluate(() => {
@@ -195,6 +219,15 @@ console.log('hands against bots + coach');
     await p.evaluate(() => window.__pion.openCoach());
     await p.screenshot({ path: path.join(SHOTS, 'coach-desktop.png') });
   }
+  // evening recap: personal block and the picture
+  await p.evaluate(() => { document.getElementById('coachOv').hidden = true; });
+  await p.evaluate(() => document.getElementById('bSession').click());
+  ok(await p.locator('#sessOv .myeve .ptile').count() === 6, 'evening results start with «Your evening»');
+  const [dl] = await Promise.all([p.waitForEvent('download'), p.click('#sessImg')]);
+  const size = fs.statSync(await dl.path()).size;
+  ok(size > 20000, `recap picture is saved (${Math.round(size / 1024)} KB)`);
+  if(SHOTS) fs.copyFileSync(await dl.path(), path.join(SHOTS, 'recap.png'));
+  await p.click('#sessClose');
   // profile: lifetime stats from IndexedDB, chart, achievements; player card at the table
   await p.evaluate(() => { document.getElementById('coachOv').hidden = true; });
   await p.waitForTimeout(800);

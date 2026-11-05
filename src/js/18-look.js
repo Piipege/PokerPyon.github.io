@@ -148,7 +148,7 @@ function renderSettings(){
   $('cfgFs').value=String(CFG.fs); $('cfgContrast').checked=CFG.contrast; $('cfgCalm').checked=CFG.calm;
   $('cfgBB').checked=CFG.bb; $('cfgDelay').value=String(CFG.delay);
   $('cfgSound').checked=snd.on; $('cfgVol').value=Math.round(CFG.vol*100); $('hdrVol').value=Math.round(CFG.vol*100);
-  $('cfgFour').checked=!!CFG.four; $('cfgTips').checked=!!CFG.tips; $('cfgSum').checked=!!CFG.sumbox; $('cfgConfirm').checked=!!CFG.confirm; $('cfgHide').checked=!!CFG.hideMine; syncVibUi(); $('cfgNotify').checked=!!CFG.notify; $('cfgWake').checked=!!CFG.wake;
+  $('cfgFour').checked=!!CFG.four; $('cfgTips').checked=!!CFG.tips; $('cfgSum').checked=!!CFG.sumbox; $('cfgConfirm').checked=!!CFG.confirm; $('cfgHide').checked=!!CFG.hideMine; $('cfgFoldWarn').checked=!!CFG.foldWarn; syncVibUi(); $('cfgNotify').checked=!!CFG.notify; $('cfgWake').checked=!!CFG.wake;
   $('turnUrl').value=CFG.turn.url; $('turnUser').value=CFG.turn.user; $('turnPass').value=CFG.turn.pass;
   document.querySelectorAll('[data-sfx]').forEach(cb=>cb.checked=CFG.sfx[cb.dataset.sfx]!==false);
   renderRebind();
@@ -159,7 +159,8 @@ function renderSettings(){
 const lobbyTab = wireTabs('[data-ltab]','data-ltab','data-lpane',$('lobby'), v=>{ $('lobby').querySelector('.lobbybox').dataset.view=v; });
 lobbyTab('home');
 $('lobbyBack').onclick=()=>lobbyTab('home');
-$('tables').onclick=e=>{ const b=e.target.closest('button[data-code]'); if(b && !b.disabled && checkNick()){ saveNick(); joinTable(b.dataset.code); } };
+$('tables').onclick=e=>{ const b=e.target.closest('button[data-code]'); if(b && !b.disabled && checkNick()){ saveNick(); joinTable(b.dataset.code, b.dataset.watch==='1'); } };
+$('bWatch').onclick=()=>{ if(!checkNick()) return; saveNick(); joinTable($('joinCode').value, true); };
 $('lobbyAva').innerHTML=avatarSVG(CFG.av);
 applyTheme();
 
