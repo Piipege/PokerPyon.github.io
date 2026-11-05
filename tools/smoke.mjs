@@ -56,6 +56,40 @@ console.log('course generators');
   await p.context().close();
 }
 
+console.log('coach verdicts on fixed hands');
+{
+  const p = await page();
+  const v = await p.evaluate(() => {
+    const P = window.__pion, me = P.myUid, k = (r, s) => r * 4 + s;
+    // 6 players, dealer = 'd'; seat order: me is first after the big blind (early position)
+    const seats = ['d', 's', 'b', me, 'x', 'y'].map(u => ({ u, n: u, b: u !== me, st: 1000 }));
+    const base = (mine, ev, board = []) => ({ no: 1, at: Math.random(), sb: 10, bb: 20, dealer: 'd', seats, ev: [{ a: 'sb', u: 's', p: 10, to: 10 }, { a: 'bb', u: 'b', p: 20, to: 20 }, ...ev], board, win: [], shown: {}, delta: {}, mine });
+    const out = {};
+    // 7-2 offsuit open-raise from early position → mistake
+    out.trashOpen = P.reviewOf(base([k(7, 0), k(2, 1)], [{ a: 'raise', u: me, p: 60, to: 60 }])).ds[0].verdict;
+    // aces folded unopened → mistake
+    out.acesFold = P.reviewOf(base([k(14, 0), k(14, 1)], [{ a: 'fold', u: me, p: 0, to: 0 }])).ds[0].verdict;
+    // aces raised → good
+    out.acesRaise = P.reviewOf(base([k(14, 0), k(14, 1)], [{ a: 'raise', u: me, p: 60, to: 60 }])).ds[0].verdict;
+    // facing a raise and a 3-bet with K-9 offsuit, calling → mistake
+    out.k9vs3bet = P.reviewOf(base([k(13, 0), k(9, 1)], [{ a: 'raise', u: 'x', p: 60, to: 60 }, { a: 'raise', u: 'y', p: 180, to: 180 }, { a: 'call', u: me, p: 180, to: 180 }])).ds[0].verdict;
+    // river: calling a pot-size bet with nothing (7-high on a board of high cards) → mistake
+    const board = [k(14, 2), k(13, 2), k(12, 3), k(9, 0), k(4, 3)];
+    out.riverCall = P.reviewOf(base([k(7, 0), k(2, 1)], [
+      { a: 'call', u: me, p: 20, to: 20 }, { a: 'fold', u: 'x', p: 0, to: 0 }, { a: 'fold', u: 'y', p: 0, to: 0 }, { a: 'fold', u: 'd', p: 0, to: 0 }, { a: 'fold', u: 's', p: 0, to: 0 }, { a: 'check', u: 'b', p: 0, to: 20 },
+      { a: 'street', u: null, p: 0, to: 0, c: board.slice(0, 3) }, { a: 'check', u: 'b', p: 0, to: 0 }, { a: 'check', u: me, p: 0, to: 0 },
+      { a: 'street', u: null, p: 0, to: 0, c: board.slice(0, 4) }, { a: 'check', u: 'b', p: 0, to: 0 }, { a: 'check', u: me, p: 0, to: 0 },
+      { a: 'street', u: null, p: 0, to: 0, c: board }, { a: 'bet', u: 'b', p: 45, to: 45 }, { a: 'call', u: me, p: 45, to: 45 }], board)).ds.pop().verdict;
+    return out;
+  });
+  ok(v.trashOpen === 'bad', `7-2o open from early position → ✗ (${v.trashOpen})`);
+  ok(v.acesFold === 'bad', `folding aces unopened → ✗ (${v.acesFold})`);
+  ok(v.acesRaise === 'good', `raising aces → ✓ (${v.acesRaise})`);
+  ok(v.k9vs3bet === 'bad', `calling a 3-bet with K-9o → ✗ (${v.k9vs3bet})`);
+  ok(v.riverCall === 'bad', `calling a river bet with 7-high → ✗ (${v.riverCall})`);
+  await p.context().close();
+}
+
 console.log('hands against bots + coach');
 {
   const p = await page();

@@ -1,7 +1,7 @@
 // Pion service worker: keeps the game working offline once it has been opened.
 // The page is one self-contained file, so the cache is tiny. Strategy: network first
 // (fresh version when online, 4 s timeout), cache when offline.
-const CACHE = 'pion-74f2c93fe037';
+const CACHE = 'pion-8ad4704869d2';
 const FILES = ['./pion-online.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

@@ -15,6 +15,6 @@ function renderNet(){
   const ms=(S.net||{})[myUid];
   el.hidden=false; el.className='netchip '+(netClass(ms)||'mid');
   el.textContent = ms==null ? t('Связь: проверяем…') : ms<0 ? t('Связь: потеряна') : t('Связь: {0} мс', ms);
-  if(mq.matches){ el.title=el.textContent; el.textContent = ms==null ? '…' : ms<0 ? '✕' : ms+' мс'; }
+  if(mq.matches){ el.title=el.textContent; el.textContent = ms==null ? '…' : ms<0 ? '✕' : ms+' '+t('мс'); }
 }
 

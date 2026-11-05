@@ -1,5 +1,5 @@
 /* ---------- languages: every visible string goes through t(); shared table data stores keys, not text ---------- */
-const LANGS=[['ru','Русский'],['en','English'],['uk','Українська'],['ka','ქართული'],['fr','Français'],['de','Deutsch'],['ro','Română'],['he','עברית'],['kk','Қазақша']];
+const LANGS=[['ru','Русский'],['en','English'],['uk','Українська'],['ka','ქართული'],['fr','Français'],['de','Deutsch'],['ro','Română'],['he','עברית'],['kk','Қазақша']]; // i18n-skip
 const I18N = window.PION_I18N || {};
 let LANG='ru';
 function t(k, ...a){

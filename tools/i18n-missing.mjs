@@ -17,7 +17,7 @@ for(const f of fs.readdirSync(jsDir).filter(f => f.endsWith('.js'))){
     const l = line.replace(/\bk:\[[^\]]*\]/g, '');
     for(const m of l.matchAll(/'((?:\\.|[^'\\])*)'|"((?:\\.|[^"\\])*)"/g)){
       const s = (m[1] ?? m[2]).replace(/\\n/g, '\n').replace(/\\'/g, "'").replace(/\\"/g, '"');
-      if(CYR.test(s) && !/[<>]/.test(s)) keys.add(s);
+      if(CYR.test(s) && !/[<>]/.test(s) && !s.includes('${') && s.trim().length > 1) keys.add(s.trim());
     }
   }
 }

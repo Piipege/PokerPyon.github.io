@@ -666,3 +666,8 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
   body.inlobby .table{height:auto;min-height:0;aspect-ratio:auto}
   body.inlobby .overlay{position:relative;inset:auto;min-height:calc(100dvh - 90px)}
 }
+/* large text: let button rows wrap instead of pushing the page wider than the screen */
+:root[data-fs] .controls,:root[data-fs] .stage,:root[data-fs] .wrap > *{min-width:0}
+:root[data-fs] #actRow,:root[data-fs] #raiseRow,:root[data-fs] #raiseRow > .row,:root[data-fs] #preRow{flex-wrap:wrap}
+:root[data-fs] #raiseRow .raise{flex:1 1 100%}
+@media (max-width:620px){ :root[data-fs] #actRow .btn{flex:1 1 30%} :root[data-fs] #raiseRow > .row{flex:1 1 100%} :root[data-fs] #raiseRow > .row .btn{flex:1 1 0} }

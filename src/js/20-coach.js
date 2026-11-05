@@ -37,7 +37,7 @@ function decisionsOf(rec, u){
       const toCall=Math.max(0, Math.min(cur-p.bet, p.stack));
       const opps=Object.entries(st).filter(([k,x])=>k!==u && !x.folded).length;
       out.push({street, board:board.slice(), a:e.a, paid:e.p, to:e.to, ai:!!e.ai, toCall, pot:potNow, stack:p.stack, opps, cur,
-        raises: street===0 ? Math.max(0, raises) : raises, aggrBefore: street===1 ? preAggr : null, bb:rec.bb, bomb:rec.bomb});
+        raises, aggrBefore: street===1 ? preAggr : null, bb:rec.bb, bomb:rec.bomb});
     }
     p.stack-=e.p; p.bet+=e.p;
     if(e.a==='fold') p.folded=true;
@@ -66,7 +66,7 @@ function judge(d, hand, pos){
   if(d.street===0 && !d.bomb){
     const pc=pctOf(hand[0],hand[1]), top=Math.max(1,Math.round(pc*100)), thr=OPEN_THR[pos]||.2, short=d.stack<=12*bb;
     R.topic=LESSON_OF.pre; R.pc=pc;
-    if(d.raises<=1){ // nobody raised yet: only the blinds (and maybe limpers)
+    if(d.raises===0){ // nobody raised yet: only the blinds (and maybe limpers)
       if(pos==='bb' && d.toCall===0){
         if(A==='check' && pc<=.08){ R.verdict='ok'; R.why=L('Рука сильная (топ {0}%), а вы просто прочекали. Рейз заставил бы слабые руки платить больше.', top); R.better='raise'; }
         else R.why = A==='raise' ? L('Повысить с большого блайнда — нормально с рукой из топ {0}%.', top) : L('Бесплатно посмотреть флоп с большого блайнда — правильно.');
@@ -84,7 +84,7 @@ function judge(d, hand, pos){
         else { R.verdict='bad'; R.why=L('Слишком слабая рука для рейза (топ {0}%). С позиции «{1}» разумно играть лучшие {2}%.', top, POS_NAMES[pos], Math.round(thr*100)); R.better='fold'; }
       }
     } else { // facing a raise (or more)
-      const three = d.raises>=3, late = pos==='btn'||pos==='co';
+      const three = d.raises>=2, late = pos==='btn'||pos==='co';
       const reThr = three ? .025 : late ? .07 : .05;
       let callThr = three ? .06 : pos==='bb' ? .28 : late ? .18 : .14;
       if(d.toCall<=2*bb) callThr*=1.4;
