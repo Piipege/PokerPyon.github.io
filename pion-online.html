@@ -433,6 +433,7 @@ aside section + section, aside section + h2{border-top:1px solid var(--line);pad
 .fourc .card.s2{color:#1d63d8}
 .fourc .card.s3{color:#1c8a48}
 .sheetbg{position:fixed;inset:0;background:var(--scrim);z-index:44}
+.sheetclose{display:none}
 button,.btn,input,select{touch-action:manipulation}
 
 .table.dense .seat{--cw:44px;width:112px}
@@ -478,7 +479,7 @@ button,.btn,input,select{touch-action:manipulation}
 @keyframes drift1{to{transform:translate(25vw,20vh) scale(1.15)}}
 @keyframes drift2{to{transform:translate(-30vw,-15vh) scale(.9)}}
 @keyframes drift3{to{transform:translate(-20vw,25vh) scale(1.2)}}
-.wrap{position:relative;z-index:1}
+.wrap{position:relative}
 .fxcanvas{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:36}
 /* new year garland */
 .garland{display:none;position:absolute;left:14%;right:14%;top:7%;height:16px;z-index:1;pointer-events:none;background:radial-gradient(circle,#ff5b6b 0 3px,transparent 3.6px) 0 50%/48px 16px repeat-x,radial-gradient(circle,#ffd86b 0 3px,transparent 3.6px) 12px 50%/48px 16px repeat-x,radial-gradient(circle,#6bd6ff 0 3px,transparent 3.6px) 24px 50%/48px 16px repeat-x,radial-gradient(circle,#8fe0b5 0 3px,transparent 3.6px) 36px 50%/48px 16px repeat-x;filter:drop-shadow(0 0 4px #fff8);animation:twinkle 1.6s steps(2) infinite}
@@ -519,7 +520,7 @@ button,.btn,input,select{touch-action:manipulation}
   .split{grid-template-columns:1fr}
   .meta .btn.small,.tables .btn.small,.stepper .btn.small,.sethead .btn.small{flex:none}
   #bLearn,#bKeys{display:none}
-  .table.dense .seat{--cw:27px;width:68px}
+  .table.dense .seat{--cw:27px;width:70px}
   .table.dense .seat.me{--cw:44px;width:112px}
   .table.dense .seat .name,.table.dense .seat .stack{font-size:10.5px}
   .table.dense .seat .name em{display:none}
@@ -571,12 +572,39 @@ button,.btn,input,select{touch-action:manipulation}
   .sumbox{font-size:12px;padding:8px 10px}
   .table{aspect-ratio:3/3.7}
   body.inlobby .controls{display:none}
+  /* minimal phone game layout: header / table fills the rest / controls — nothing overlaps */
+  body.tight:not(.inlobby){padding-block:6px 0;height:100dvh;overflow:hidden}
+  body.tight:not(.inlobby) .wrap{height:calc(100dvh - 6px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px}
+  body.tight:not(.inlobby) header{flex:none}
+  body.tight:not(.inlobby) h1,.mhide{display:none}
+  body.tight:not(.inlobby) .stage{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:6px}
+  body.tight:not(.inlobby) .table{flex:1 1 auto;min-height:0;aspect-ratio:auto;height:auto}
+  body.tight:not(.inlobby) .controls{position:static;flex:none;box-shadow:none;border-radius:14px}
+  body.tight:not(.inlobby) .felt{inset:7% 7%}
+  .tight .seat.hidecards .cards{display:none}
+  .tight .seat:not(.me) .cards{position:absolute;left:calc(50% + 6px);top:50%;transform:translate(-50%,-50%);z-index:4;--cw:25px;min-height:0;gap:2px}
+  .tight .seat:not(.me) .cards .card{box-shadow:0 2px 6px #000a}
+  .tight .seat:not(.me) .vp,.tight .seat .name em,.tight .banner{display:none}
+  .tight .seat:not(.me) .hn{display:none}
+  .tight .hint.minor{display:none}
+  .tight .sumbox .other{display:none}
+  .tight .fair.ok,.tight .netchip.good{display:none}
+  .tight .seat{width:76px}
+  .tight .seat.me{width:120px}
+  .tight .seat.showcards .bubble,.tight .seat.showcards .emo{display:none}
+  .tight .center .board{--cw:28px;gap:3px}
+  .tight .board .card .s1,.tight .seat:not(.me) .cards .card .s1{display:none}
+  .tight .board .card .r,.tight .seat:not(.me) .cards .card .r{font-size:calc(var(--cw)*.44);left:3px;top:2px}
+  .tight .board .card .s2,.tight .seat:not(.me) .cards .card .s2{font-size:calc(var(--cw)*.6);right:2px;bottom:1px}
+  .tight .seat .plate{padding:3px 4px 4px 14px}
+  .tight .plate .ava{width:26px;height:26px;left:-11px}
   body.inlobby .table{aspect-ratio:auto;height:calc(100vh - 110px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:480px}
   #bPanel{display:inline-flex;align-items:center}
   #bAway{flex:none}
   .hdrvol{display:none}
   aside{position:fixed;left:0;right:0;bottom:0;z-index:45;max-height:78vh;overflow:auto;border-radius:18px 18px 0 0;transform:translateY(105%);transition:transform .45s var(--ease);padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));box-shadow:0 -20px 60px #000a}
   aside.open{transform:none}
+  .sheetclose{display:block;position:sticky;top:0;align-self:flex-end;z-index:2;margin-bottom:-6px}
   .controls{position:sticky;bottom:0;z-index:30;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));box-shadow:0 -12px 30px #0007}
   #actRow .btn,#preRow .btn{min-height:52px;font-size:16px}
   .rprow{grid-template-columns:minmax(0,1fr) auto 56px;font-size:12px}
@@ -602,8 +630,8 @@ button,.btn,input,select{touch-action:manipulation}
     <div class="meta">
       <span id="tableChip" class="chip" hidden>Стол <b id="tableCode"></b><span id="hostTag" class="tag" hidden>ведущий</span><button class="btn small ghost" id="bCopy">Позвать друзей</button></span>
       <span>Блайнды <b id="blinds">10/20</b><span id="blindUp" class="up"></span></span>
-      <span>Раздача <b id="handNo">—</b></span>
-      <span>Улица <b id="street">—</b></span>
+      <span class="mhide">Раздача <b id="handNo">—</b></span>
+      <span class="mhide">Улица <b id="street">—</b></span>
       <select class="lang" id="langSel" aria-label="Язык"></select>
       <button class="btn small ghost" id="bLearn">Обучение</button>
       <button class="btn small ghost" id="bSettings">Настройки</button>
@@ -769,6 +797,7 @@ button,.btn,input,select{touch-action:manipulation}
   </div>
 
   <aside>
+    <button class="btn small sheetclose" id="sheetClose" type="button">Закрыть</button>
     <section>
       <h2>Чат</h2>
       <ul class="chat" id="chat" aria-live="polite"></ul>
@@ -2621,7 +2650,7 @@ function renderSummary(){
   const rows=(r.win||[]).map(w=>{
     const sh=r.shown[w.u];
     return `<div class="srow2"><b class="win">🏆 ${esc(nameOf(r,w.u))} +${esc(fmtWin(w.amt, r.bb))}</b>${w.hn?`<span>${esc(t(w.hn))}</span>`:`<span class="muted">${t('без вскрытия')}</span>`}${sh?`<span class="mini">${sh.c.map(k=>fmtCard(keyCard(k))).join(' ')}</span>`:''}</div>`;
-  }).join('') + Object.entries(r.shown).filter(([u])=>!(r.win||[]).some(w=>w.u===u)).map(([u,sh])=>`<div class="srow2"><span>${esc(nameOf(r,u))}</span><span>${esc(t(sh.hn))}</span><span class="mini">${sh.c.map(k=>fmtCard(keyCard(k))).join(' ')}</span></div>`).join('');
+  }).join('') + Object.entries(r.shown).filter(([u])=>!(r.win||[]).some(w=>w.u===u)).map(([u,sh])=>`<div class="srow2 other"><span>${esc(nameOf(r,u))}</span><span>${esc(t(sh.hn))}</span><span class="mini">${sh.c.map(k=>fmtCard(keyCard(k))).join(' ')}</span></div>`).join('');
   box.innerHTML=`<div class="sumhead"><b>${t('Итоги раздачи №{0}', r.no)}</b><span class="row"><button type="button" class="btn small" data-sum="replay">${t('Повтор')}</button><button type="button" class="btn small ghost" data-sum="close" aria-label="${t('Закрыть')}">✕</button></span></div>${rows}`;
   box.hidden=false;
 }
@@ -2813,6 +2842,7 @@ function openSheet(v){ const a=document.querySelector('aside'); a.classList.togg
 document.querySelector('aside').id='aside';
 $('bPanel').onclick=()=>openSheet(!document.querySelector('aside').classList.contains('open'));
 $('sheetBg').onclick=()=>openSheet(false);
+$('sheetClose').onclick=()=>openSheet(false);
 $('hdrVol').value=Math.round(CFG.vol*100);
 $('hdrVol').oninput=e=>{ CFG.vol=(+e.target.value)/100; saveCfg(); if(!snd.on && CFG.vol>0){ snd.on=true; store.set('pion-sound','1'); updSound(); } };
 $('hdrVol').onchange=()=>SFX.chip();
@@ -2944,6 +2974,8 @@ function render(){
     if(status+'|'+LANG!==N.lastAct){ N.lastAct=status+'|'+LANG; N.act.textContent=t(status); N.act.style.animation='none'; void N.act.offsetWidth; N.act.style.animation=''; }
 
     const cs = cardsFor(i);
+    N.el.classList.toggle('hidecards', s.uid!==myUid && cs.length>0 && cs.every(c=>!c));
+    N.el.classList.toggle('showcards', s.uid!==myUid && cs.some(Boolean));
     const hl = c => c && isSD && s.won>0 && bestSet.has(cardKey(c));
     const csig = S.handNo+':'+cs.map(c=>c?cardKey(c)+(hl(c)?'*':''):'b').join(',')+(isSD&&s.folded?'d':'');
     if(csig!==N.cardSig){
@@ -2973,7 +3005,12 @@ function render(){
       if(online && !s.bot){ nc = s.uid===S.hostUid || (MODE==='host' && s.uid===myUid) ? 'host' : s.offline ? 'off' : netClass((S.net||{})[s.uid]); }
       N.net.hidden=!nc; N.net.className='net '+nc; N.net.title = nc ? (nc==='host'?t('Ведущий'):((S.net||{})[s.uid]>=0?t('Связь: {0} мс',(S.net||{})[s.uid]):t('Связь: потеряна'))) : ''; }
 
-    const bx = x+(50-x)*.42, by = y+(46-y)*.42;
+    let bx = x+(50-x)*.42, by = y+(46-y)*.42;
+    if(mq.matches && Ht>0){
+      const hh = N.el.offsetHeight/2 + 13;
+      bx = x;
+      by = s.uid===myUid ? y - (hh)/Ht*100 : (y < 58 ? y + (hh)/Ht*100 : y - (hh)/Ht*100);
+    }
     if(s.bet>N.prevBet && !S.collect && seatSig===sig){
       const f=document.createElement('div'); f.className='fly mini'; f.dataset.den=denom(s.bet-N.prevBet); f.textContent=fmt(s.bet-N.prevBet); f.style.left=x+'%'; f.style.top=y+'%'; $('fx').append(f);
       requestAnimationFrame(()=>requestAnimationFrame(()=>{ f.style.left=bx+'%'; f.style.top=by+'%'; f.style.opacity='0'; }));
@@ -3154,7 +3191,7 @@ function renderControls(){
   $('bRebuy').hidden = !canRebuy; $('bRebuy').textContent=t('Докупиться на {0}', S.start);
 
   if(p) $('bCall').textContent = toCall>0 ? (toCall>=p.stack ? t('Олл-ин {0}', fmt(p.stack)) : t('Колл {0}', fmt(toCall))) : t('Чек');
-  let hint='';
+  let hint='', minor=false;
   if(mine){
     const {min,max}=raiseBounds();
     const canRaise = max>S.currentBet && toCall<p.stack;
@@ -3166,7 +3203,7 @@ function renderControls(){
     ['bCall','bRaise'].forEach(id=>$(id).classList.remove('confirm'));
     if(confirmArm && Date.now()-confirmArm.at<3500){ const id=confirmArm.type==='raise'?'bRaise':'bCall'; $(id).classList.add('confirm'); $(id).textContent=t('Точно? {0}', fmt(confirmArm.paid)); }
     const odds = toCall>0 ? Math.round(toCall/(potTotal()+toCall)*100) : 0;
-    hint = t('Ваш ход');
+    hint = t('Ваш ход'); minor=true;
   } else if(pending!==null){
     hint=t('Ход отправлен ведущему…');
   } else if(MODE==='host' && !S.started){
@@ -3184,9 +3221,9 @@ function renderControls(){
     hint=t('Вы сядете в игру со следующей раздачи.');
   } else {
     const tp=seats()[S.turn];
-    hint = tp ? t('Ходит {0}…', esc(tp.bot?t(tp.name):tp.name)) : t('Сдаём карты…');
+    hint = tp ? t('Ходит {0}…', esc(tp.bot?t(tp.name):tp.name)) : t('Сдаём карты…'); minor=true;
   }
-  $('hint').innerHTML=hint;
+  $('hint').innerHTML=hint; $('hint').classList.toggle('minor', minor || !hint);
 }
 
 setInterval(()=>{
