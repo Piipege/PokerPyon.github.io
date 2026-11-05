@@ -75,7 +75,11 @@ $('preCF').onclick=()=>setPre('checkfold');
 $('preC').onclick=()=>{ const p=seats()[mySeat()]; if(p) setPre(S.currentBet-p.bet>0 ? 'call' : 'check'); };
 $('preCA').onclick=()=>setPre('callany');
 $('bShow').onclick=()=>{ if(MODE==='guest') sendHost({t:'show'}); else showCards(mySeat()); };
-function updSound(){ $('bSound').textContent = t(snd.on ? 'Звук: вкл' : 'Звук: выкл'); $('bSound').setAttribute('aria-pressed', snd.on); }
+function updSound(){
+  const label=t(snd.on ? 'Звук: вкл' : 'Звук: выкл'), b=$('bSound');
+  b.textContent = snd.on ? '🔊' : '🔇'; b.title=label; b.setAttribute('aria-label', label); b.setAttribute('aria-pressed', snd.on);
+  const m=$('mSound'); if(m){ m.querySelector('i').textContent=b.textContent; m.querySelector('span').textContent=label; }
+}
 $('bSound').onclick=()=>{ snd.on=!snd.on; store.set('pion-sound', snd.on?'1':'0'); updSound(); if(snd.on) SFX.turn(); };
 updSound();
 function checkPre(){

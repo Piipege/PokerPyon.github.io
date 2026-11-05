@@ -4,7 +4,8 @@ resetView();
 $('nick').value = store.get('pion-nick') || '';
 const hashCode = (location.hash.match(/^#t-([a-z0-9]{4})$/i)||[])[1];
 function savedHost(){ try{ const r=JSON.parse(localStorage.getItem('pion-host')||'null'); if(r && r.S && r.code && Date.now()-r.at < 12*3600e3) return r; }catch(e){} return null; }
-function showResume(){ try{ showQuick(); }catch(e){} const r=savedHost(), g=!r && savedGuest(); $('bResume').hidden=!(r||g); if(r) $('bResume').textContent=t('Вернуться к своему столу {0}', r.code); else if(g) $('bResume').textContent=t('Вернуться за стол {0}', g.code); }
+function renderPfLine(){ const pf=mySummary(); $('pfLine').textContent = pf && pf.h ? t('Мой профиль · {0} раздач · VPIP {1}%', pf.h, pf.vp) : t('Мой профиль и статистика'); }
+function showResume(){ try{ showQuick(); renderPfLine(); }catch(e){} const r=savedHost(), g=!r && savedGuest(); $('bResume').hidden=!(r||g); if(r) $('bResume').textContent=t('Вернуться к своему столу {0}', r.code); else if(g) $('bResume').textContent=t('Вернуться за стол {0}', g.code); }
 showResume();
 if(hashCode){ lobbyTab('open'); $('joinCode').value = hashCode.toUpperCase(); $('lobbyTitle').textContent=t('Вас позвали за стол'); }
 applyLang();

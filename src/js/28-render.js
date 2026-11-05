@@ -271,7 +271,7 @@ function renderPlus(mine, i, p){
     } else od.innerHTML=parts.join('');
     od.hidden=!parts.length;
   } else od.hidden=true;
-  highlightMade(on && HS.hMade ? helpCache.fiveCards : null);
+  highlightMade(on && HS.hMade && helpCache.fiveCards ? coreCards(helpCache.fiveCards, helpCache.cat) : null);
 }
 
 function renderControls(){

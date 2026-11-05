@@ -67,3 +67,14 @@ function showQuick(){
 }
 $('bQuick').onclick=()=>{ const last=store.get('pion-last'); if(last==='solo') $('bSolo').click(); else if(last==='create') $('bCreate').click(); };
 
+
+/* phone menu (☰): profile, learning and settings in big labelled buttons; sound, invite and exit too */
+function toggleMenu(v){
+  const pop=$('menuPop'), on = v ?? pop.hidden;
+  if(on){ $('mCopy').hidden = $('tableChip').hidden || $('bCopy').hidden; $('mExit').hidden = $('bExit').hidden; updSound(); }
+  pop.hidden=!on; $('bMenu').setAttribute('aria-expanded', on);
+}
+$('bMenu').onclick=e=>{ e.stopPropagation(); toggleMenu(); };
+$('menuPop').onclick=e=>{ const b=e.target.closest('[data-proxy]'); if(!b) return; const id=b.dataset.proxy; if(id!=='bSound') toggleMenu(false); $(id).click(); if(id==='bSound') updSound(); };
+document.addEventListener('click', e=>{ if(!$('menuPop').hidden && !e.target.closest('#menuPop') && !e.target.closest('#bMenu')) toggleMenu(false); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('menuPop').hidden) toggleMenu(false); });

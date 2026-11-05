@@ -456,7 +456,7 @@ button,.btn,input,select{touch-action:manipulation}
   .banner{font-size:calc(12px*var(--fs));max-width:210px}
   .split{grid-template-columns:1fr}
   .meta .btn.small,.tables .btn.small,.stepper .btn.small,.sethead .btn.small{flex:none}
-  #bLearn,#bKeys{display:none}
+  #bKeys{display:none}
   .table.dense .seat{--cw:27px;width:70px}
   .table.dense .seat.me{--cw:44px;width:112px}
   .table.dense .seat .name,.table.dense .seat .stack{font-size:calc(10.5px*var(--fs))}
@@ -473,11 +473,7 @@ button,.btn,input,select{touch-action:manipulation}
   h1 span{display:none}
   .meta{gap:6px 8px;font-size:calc(11.5px*var(--fs))}
   #langSel{display:none}
-  #bSettings,#bSound,#bPanel,#bExit,#bCopy{font-size:0;padding:6px 9px;min-width:34px}
-  #bSettings::before{content:"⚙";font-size:calc(16px*var(--fs))}
-  #bSound::before{content:"🔇";font-size:calc(15px*var(--fs))}
-  #bSound[aria-pressed="true"]::before{content:"🔊"}
-  #bPanel::before{content:"💬";font-size:calc(15px*var(--fs))}
+  #bExit,#bCopy{font-size:0;padding:6px 9px;min-width:34px}
   #bExit::before{content:"✕";font-size:calc(14px*var(--fs))}
   #bCopy::before{content:"🔗";font-size:calc(14px*var(--fs))}
   #bPanel .cdot{position:absolute;margin:0;transform:translate(10px,-8px)}
@@ -490,8 +486,8 @@ button,.btn,input,select{touch-action:manipulation}
   #actRow .btn,#preRow .btn{min-height:46px;font-size:calc(15px*var(--fs));padding:8px 6px;white-space:nowrap}
   #preRow .pre-label{display:none}
   #bPause,#bAway{flex:none !important;font-size:0 !important;min-width:44px !important}
-  #bPause::before{content:"⏸";font-size:calc(17px*var(--fs))}
-  #bPause[aria-pressed="true"]::before{content:"▶"}
+  #bPause::before{content:"❚❚";letter-spacing:-2px;font-size:calc(15px*var(--fs))}
+  #bPause[aria-pressed="true"]::before{content:"▶\FE0E";letter-spacing:0}
   #bAway::before{content:"🚶";font-size:calc(16px*var(--fs))}
   #raiseRow{gap:6px;flex-wrap:nowrap}
   #raiseRow .raise{flex:1 1 auto;gap:6px}
@@ -725,9 +721,89 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
 .seat .plate{cursor:pointer}
 .lobbyprof{align-self:flex-start}
 @media (max-width:620px), (orientation:landscape) and (max-height:500px){
-  #bProfile{font-size:0;padding:6px 9px;min-width:34px}
-  #bProfile::before{content:"👤";font-size:calc(15px*var(--fs))}
   .profbox{padding:12px}
   .ptiles{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ptile b{font-size:calc(17px*var(--fs))}
 }
+
+/* ---------- header: the three main places stand out, sound and keys step back ---------- */
+.hnav{display:inline-flex;gap:6px;flex-wrap:wrap}
+.btn.nav{display:inline-flex;align-items:center;gap:7px;background:var(--panel-2);border-color:var(--line);color:var(--ivory);font-weight:600;padding:7px 13px}
+.btn.nav i{font-style:normal;font-size:calc(15px*var(--fs));line-height:1}
+.btn.nav:hover:not(:disabled){border-color:var(--pink)}
+.hmini{display:inline-flex;align-items:center;gap:4px;opacity:.8}
+.hmini:hover,.hmini:focus-within{opacity:1}
+.btn.icon{min-width:0;padding:5px 8px;font-size:calc(15px*var(--fs));line-height:1}
+.hmini .lang{font-size:calc(12px*var(--fs));padding:5px 6px}
+.hdrvol{width:72px}
+#bPanel .pico{font-style:normal;display:none}
+#bMenu{display:none}
+body.inlobby .gi,body.inlobby #bPanel{display:none}
+/* main menu: no game controls or empty chat behind it */
+body.inlobby .controls{display:none}
+body.inlobby aside > section:not(:last-child),body.inlobby aside > section:last-child > h2,body.inlobby #log{display:none}
+/* phone menu */
+.menupop{position:fixed;top:calc(52px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:55;width:min(300px,calc(100vw - 24px));background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:8px;display:flex;flex-direction:column;gap:4px;box-shadow:0 18px 40px #000a;animation:fadeIn .25s var(--ease) both}
+.mitem{display:flex;align-items:center;gap:12px;width:100%;text-align:start;background:transparent;border:0;border-radius:10px;padding:12px;font-size:calc(15px*var(--fs));font-weight:600;cursor:pointer;color:var(--ivory)}
+.mitem i{font-style:normal;width:24px;text-align:center;font-size:calc(17px*var(--fs))}
+.mitem:hover,.mitem:focus-visible{background:var(--hover)}
+.mitem.danger{color:#ff8fa8}
+.mitem[data-proxy="bSound"]{font-weight:500;color:var(--text-2)}
+/* ---------- main menu tiles ---------- */
+.lobbybox{gap:12px}
+.ltiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ltile{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:start;background:var(--panel-2);border:1px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;color:var(--ivory);transition:transform .2s var(--ease),border-color .3s,background .3s}
+.ltile:hover{transform:translateY(-2px);border-color:var(--pink);background:var(--hover)}
+.ltile i{font-style:normal;font-size:calc(24px*var(--fs));line-height:1;margin-bottom:4px}
+.ltile b{font-weight:700;font-size:calc(15px*var(--fs))}
+.ltile span{color:var(--muted);font-size:calc(12.5px*var(--fs));line-height:1.35}
+.ltile.primary{background:linear-gradient(140deg,var(--wine),var(--panel-2));border-color:var(--pink)}
+.ltile.primary span{color:var(--text-2)}
+.lobbybox:not([data-view="home"]) .ltiles,.lobbybox[data-view="home"] .lback{display:none}
+.lobbybox:not([data-view="home"]) #bResume,.lobbybox:not([data-view="home"]) #bQuick{display:none}
+.lback{align-self:flex-start;margin:-4px 0 -6px}
+.ptitle{font-family:var(--f-display);font-size:calc(16px*var(--fs));margin:0}
+.pfline{display:flex;align-items:center;gap:10px;width:100%;text-align:start;background:transparent;border:1px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;color:var(--text-2);font-size:calc(13.5px*var(--fs))}
+.pfline:hover{border-color:var(--pink);color:var(--ivory)}
+.pfline i{font-style:normal}
+.pfline span{flex:1;min-width:0}
+.pfline b{color:var(--pink);font-size:calc(18px*var(--fs));line-height:1}
+details.more{border:1px solid var(--line);border-radius:12px;padding:0 12px}
+details.more[open]{padding-bottom:12px}
+details.more summary{cursor:pointer;padding:10px 0;color:var(--text-2);font-weight:600;list-style:none}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::before{content:"＋ ";color:var(--pink)}
+details.more[open] summary::before{content:"－ "}
+details.more > *:not(summary){margin-top:8px}
+/* ---------- phone ---------- */
+@media (max-width:620px), (orientation:landscape) and (max-height:500px){
+  .btn.nav{padding:7px 10px}
+  /* in the game: a thin bar; the table, the action buttons and the numbers get the screen */
+  body:not(.inlobby) .hnav,body:not(.inlobby) .hmini,body:not(.inlobby) #bExit{display:none}
+  body:not(.inlobby) #bMenu{display:inline-flex}
+  body:not(.inlobby) header{min-height:0}
+  body:not(.inlobby) .meta{gap:6px}
+  #bPanel{font-size:0;padding:5px 8px;min-width:0}
+  #bPanel .pico{display:inline;font-size:calc(15px*var(--fs))}
+  #bMenu{font-size:calc(17px*var(--fs));padding:4px 10px}
+  /* in the main menu: the same places as on a computer, as labelled buttons */
+  body.inlobby .hmini{display:none}
+  body.inlobby header{flex-direction:column;align-items:stretch;gap:8px}
+  body.inlobby h1{text-align:center}
+  body.inlobby .meta{justify-content:center}
+  body.inlobby .hnav{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
+  body.inlobby .btn.nav{flex-direction:column;gap:3px;padding:8px 4px;font-size:calc(12px*var(--fs))}
+  body.inlobby .btn.nav i{font-size:calc(19px*var(--fs))}
+  .ltiles{gap:8px}
+  .ltile{padding:12px}
+}
+body.inlobby aside > section:last-child{border-top:0;padding-top:0}
+@media (max-width:620px), (orientation:landscape) and (max-height:500px){
+  body.inlobby aside{display:none}
+  body:not(.inlobby) #bPanel{margin-inline-start:auto}
+  body:not(.inlobby) .meta{flex:1;flex-wrap:nowrap}
+}
+@media (max-width:620px), (orientation:landscape) and (max-height:500px){
+  body.tight:not(.inlobby) .wrap{align-items:stretch}
+}
+.lobbybox:not([data-view="home"]) .pfline{display:none}
