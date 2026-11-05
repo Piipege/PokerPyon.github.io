@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#170912">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pion">
+<link rel="icon" href="@datauri(assets/icon.png)">
+<link rel="apple-touch-icon" href="@datauri(assets/apple-touch-icon.png)">
+<link rel="manifest" href="data:application/manifest+json;base64,@include(assets/manifest.b64)">
+<script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std"}catch(e){document.documentElement.dataset.theme="dark"}</script>
+<title>Покерный стол «Пион»</title>
+<script>@inline(vendor/peerjs.min.js)</script>
+<style>@inline(css/fonts.css)</style>
+<style>@inline(css/main.css)</style>
+</head>
+<body>
+<div class="bgfx" id="bgfx" aria-hidden="true" hidden><i></i><i></i><i></i></div>
+<canvas id="fxCanvas" class="fxcanvas" aria-hidden="true"></canvas>
+<div class="wrap">
+  <header>
+    <h1>Пион <span>·</span> <span class="sub">Техасский холдем</span></h1>
+    <div class="meta">
+      <span id="tableChip" class="chip" hidden>Стол <b id="tableCode"></b><span id="hostTag" class="tag" hidden>ведущий</span><button class="btn small ghost" id="bCopy">Позвать друзей</button></span>
+      <span>Блайнды <b id="blinds">10/20</b><span id="blindUp" class="up"></span></span>
+      <span class="mhide">Раздача <b id="handNo">—</b></span>
+      <span class="mhide">Улица <b id="street">—</b></span>
+      <select class="lang" id="langSel" aria-label="Язык"></select>
+      <button class="btn small ghost" id="bLearn">Обучение</button>
+      <button class="btn small ghost" id="bSettings">Настройки</button>
+      <button class="btn small ghost" id="bKeys">Клавиши</button>
+      <button class="btn small ghost" id="bSound" aria-pressed="false">Звук: выкл</button>
+      <input type="range" id="hdrVol" class="hdrvol" min="0" max="100" step="5" aria-label="Громкость" title="Громкость">
+      <span id="fairChip" class="fair" hidden></span>
+      <span id="netChip" class="netchip" hidden></span>
+      <button class="btn small ghost" id="bPanel" type="button">Чат и история <i id="chatDot" class="cdot" hidden></i></button>
+      <button class="btn small ghost" id="bExit" hidden>Выйти</button>
+    </div>
+  </header>
+
+  <div class="stage">
+    <div class="table" id="table">
+      <div class="felt"></div>
+      <div class="garland" aria-hidden="true"></div>
+      <div class="center">
+        <div class="board" id="board"></div>
+        <div class="pot" id="potBox"><small>Банк</small><span id="pot">0</span></div>
+        <div class="banner" id="banner"></div>
+      </div>
+      <div id="bets"></div>
+      <div id="seats"></div>
+      <div id="fx"></div>
+
+      <div id="lobby" class="overlay">
+        <div class="box">
+          <h3 id="lobbyTitle">Садитесь за стол</h3>
+          <div class="who">
+            <button class="ava-btn" id="lobbyAva" type="button" title="Изменить аватар" aria-label="Изменить аватар"></button>
+            <label class="field" for="nick">Ваше имя за столом
+              <input id="nick" maxlength="16" autocomplete="nickname" placeholder="Например, Лиза">
+            </label>
+          </div>
+          <button class="btn primary" id="bResume" hidden></button>
+          <button class="btn primary" id="bQuick" hidden></button>
+          <div class="tabs" role="tablist">
+            <button class="tab" role="tab" data-ltab="open" aria-selected="true">Открытые столы</button>
+            <button class="tab" role="tab" data-ltab="create" aria-selected="false">Создать стол</button>
+            <button class="tab" role="tab" data-ltab="solo" aria-selected="false">С ботами</button>
+            <button class="tab" role="tab" data-ltab="learn" aria-selected="false">Обучение</button>
+          </div>
+          <div data-lpane="open" class="part">
+            <ul class="tables" id="tables"><li class="empty">Ищем открытые столы…</li></ul>
+            <div class="hint" id="tablesNote"></div>
+            <div class="split">
+              <label class="field" for="joinCode">Код стола
+                <input id="joinCode" class="code-in" maxlength="4" placeholder="K7QM" autocomplete="off">
+              </label>
+              <button class="btn" id="bJoin" style="align-self:end">Войти по коду</button>
+            </div>
+          </div>
+          <div data-lpane="create" class="part" hidden>
+            <div class="split">
+              <label class="field" for="botsN">Ботов за столом
+                <select id="botsN"><option value="0">Без ботов</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
+              </label>
+              <label class="field" for="botLvl">Сила ботов
+                <select id="botLvl"><option value="1">Новичок</option><option value="2" selected>Любитель</option><option value="3">Профи</option><option value="4">Акула</option><option value="0">Все разные</option></select>
+              </label>
+              <label class="field" for="stackN">Стартовый стек
+                <select id="stackN"><option>500</option><option selected>1000</option><option>2000</option><option>5000</option></select>
+              </label>
+              <label class="field" for="blindMode">Блайнды
+                <select id="blindMode"><option value="0" selected>Фиксированные</option><option value="10">Растут каждые 10 раздач</option><option value="6">Растут каждые 6 раздач</option></select>
+              </label>
+              <label class="field" for="bombEvery">Бомб-пот
+                <select id="bombEvery"><option value="0" selected>Выключен</option><option value="5">Каждые 5 раздач</option><option value="8">Каждые 8 раздач</option><option value="10">Каждые 10 раздач</option><option value="15">Каждые 15 раздач</option></select>
+              </label>
+              <label class="field" for="bombSize">Ставка в бомб-поте
+                <select id="bombSize"><option value="2">2 больших блайнда</option><option value="3">3 больших блайнда</option><option value="5" selected>5 больших блайндов</option><option value="10">10 больших блайндов</option></select>
+              </label>
+            </div>
+            <label class="field" for="tableName">Название стола (необязательно)<input id="tableName" maxlength="24" placeholder="Например, Пятничный покер" autocomplete="off"></label>
+            <label class="check" for="botRebuy"><input type="checkbox" id="botRebuy" checked> Боты докупаются, когда проигрывают все фишки</label>
+            <label class="check" for="publicOn"><input type="checkbox" id="publicOn" checked> Открытый стол — виден всем в лобби</label>
+            <label class="check strong" for="hOn"><input type="checkbox" id="hOn"> Режим помощи</label>
+            <fieldset class="helpset" id="hSet" hidden><legend>Подсказки</legend>
+              <label class="check" for="hOdds"><input type="checkbox" id="hOdds" checked> Шансы на победу</label>
+              <label class="check" for="hMade"><input type="checkbox" id="hMade" checked> Собранная комбинация</label>
+              <label class="check" for="hDraws"><input type="checkbox" id="hDraws" checked> Шансы собрать комбинации</label>
+              <label class="check" for="hAdv"><input type="checkbox" id="hAdv"> Подсказка решения и ауты</label>
+              <p class="hint small">Подсказки видят все игроки за столом, каждый — только про свои карты. Статистика игроков видна всегда.</p>
+            </fieldset>
+            <button class="btn primary" id="bCreate">Создать стол</button>
+          </div>
+          <div data-lpane="solo" class="part" hidden>
+            <div class="split">
+              <label class="field" for="soloN">Ботов за столом
+                <select id="soloN"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
+              </label>
+              <label class="field" for="soloLvl">Сила ботов
+                <select id="soloLvl"><option value="1">Новичок</option><option value="2" selected>Любитель</option><option value="3">Профи</option><option value="4">Акула</option><option value="0">Все разные</option></select>
+              </label>
+              <label class="field" for="soloBlinds">Блайнды
+                <select id="soloBlinds"><option value="0" selected>Фиксированные</option><option value="10">Растут каждые 10 раздач</option><option value="6">Растут каждые 6 раздач</option></select>
+              </label>
+              <label class="field" for="soloBomb">Бомб-пот
+                <select id="soloBomb"><option value="0" selected>Выключен</option><option value="5">Каждые 5 раздач</option><option value="10">Каждые 10 раздач</option></select>
+              </label>
+            </div>
+            <label class="check strong" for="sOn"><input type="checkbox" id="sOn"> Режим помощи</label>
+            <fieldset class="helpset" id="sSet" hidden><legend>Подсказки</legend>
+              <label class="check" for="sOdds"><input type="checkbox" id="sOdds" checked> Шансы на победу</label>
+              <label class="check" for="sMade"><input type="checkbox" id="sMade" checked> Собранная комбинация</label>
+              <label class="check" for="sDraws"><input type="checkbox" id="sDraws" checked> Шансы собрать комбинации</label>
+              <label class="check" for="sAdv"><input type="checkbox" id="sAdv" checked> Подсказка решения и ауты</label>
+              <p class="hint small">Подсказки видят все игроки за столом, каждый — только про свои карты. Статистика игроков видна всегда.</p>
+            </fieldset>
+            <label class="check" for="soloRebuy"><input type="checkbox" id="soloRebuy" checked> Боты докупаются, когда проигрывают все фишки</label>
+            <button class="btn primary" id="bSolo">Играть с ботами</button>
+          </div>
+          <div data-lpane="learn" class="part" hidden>
+            <p class="hint small">Курс из 10 уроков: от правил до выигрышной стратегии. В каждом уроке — короткая теория и практика на сгенерированных раздачах. После некоторых уроков можно сыграть с ботами-новичками под присмотром тренера.</p>
+            <div class="hint" id="learnProg2"></div>
+            <button class="btn primary" id="bLearn2" type="button">Открыть курс</button>
+          </div>
+          <div class="err" id="lobbyErr"></div>
+          <div class="hint" id="netNote">Загружаем игру по сети…</div>
+        </div>
+      </div>
+
+      <div id="keysOv" hidden class="overlay"><div class="box"><h3>Горячие клавиши</h3><dl class="keys" id="keysList"></dl><button class="btn" id="keysClose">Закрыть</button></div></div>
+      <div id="overlay" hidden class="overlay"><div class="box center-text"><h3 id="ovTitle"></h3><div id="ovText" class="hint"></div><button class="btn primary" id="restart">Новая игра</button></div></div>
+    </div>
+
+    <div class="controls">
+      <div class="row" id="preRow" hidden>
+        <span class="pre-label">Действие заранее</span>
+        <button class="btn toggle" id="preCF" aria-pressed="false">Чек / Фолд</button>
+        <button class="btn toggle" id="preC" aria-pressed="false">Чек</button>
+        <button class="btn toggle" id="preCA" aria-pressed="false">Колл любую</button>
+      </div>
+      <div class="row" id="actRow">
+        <button class="btn danger" id="bFold">Сбросить</button>
+        <button class="btn" id="bCall">Чек</button>
+        <button class="btn primary" id="bRaise">Рейз</button>
+        <button class="btn primary" id="bNext" hidden>Следующая раздача</button>
+        <button class="btn" id="bRebuy" hidden>Докупиться</button>
+        <button class="btn" id="bShow" hidden>Показать карты</button>
+        <button class="btn small ghost" id="bAway" hidden>Отойти</button>
+        <button class="btn" id="bGhost" hidden>Что выпало бы</button>
+        <button class="btn" id="bPause" hidden>Пауза</button>
+        <button class="btn" id="bWait" hidden>Подождать +15 с</button>
+      </div>
+      <div class="row" id="raiseRow">
+        <div class="raise">
+          <label for="amt" class="hint amtlabel">Ставка до</label>
+          <input type="range" id="amt" min="0" max="1000" step="10" value="40">
+          <output id="amtOut" for="amt">40</output>
+        </div>
+        <div class="row">
+          <button class="btn small" id="pHalf">½ банка</button>
+          <button class="btn small" id="pPot">Банк</button>
+          <button class="btn small" id="pAll">Олл-ин</button>
+        </div>
+      </div>
+      <div class="sumbox" id="sumBox" hidden></div>
+      <div class="odds" id="odds" hidden></div>
+      <div class="hint" id="hint">Выберите, как играть: с ботами или с друзьями.</div>
+    </div>
+  </div>
+
+  <aside>
+    <button class="btn small sheetclose" id="sheetClose" type="button">Закрыть</button>
+    <section>
+      <h2>Чат</h2>
+      <ul class="chat" id="chat" aria-live="polite"></ul>
+      <div class="quick emotes" id="emotes" aria-label="Эмоции"></div>
+      <div class="quick" id="quick"></div>
+      <form class="chatform" id="chatForm" autocomplete="off">
+        <input id="chatIn" maxlength="200" placeholder="Написать за стол…" aria-label="Сообщение в чат">
+        <button class="btn small primary" type="submit">Отправить</button>
+      </form>
+    </section>
+    <section>
+      <h2>Статистика</h2>
+      <div class="statwrap"><table class="stats" id="stats"></table></div>
+      <p class="hint small">VPIP — как часто игрок сам вкладывает фишки до флопа. PFR — как часто рейзит до флопа. W$SD — доля выигранных вскрытий. Метки появляются после 10 раздач.</p>
+    </section>
+    <section>
+      <h2>Раздачи</h2>
+      <ul class="hands" id="handList"></ul>
+      <button class="btn small" id="bSession" type="button">Итоги вечера</button>
+    </section>
+    <section>
+    <h2>История раздач</h2>
+    <ul class="log" id="log"></ul>
+    <details class="ranks">
+      <summary>Старшинство комбинаций</summary>
+      Стрит-флеш › Каре › Фулл-хаус › Флеш › Стрит › Сет › Две пары › Пара › Старшая карта. Туз может быть младшей картой в стрите A-2-3-4-5.
+    </details>
+    <details class="ranks">
+      <summary>Как играть с друзьями</summary>
+      Создайте стол и нажмите «Позвать друзей»: ссылка скопируется, отправьте её в чат. Друзья открывают ссылку, вводят имя и сразу садятся за стол. Ни регистрации, ни аккаунтов не нужно. Карты раздаёт браузер ведущего, каждый игрок получает только свои карты. Держите страницу ведущего открытой. На ход даётся 30 секунд.
+    </details>
+    </section>
+  </aside>
+</div>
+
+<div id="sheetBg" class="sheetbg" hidden></div>
+<div id="replayOv" class="overlay fixed" hidden>
+  <div class="box rpbox" role="dialog" aria-modal="true">
+    <div id="replayBody"></div>
+    <div class="row rpctl">
+      <button class="btn small" id="rpFirst" type="button" aria-label="В начало">⏮</button>
+      <button class="btn small" id="rpPrev" type="button" aria-label="Назад">◀</button>
+      <button class="btn small primary" id="rpPlay" type="button" aria-label="Воспроизвести">▶</button>
+      <button class="btn small" id="rpNext" type="button" aria-label="Дальше">▶▶</button>
+      <button class="btn small" id="rpLast" type="button" aria-label="В конец">⏭</button>
+      <button class="btn small ghost" id="rpCopy" type="button">Копировать текстом</button>
+      <button class="btn small ghost" id="rpClose" type="button">Закрыть</button>
+    </div>
+  </div>
+</div>
+<div id="sessOv" class="overlay fixed" hidden>
+  <div class="box" role="dialog" aria-modal="true">
+    <h3>Итоги вечера</h3>
+    <div id="sessBody"></div>
+    <div class="row"><button class="btn small" id="sessCopy" type="button">Скопировать текст</button><button class="btn small" id="sessImg" type="button">Сохранить картинкой</button><button class="btn small primary" id="sessClose" type="button">Закрыть</button></div>
+  </div>
+</div>
+<div id="learnOv" class="overlay fixed" hidden>
+  <div class="box learnbox" role="dialog" aria-modal="true" aria-labelledby="learnTitle">
+    <div class="sethead"><h3 id="learnTitle">Обучение</h3><span class="hint" id="learnProg"></span><button class="btn small primary" id="learnClose">Закрыть</button></div>
+    <div class="learn"><nav class="lessons" id="lessons" aria-label="Уроки"></nav><div class="lesson" id="lesson"></div></div>
+  </div>
+</div>
+<div id="setOv" class="overlay fixed" hidden>
+  <div class="box setbox" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+    <div class="sethead"><h3 id="setTitle">Настройки</h3><button class="btn small primary" id="setClose">Готово</button></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-stab="profile" aria-selected="true">Аватар</button>
+      <button class="tab" role="tab" data-stab="look" aria-selected="false">Оформление</button>
+      <button class="tab" role="tab" data-stab="view" aria-selected="false">Вид и игра</button>
+      <button class="tab" role="tab" data-stab="sound" aria-selected="false">Звук</button>
+      <button class="tab" role="tab" data-stab="keys" aria-selected="false">Клавиши</button>
+      <button class="tab" role="tab" data-stab="net" aria-selected="false">Сеть</button>
+    </div>
+    <div data-spane="profile" class="part">
+      <div class="avedit"><div class="avbig" id="avBig"></div><div class="avparts" id="avParts"></div></div>
+      <button class="btn small" id="avRand" type="button">Случайный образ</button>
+    </div>
+    <div data-spane="look" class="part" hidden>
+      <div class="field">Тема<div class="seg" id="themeSeg"><button type="button" data-v="dark">Тёмная</button><button type="button" data-v="light">Светлая</button><button type="button" data-v="auto">Как в системе</button><button type="button" data-v="night">Ночная</button></div></div>
+      <div class="field">Цвет стола<div class="pick" id="tableSeg"></div></div>
+      <div class="field">Рубашка карт<div class="pick" id="backSeg"></div></div>
+      <div class="field">Вид карт<div class="pick" id="faceSeg"></div></div>
+      <div class="field">Узор на сукне<div class="pick" id="patSeg"></div></div>
+      <div class="field">Фишки<div class="pick" id="chipSeg"></div></div>
+      <div class="field">Скорость анимаций<div class="pick" id="speedSeg"></div><span class="hint small">За вашим столом и в игре с ботами меняет и темп раздачи.</span></div>
+      <label class="field" for="cfgSeason">Сезонное оформление
+        <select id="cfgSeason"><option value="auto">Автоматически по дате</option><option value="off">Выключено</option><option value="ny">Новогоднее</option><option value="spring">Весеннее</option></select>
+      </label>
+      <label class="check" for="cfgFx"><input type="checkbox" id="cfgFx"> Праздничные эффекты: конфетти при крупном выигрыше, искры в бомб-поте</label>
+      <label class="check" for="cfgBg"><input type="checkbox" id="cfgBg"> Анимированный фон (на слабых телефонах лучше выключить)</label>
+    </div>
+    <div data-spane="view" class="part" hidden>
+      <label class="field" for="cfgLang">Язык<select id="cfgLang"></select></label>
+      <label class="check" for="cfgFour"><input type="checkbox" id="cfgFour"> Четырёхцветная колода: ♦ синие, ♣ зелёные</label>
+      <label class="check" for="cfgConfirm"><input type="checkbox" id="cfgConfirm"> Подтверждать ставки больше половины стека</label>
+      <label class="check" for="cfgTips"><input type="checkbox" id="cfgTips"> Показывать подсказки режима помощи, если стол их разрешает</label>
+      <label class="check" for="cfgSum"><input type="checkbox" id="cfgSum"> Показывать итоги после каждой раздачи</label>
+      <label class="check" for="cfgBB"><input type="checkbox" id="cfgBB"> Показывать стеки и ставки в больших блайндах (BB) вместо фишек</label>
+      <label class="field" for="cfgDelay">Пауза перед следующей раздачей (за вашим столом или с ботами)
+        <select id="cfgDelay"><option value="3">3 секунды</option><option value="5">5 секунд</option><option value="8">8 секунд</option><option value="12">12 секунд</option></select>
+      </label>
+    </div>
+    <div data-spane="sound" class="part" hidden>
+      <label class="check" for="cfgSound"><input type="checkbox" id="cfgSound"> Звук включён</label>
+      <label class="field" for="cfgPack">Набор звуков<select id="cfgPack"><option value="pion">Пион</option><option value="casino">Казино</option><option value="soft">Мягкий</option><option value="bit">8-бит</option></select></label>
+      <label class="field" for="cfgVol">Громкость<input type="range" id="cfgVol" min="0" max="100" step="5"></label>
+      <label class="check"><input type="checkbox" data-sfx="cards"> Раздача карт</label>
+      <label class="check"><input type="checkbox" data-sfx="chips"> Фишки</label>
+      <label class="check"><input type="checkbox" data-sfx="turn"> Ваш ход</label>
+      <label class="check"><input type="checkbox" data-sfx="win"> Выигрыш банка</label>
+      <label class="check"><input type="checkbox" data-sfx="chat"> Сообщения в чате</label>
+      <label class="check" for="cfgVibe"><input type="checkbox" id="cfgVibe"> Вибрация, когда ваш ход (телефон)</label>
+      <label class="check" for="cfgNotify"><input type="checkbox" id="cfgNotify"> Уведомление, когда ваш ход, если вкладка свёрнута</label>
+      <label class="check" for="cfgWake"><input type="checkbox" id="cfgWake"> Не гасить экран во время игры</label>
+      <button class="btn small" id="sndTest" type="button">Проверить звук</button>
+    </div>
+    <div data-spane="net" class="part" hidden>
+      <p class="hint small">Если у кого-то не получается подключиться к столу (часто на мобильном интернете), можно указать свой TURN-сервер — например, бесплатный аккаунт Metered или Cloudflare. Данные хранятся только в этом браузере. Достаточно, чтобы TURN был указан у ведущего или у того, кто не может подключиться.</p>
+      <label class="field" for="turnUrl">Адрес TURN<input id="turnUrl" placeholder="turn:example.com:3478" autocomplete="off" spellcheck="false"></label>
+      <div class="split">
+        <label class="field" for="turnUser">Логин<input id="turnUser" autocomplete="off" spellcheck="false"></label>
+        <label class="field" for="turnPass">Пароль<input id="turnPass" type="password" autocomplete="off"></label>
+      </div>
+      <button class="btn small" id="turnSave" type="button">Сохранить</button>
+    </div>
+    <div data-spane="keys" class="part" hidden>
+      <p class="hint small">Нажмите на кнопку с клавишей, затем нажмите новую. Если клавиша уже занята, действия поменяются местами. Esc — отмена.</p>
+      <dl class="keys rebind" id="rebindList"></dl>
+      <button class="btn small" id="keysReset" type="button">Вернуть клавиши по умолчанию</button>
+    </div>
+  </div>
+</div>
+<script>@i18n</script>
+<script>@app</script>
+</body>
+</html>
