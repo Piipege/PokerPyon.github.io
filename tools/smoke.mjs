@@ -143,6 +143,31 @@ console.log('fold warning when checking is free');
   await p.context().close();
 }
 
+console.log('game modes: Omaha (pot-limit) and knockout');
+{
+  const p = await page();
+  const playUntil = async (cond, ms) => { const t0 = Date.now(); while(Date.now() - t0 < ms){ if(await p.evaluate(cond)) return true; await p.evaluate(() => { const b = ['bCall', 'bNext'].map(id => document.getElementById(id)).find(b => b && !b.hidden && !b.disabled && b.offsetParent); if(b) b.click(); }); await p.waitForTimeout(150); } return false; };
+  await p.click('[data-ltab="solo"]'); await p.selectOption('#soloGame', 'omaha'); await p.selectOption('#soloN', '3'); await p.click('#bSolo');
+  ok(await p.waitForFunction(() => document.querySelectorAll('.seat.me .cards .card').length === 4, null, { timeout: 10000 }).then(() => true, () => false), 'Omaha deals four hole cards');
+  ok(await playUntil(() => { const b = document.getElementById('bRaise'); return b && !b.hidden && !b.disabled && b.offsetParent; }, 30000), 'reached my turn in Omaha');
+  const pl = await p.evaluate(() => { const S = window.__pion.S, me = S.seats.find(s => s.uid === window.__pion.myUid), pot = S.seats.reduce((a, s) => a + s.total, 0); return { max: +document.getElementById('amt').max, cap: Math.min(me.bet + me.stack, S.currentBet + pot + Math.max(0, S.currentBet - me.bet)), all: me.bet + me.stack, label: document.getElementById('pAll').textContent }; });
+  ok(pl.max === pl.cap && pl.max < pl.all, `pot-limit caps the raise: max ${pl.max} = pot limit ${pl.cap} < all-in ${pl.all}, button «${pl.label}»`);
+  ok(await playUntil(() => window.__pion.HIST().length >= 2, 60000) && await p.evaluate(() => window.__pion.HIST().every(r => !r.mine || r.mine.length === 4)), 'Omaha hands are played and recorded with four cards');
+  await p.context().close();
+  const q = await page();
+  await q.click('[data-ltab="solo"]'); await q.selectOption('#soloFmt', 'ko'); await q.selectOption('#soloN', '1'); await q.click('#bSolo');
+  await q.waitForFunction(() => window.__pion.S && window.__pion.S.handNo >= 1);
+  ok(await q.evaluate(() => window.__pion.S.ko === true && window.__pion.S.blindEvery > 0 && window.__pion.S.botRebuy === false), 'knockout: no rebuys, blinds rise');
+  await q.evaluate(() => { const S = window.__pion.S; S.seats[1].stack = 30; S.seats[0].stack = 3000; });
+  const done = await (async () => { const t0 = Date.now(); while(Date.now() - t0 < 90000){ if(await q.evaluate(() => !!window.__pion.S.koDone)) return true; await q.evaluate(() => { const v = id => { const b = document.getElementById(id); return b && !b.hidden && !b.disabled && b.offsetParent ? b : null; }; const b = v('bRaise') ? (document.getElementById('amt').value = document.getElementById('amt').max, v('bRaise')) : v('bCall') || v('bNext'); if(b) b.click(); }); await q.waitForTimeout(150); } return false; })();
+  ok(done, 'the knockout ends when one player is left');
+  const r = await q.evaluate(() => { const S = window.__pion.S; return { bot: S.seats[1], me: S.seats[0], ov: !document.getElementById('overlay').hidden, rows: document.querySelectorAll('.kolist li').length, title: document.getElementById('ovTitle').textContent }; });
+  ok(r.ov && r.rows === 2 && /турнир/i.test(r.title), `standings shown: «${r.title}», ${r.rows} places`);
+  ok((r.bot.busted && r.bot.place === 2 && r.me.kos === 1) || (r.me.busted && r.me.place === 2), 'places and knockouts are counted');
+  ok(!(r.bot.rebuys > 0), 'nobody rebought');
+  await q.context().close();
+}
+
 console.log('coach verdicts on fixed hands');
 {
   const p = await page();

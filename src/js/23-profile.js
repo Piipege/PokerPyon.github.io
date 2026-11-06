@@ -46,12 +46,13 @@ function summarize(rec){
     people:rec.seats.filter(s=>!s.b && s.u!==myUid).length, bots:rec.seats.filter(s=>s.b).length,
     vp:pre.some(d=>d.a==='call'||d.a==='raise'||d.a==='bet'), pf:pre.some(d=>d.a==='raise'||d.a==='bet'),
     flop:reachedFlop && !foldedPre, sd, sdw:sd && !!win,
-    cat: !folded && board.length===5 ? best(hand.concat(board)).cat : -1,
+    cat: !folded && board.length===5 ? bestHand(hand, board).cat : -1, game: hand.length===4 ? 'omaha' : 'holdem',
     acc:null, // coach accuracy, filled in later when the browser is idle
   };
 }
 // coach accuracy for one hand (0…1), or -1 if you made no decisions
 function accOf(rec){
+  if(rec.mine.length===4) return -1; // the coach judges Hold'em only
   const hand=rec.mine.map(keyCard), pos=posOf(rec, myUid), ds=decisionsOf(rec, myUid);
   if(!ds.length) return -1;
   return ds.reduce((a,d)=>{ const v=judge(d, hand, pos).verdict; return a+(v==='good'?1:v==='ok'?.5:0); },0)/ds.length;

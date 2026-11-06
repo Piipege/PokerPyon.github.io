@@ -151,7 +151,7 @@ function myRecap(){
     const s=summarize(r); if(!s) return;
     R.net+=s.net;
     if(s.won>0){ R.wins++; if(s.won>R.big){ R.big=s.won; R.bigBB=Math.round(s.won/(s.bb||20)); } }
-    if((s.sdw || s.won>0) && s.cat>R.bestCat){ R.bestCat=s.cat; R.bestCards=best(r.mine.concat(r.board||[]).map(keyCard)).cards; }
+    if((s.sdw || s.won>0) && s.cat>R.bestCat){ R.bestCat=s.cat; R.bestCards=bestHand(r.mine.map(keyCard), (r.board||[]).map(keyCard)).cards; }
     if(k>=recs.length-40){ const a=accOf(r); if(a>=0){ aS+=a; aN++; } }
   });
   if(aN) R.acc=Math.round(aS/aN*100);

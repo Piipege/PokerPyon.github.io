@@ -883,3 +883,15 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
 @media (min-width:621px) and (min-height:501px) and (max-height:760px){
   body.inlobby .wrap{row-gap:6px}
 }
+.setfoot{border-top:1px solid var(--line);padding-top:12px;margin-top:4px}
+/* Omaha: four hole cards overlap a little so the seat keeps its size */
+.table.omaha .seat .cards .card + .card{margin-inline-start:calc(var(--cw) * -0.38)}
+.table.omaha .seat.me .cards .card + .card{margin-inline-start:calc(var(--cw) * -0.28)}
+.tight .table.omaha .seat:not(.me) .cards{--cw:21px}
+.kolist{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;text-align:start}
+.kolist li{display:flex;gap:10px;align-items:center;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:6px 10px}
+.kolist li.me{border-color:var(--pink)}
+.kolist b{font-family:var(--f-num);width:22px;text-align:center;color:var(--pink)}
+.kolist span{flex:1}
+.kolist em{font-style:normal;color:var(--text-2)}
+.seat .name em.kos{color:#ffd86b}

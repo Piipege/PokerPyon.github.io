@@ -4,6 +4,13 @@ function mkSeat(o){
 }
 // the buy-in (rebuys and new players) is a fixed number of big blinds: when the blinds go up, so does it
 const buyIn = () => !S ? 1000 : Math.max(S.bb||BB, Math.round((S.startBB || (S.start||1000)/BB) * (S.bb||BB) / 10) * 10);
+// Omaha is played pot-limit: a raise can be at most to the current bet + the pot after calling
+const holeN = () => S && S.game==='omaha' ? 4 : 2;
+function maxRaiseTo(i){
+  const p=seats()[i], all=p.bet+p.stack;
+  if(!S || S.game!=='omaha') return all;
+  return Math.min(all, S.currentBet + potTotal() + Math.max(0, S.currentBet-p.bet));
+}
 function mkState(start){
   return {v:2,start,startBB:start/BB,seats:[],board:[],dealer:-1,street:'',currentBet:0,minRaise:BB,sb:SB,bb:BB,public:false,bombEvery:0,bombBB:5,bomb:false,ghost:null,canGhost:false,paused:false,waits:{},lvl:0,blindEvery:0,help:true,chat:[],aggr:-1,turn:-1,turnId:0,handNo:0,handOver:true,banner:'',best:[],log:[],collect:false,deadline:0,seqs:{},started:false,hostUid:'',hostPub:null,winFx:null,nextAt:0};
 }

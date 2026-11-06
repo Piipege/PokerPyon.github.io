@@ -32,10 +32,10 @@ function cardsFor(i){
   if(!s.inHand || s.out) return [];
   if(s.shown) return s.shown;
   if(s.uid===myUid){
-    if(isDealer()) return H.hands[i]||[null,null];
+    if(isDealer()) return H.hands[i]||Array(holeN()).fill(null);
     if(myCards && myCards.hand===S.handNo) return myCards.cards;
   }
-  return [null,null];
+  return Array(holeN()).fill(null);
 }
 
 function render(){
@@ -51,6 +51,8 @@ function render(){
   const pos=layout(n, me);
   tbl.classList.toggle('dense', n>=7 || (mq.matches && n>=6));
   document.body.classList.toggle('tight', mq.matches);
+  tbl.classList.toggle('omaha', S.game==='omaha');
+  { const sub=document.querySelector('h1 .sub'); const v=t(S.game==='omaha'?'Омаха':'Техасский холдем')+(S.ko?' · '+t('Нокаут'):''); if(sub && sub.textContent!==v) sub.textContent=v; }
   const W=tbl.clientWidth, Ht=tbl.clientHeight;
   const sig=S.seats.map(s=>s.uid).join(',')+'|'+me+'|'+mq.matches;
   if(sig!==seatSig){
@@ -72,12 +74,12 @@ function render(){
     const N=seatNodes[i]; const [x,y]=pos[i];
     N.el.style.left=x+'%'; N.el.style.top=y+'%';
     N.el.className = ['seat', s.uid===myUid?'me':'', S.turn===i&&!S.handOver?'turn':'', s.folded&&s.inHand?'folded':'', (s.out||s.left)?'out':'', s.won>0&&S.handOver?'winner':''].join(' ');
-    N.name.innerHTML = esc(s.bot?t(s.name):s.name) + (s.bot?'<em>'+esc(t((LVL[s.lvl||2]||LVL[2]).name))+'</em>':'') + (s.uid===myUid&&MODE!=='offline'?'<em>'+esc(t('вы'))+'</em>':'');
+    N.name.innerHTML = esc(s.bot?t(s.name):s.name) + (s.bot?'<em>'+esc(t((LVL[s.lvl||2]||LVL[2]).name))+'</em>':'') + (s.uid===myUid&&MODE!=='offline'?'<em>'+esc(t('вы'))+'</em>':'') + (s.kos?' <em class="kos" title="'+esc(t('Выбито соперников: {0}', s.kos))+'">🎯'+s.kos+'</em>':'');
     { const av=avatarFor(s), sig=JSON.stringify(av); if(sig!==N.avSig){ N.avSig=sig; N.ava.innerHTML=avatarSVG(av); } }
     N.stack.textContent = fmt(s.stack);
     { const t=s.st||EMPTY_ST; N.vp.textContent = t.h>=3 ? `VPIP ${Math.round(t.v/t.h*100)} · PFR ${Math.round(t.p/t.h*100)}` : ''; }
     N.dealer.hidden = !(S.dealer===i && !s.out && S.handNo>0);
-    const status = s.left ? 'Ушёл' : s.offline ? 'Не в сети' : s.away ? 'Отошёл' : (s.out ? 'Без фишек' : (!s.inHand && S.handNo>0 && !S.handOver ? 'Ждёт' : s.last));
+    const status = s.busted ? L('{0} место', s.place) : s.left ? 'Ушёл' : s.offline ? 'Не в сети' : s.away ? 'Отошёл' : (s.out ? 'Без фишек' : (!s.inHand && S.handNo>0 && !S.handOver ? 'Ждёт' : s.last));
     if(status+'|'+LANG!==N.lastAct){ N.lastAct=status+'|'+LANG; N.act.textContent=t(status); N.act.style.animation='none'; void N.act.offsetWidth; N.act.style.animation=''; }
 
     // own cards can stay face down until you press them (setting «hide my cards»)
@@ -107,7 +109,7 @@ function render(){
     let hn='', plus=false;
     if(S.handOver && s.won>0 && S.handNo>0){ hn = '+'+fmt(s.won) + (s.handName&&s.shown?' · '+t(s.handName):''); plus=true; }
     else if(s.shown && s.handName) hn=t(s.handName);
-    else if(s.uid===myUid && cs[0] && S.board.length>=3 && !s.folded && CFG.tips && S.hMade) hn = t(HAND_NAMES[best(cs.concat(S.board)).cat]);
+    else if(s.uid===myUid && cs[0] && S.board.length>=3 && !s.folded && CFG.tips && S.hMade) hn = t(HAND_NAMES[bestHand(cs, S.board).cat]);
     N.hn.textContent=hn; N.hn.classList.toggle('plus',plus);
 
     N.timer.hidden = !(S.deadline>0 && S.turn===i && !S.handOver);
@@ -298,7 +300,7 @@ function renderControls(){
   if(isDealer() && S.started && S.handOver){ showNext=true; nextLabel = S.paused ? 'Продолжить' : 'Раздать сейчас'; }
   if(MODE==='host' && !S.started){ showNext=true; nextLabel='Начать игру'; nextDisabled = seats().filter(s=>s.stack>0&&!s.left).length<2; }
   $('bNext').hidden = !showNext || !$('overlay').hidden; $('bNext').textContent=t(nextLabel); $('bNext').disabled=nextDisabled;
-  const canRebuy = MODE!=='offline' && p && p.stack<=0 && !(p.rebuy>p.rebuySeen) && (S.handOver || !p.inHand);
+  const canRebuy = !S.ko && MODE!=='offline' && p && p.stack<=0 && !(p.rebuy>p.rebuySeen) && (S.handOver || !p.inHand);
   $('bRebuy').hidden = !canRebuy; $('bRebuy').textContent=t('Докупиться на {0}', buyIn());
 
   if(p) $('bCall').textContent = toCall>0 ? (toCall>=p.stack ? t('Олл-ин {0}', fmt(p.stack)) : t('Колл {0}', fmt(toCall))) : t('Чек');
@@ -311,6 +313,7 @@ function renderControls(){
     if(+$('amt').value<min || +$('amt').value>max) $('amt').value=min;
     $('amtOut').textContent=fmt(+$('amt').value);
     $('bRaise').textContent = t(S.currentBet===0 ? 'Бет' : 'Рейз');
+    $('pAll').textContent = t(S.game==='omaha' ? 'Макс.' : 'Олл-ин');
     ['bCall','bRaise','bFold'].forEach(id=>$(id).classList.remove('confirm')); $('bFold').textContent=t('Сбросить');
     if(confirmArm && Date.now()-confirmArm.at<3500){
       if(confirmArm.type==='fold'){ $('bFold').classList.add('confirm'); $('bFold').textContent=t('Чек бесплатный. Всё равно пас?'); }
@@ -338,7 +341,7 @@ function renderControls(){
     hint = tp ? t('Ходит {0}…', esc(tp.bot?t(tp.name):tp.name)) : t('Сдаём карты…'); minor=true;
   }
   $('hint').innerHTML=hint; $('hint').classList.toggle('minor', minor || !hint);
-  applyWatch();
+  applyWatch(); renderKo();
 }
 
 let timerBuzz=-1;

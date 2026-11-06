@@ -106,6 +106,14 @@
           <div data-lpane="create" class="part" hidden>
             <h4 class="ptitle">Стол для друзей</h4>
             <div class="split">
+              <label class="field" for="tblGame">Игра
+                <select id="tblGame"><option value="holdem" selected>Техасский холдем</option><option value="omaha">Омаха (пот-лимит)</option></select>
+              </label>
+              <label class="field" for="tblFmt">Формат
+                <select id="tblFmt"><option value="cash" selected>Обычный — с докупками</option><option value="ko">Нокаут — без докупок, до последнего</option></select>
+              </label>
+            </div>
+            <div class="split">
               <label class="field" for="botsN">Ботов за столом
                 <select id="botsN"><option value="0">Без ботов</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
               </label>
@@ -149,6 +157,14 @@
           </div>
           <div data-lpane="solo" class="part" hidden>
             <h4 class="ptitle">Игра с ботами</h4>
+            <div class="split">
+              <label class="field" for="soloGame">Игра
+                <select id="soloGame"><option value="holdem" selected>Техасский холдем</option><option value="omaha">Омаха (пот-лимит)</option></select>
+              </label>
+              <label class="field" for="soloFmt">Формат
+                <select id="soloFmt"><option value="cash" selected>Обычный — с докупками</option><option value="ko">Нокаут — без докупок, до последнего</option></select>
+              </label>
+            </div>
             <div class="split">
               <label class="field" for="soloN">Ботов за столом
                 <select id="soloN"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
@@ -352,7 +368,6 @@
       <label class="check" for="cfgContrast"><input type="checkbox" id="cfgContrast"> Высокий контраст: ярче текст и рамки</label>
       <label class="check" for="cfgCalm"><input type="checkbox" id="cfgCalm"> Меньше анимации</label>
       <label class="check" for="cfgFour"><input type="checkbox" id="cfgFour"> Четырёхцветная колода: ♦ синие, ♣ зелёные</label>
-      <button class="btn small" id="tourAgain" type="button">Показать подсказки для новичков снова</button>
       <label class="check" for="cfgHide"><input type="checkbox" id="cfgHide"> Прятать свои карты: нажмите на них, чтобы посмотреть (удобно играть на людях)</label>
       <label class="check" for="cfgFoldWarn"><input type="checkbox" id="cfgFoldWarn"> Спрашивать, если вы сбрасываете, когда можно бесплатно сделать чек</label>
       <label class="check" for="cfgConfirm"><input type="checkbox" id="cfgConfirm"> Подтверждать ставки больше половины стека</label>
@@ -362,6 +377,7 @@
       <label class="field" for="cfgDelay">Пауза перед следующей раздачей (за вашим столом или с ботами)
         <select id="cfgDelay"><option value="3">3 секунды</option><option value="5">5 секунд</option><option value="8">8 секунд</option><option value="12">12 секунд</option></select>
       </label>
+      <div class="setfoot"><button class="btn small ghost" id="tourAgain" type="button">↺ Показать подсказки для новичков снова</button></div>
     </div>
     <div data-spane="sound" class="part" hidden>
       <label class="check" for="cfgSound"><input type="checkbox" id="cfgSound"> Звук включён</label>

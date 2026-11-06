@@ -18,10 +18,11 @@ async function verifyFair(){
   const F=S.fair, n=F.n;
   const opens=new Map(Object.entries(S.fairOpen||{}).map(([i,v])=>[+i,v]));
   (myFairOpen||[]).forEach(o=>opens.set(o[0],[o[1],o[2]]));
-  const bIdx=[50-2*n,49-2*n,48-2*n,46-2*n,44-2*n], expect=[];
+  const hn = S.game==='omaha' ? 4 : 2, d=hn*n;
+  const bIdx=[50-d,49-d,48-d,46-d,44-d], expect=[];
   S.board.forEach((c,k)=>expect.push([bIdx[k],cardKey(c)]));
   (S.ghost||[]).forEach((c,k)=>expect.push([bIdx[S.board.length+k],cardKey(c)]));
-  const seatCards=(uid,cs)=>{ const k=F.order.indexOf(uid); if(k>=0 && cs && cs.length===2) expect.push([51-k,cardKey(cs[0])],[51-n-k,cardKey(cs[1])]); };
+  const seatCards=(uid,cs)=>{ const k=F.order.indexOf(uid); if(k>=0 && cs && cs.length===hn) cs.forEach((c,r)=>expect.push([51-r*n-k,cardKey(c)])); };
   S.seats.forEach(s=>{ if(s.shown && s.uid!==myUid) seatCards(s.uid, s.shown); });
   if(myCards && myCards.hand===S.handNo) seatCards(myUid, myCards.cards);
   const sig=S.handNo+':'+expect.map(e=>e.join('.')).join(',')+':'+opens.size;

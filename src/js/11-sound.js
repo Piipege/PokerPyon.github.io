@@ -29,20 +29,22 @@ const SFX = { card:()=>pk().card(), chip:()=>pk().chip(), turn:()=>pk().turn(), 
 for(const [k,cat] of Object.entries({card:'cards',chip:'chips',turn:'turn',win:'win',chat:'chat'})){ const f=SFX[k]; SFX[k]=()=>{ if(CFG.sfx[cat]!==false) f(); }; }
 let helpCache={};
 function computeHelp(h, b){
-  const all=h.concat(b); let cat, five=null, fiveCards=null;
-  if(all.length>=5){ const bs=best(all); cat=bs.cat; fiveCards=bs.cards; five=bs.cards.slice().sort((x,y)=>y.r-x.r).map(fmtCard).join(' '); }
-  else cat = h[0].r===h[1].r ? 1 : 0;
+  const all=h.concat(b), om=h.length===4; let cat, five=null, fiveCards=null;
+  const catOf = extra => bestHand(h, b.concat(extra)).cat;
+  if(b.length>=3){ const bs=bestHand(h, b); cat=bs.cat; fiveCards=bs.cards; five=fiveCards.slice().sort((x,y)=>y.r-x.r).map(fmtCard).join(' '); }
+  else if(all.length>=5){ const bs=best(all); cat=bs.cat; fiveCards=bs.cards; five=bs.cards.slice().sort((x,y)=>y.r-x.r).map(fmtCard).join(' '); }
+  else cat = new Set(h.map(c=>c.r)).size<h.length ? 1 : 0;
   let dist=null, outs=null;
   const known=new Set(all.map(cardKey)), rest=freshDeck().filter(c=>!known.has(cardKey(c)));
   if(b.length<5){
     const need=5-b.length, cnt=new Array(9).fill(0); let n=0;
-    if(need===1){ for(const c of rest){ cnt[best(all.concat([c])).cat]++; n++; } }
-    else if(need===2){ for(let i=0;i<rest.length;i++) for(let j=i+1;j<rest.length;j++){ cnt[best(all.concat([rest[i],rest[j]])).cat]++; n++; } }
-    else { const r=rest.slice(); for(let k=0;k<800;k++){ for(let i=0;i<need;i++){ const j=i+(Math.random()*(r.length-i)|0); [r[i],r[j]]=[r[j],r[i]]; } cnt[best(all.concat(r.slice(0,need))).cat]++; n++; } }
+    if(need===1){ for(const c of rest){ cnt[catOf([c])]++; n++; } }
+    else if(need===2 && !om){ for(let i=0;i<rest.length;i++) for(let j=i+1;j<rest.length;j++){ cnt[catOf([rest[i],rest[j]])]++; n++; } }
+    else { const r=rest.slice(); for(let k=0;k<(om?400:800);k++){ for(let i=0;i<need;i++){ const j=i+(Math.random()*(r.length-i)|0); [r[i],r[j]]=[r[j],r[i]]; } cnt[catOf(r.slice(0,need))]++; n++; } }
     dist=cnt.map((c,i)=>[i,c/n*100]).filter(x=>x[1]>0).map(([i,pr])=>[i, pr>=10?Math.round(pr):Math.round(pr*10)/10]);
   }
   if(b.length>=3 && b.length<5){
-    outs=rest.filter(c=>{ const nb=best(all.concat([c])); return nb.cat>cat && nb.cards.some(x=>h.includes(x)); });
+    outs=rest.filter(c=>{ const nb=bestHand(h, b.concat([c])); return nb.cat>cat && nb.cards.some(x=>h.includes(x)); });
   }
   return {cat, five, fiveCards, dist, outs};
 }
@@ -73,7 +75,7 @@ function showdown(){
   S.street='showdown';
   const contenders = live();
   const sc = new Map();
-  contenders.forEach(p=>{ const i=seats().indexOf(p); p.shown=H.hands[i]; fairOpen(p.shown); const b=best(H.hands[i].concat(S.board)); sc.set(p,b); p.handName=HAND_NAMES[b.cat]; });
+  contenders.forEach(p=>{ const i=seats().indexOf(p); p.shown=H.hands[i]; fairOpen(p.shown); const b=bestHand(H.hands[i], S.board); sc.set(p,b); p.handName=HAND_NAMES[b.cat]; });
   contenders.forEach(p=>log(L('{0}: {1} — {2}', p.name, p.shown.map(fmtCard).join(' '), p.handName)));
 
   const levels = [...new Set(contenders.map(p=>p.total))].sort((a,b)=>a-b);
@@ -116,6 +118,7 @@ function endHand(){
 
 function gameOver(title, text){
   S.handOver=true; S.turn=-1; commit();
+  $('restart').hidden=false; $('restart').textContent=t('Новая игра');
   $('ovTitle').textContent=title; $('ovText').textContent=text; $('overlay').hidden=false;
 }
 

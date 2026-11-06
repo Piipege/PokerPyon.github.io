@@ -202,7 +202,7 @@ $('bSit').onclick=sitDown;
 function applyWatch(){
   const watching = MODE==='guest' && !!S && mySeat()<0;
   $('watchRow').hidden=!watching;
-  if(watching){ ['actRow','raiseRow','preRow','odds'].forEach(id=>$(id).hidden=true); $('hint').textContent=''; $('bSit').disabled = seats().filter(s=>!s.left).length>=MAX_SEATS; }
+  if(watching){ ['actRow','raiseRow','preRow','odds'].forEach(id=>$(id).hidden=true); $('hint').textContent=''; $('bSit').disabled = seats().filter(s=>!s.left).length>=MAX_SEATS || (S.ko && S.started); }
   const w=S && S.watchers ? Object.values(S.watchers) : [];
   $('watchChip').hidden=!w.length; $('watchChip').textContent='👁 '+w.length; $('watchChip').title=t('Смотрят: {0}', w.join(', '));
 }
