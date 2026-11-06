@@ -75,7 +75,23 @@ function best(cards){
   const v=val7(cards);
   return {v, cat:Math.floor(v/P5), get cards(){ for(const ix of combos(cards.length)){ const five=ix.map(i=>cards[i]); if(eval5(five)===v) return five; } return cards.slice(0,5); }};
 }
+// Omaha: exactly two of the four hole cards plus three of the board
+const OM_PAIRS=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]], OM_FIVE=[null,null,null,null,null];
+function omahaVal(hole, board){
+  let bv=-1; const n=board.length;
+  for(const [a,b] of OM_PAIRS){ OM_FIVE[0]=hole[a]; OM_FIVE[1]=hole[b];
+    for(let x=0;x<n;x++) for(let y=x+1;y<n;y++) for(let z=y+1;z<n;z++){ OM_FIVE[2]=board[x]; OM_FIVE[3]=board[y]; OM_FIVE[4]=board[z]; const v=val7(OM_FIVE); if(v>bv) bv=v; } }
+  return bv;
+}
+// value of a player's hand for the current game (Hold'em: best five of all; Omaha: 2 + 3)
+const handVal = (hole, board) => hole.length===4 ? omahaVal(hole, board) : val7(hole.concat(board));
+function bestHand(hole, board){
+  if(hole.length!==4) return best(hole.concat(board));
+  const v=omahaVal(hole, board);
+  return {v, cat:Math.floor(v/P5), get cards(){ for(const [a,b] of OM_PAIRS) for(let x=0;x<board.length;x++) for(let y=x+1;y<board.length;y++) for(let z=y+1;z<board.length;z++){ const f=[hole[a],hole[b],board[x],board[y],board[z]]; if(val7(f)===v) return f; } return hole.slice(0,2).concat(board.slice(0,3)); }};
+}
 function equity(hand, board, opps, iters=260){
+  if(hand.length===4) return equityOmaha(hand, board, opps, Math.max(80, Math.round(iters*.4)));
   const known = new Set([...hand,...board].map(cardKey));
   const rest = freshDeck().filter(c=>!known.has(cardKey(c)));
   let score = 0; const need = 5-board.length, nb = board.length;
@@ -92,6 +108,19 @@ function equity(hand, board, opps, iters=260){
       if(ov>mine){win=false;break;} if(ov===mine) ties++;
     }
     if(win) score += 1/(ties+1);
+  }
+  return score/iters;
+}
+function equityOmaha(hand, board, opps, iters){
+  const known=new Set([...hand,...board].map(cardKey)), rest=freshDeck().filter(c=>!known.has(cardKey(c)));
+  const need=5-board.length, take=need+opps*4, full=board.concat(Array(need)), oh=[null,null,null,null];
+  let score=0;
+  for(let it=0; it<iters; it++){
+    for(let i=0;i<take;i++){ const j=i+(Math.random()*(rest.length-i)|0); const x=rest[i]; rest[i]=rest[j]; rest[j]=x; }
+    for(let i=0;i<need;i++) full[board.length+i]=rest[i];
+    const mine=omahaVal(hand, full); let win=true, ties=0;
+    for(let o=0;o<opps;o++){ for(let k=0;k<4;k++) oh[k]=rest[need+o*4+k]; const v=omahaVal(oh, full); if(v>mine){ win=false; break; } if(v===mine) ties++; }
+    if(win) score+=1/(ties+1);
   }
   return score/iters;
 }

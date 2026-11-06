@@ -2,7 +2,7 @@
 function myTurn(){ const i=mySeat(); return !!S && !S.handOver && i>=0 && S.turn===i && pending===null && MODE!=='lobby'; }
 function raiseBounds(){
   const p=seats()[mySeat()];
-  const max = p.bet+p.stack;
+  const max = maxRaiseTo(mySeat());
   const min = Math.min(max, S.currentBet===0 ? S.bb : S.currentBet+S.minRaise);
   return {min,max};
 }
@@ -38,7 +38,7 @@ $('amt').oninput=e=>{ $('amtOut').textContent=fmt(+e.target.value); };
 $('pHalf').onclick=()=>setAmt(round10(S.currentBet + potTotal()/2));
 $('pPot').onclick=()=>setAmt(round10(S.currentBet + potTotal() + (S.currentBet-seats()[mySeat()].bet)));
 $('pAll').onclick=()=>setAmt(raiseBounds().max);
-$('restart').onclick=()=>{ $('overlay').hidden=true; startSolo(S&&S.coach?{coach:true}:undefined); };
+$('restart').onclick=()=>{ $('overlay').hidden=true; if(S && S.ko && MODE==='host'){ koRestart(); return; } startSolo(S&&S.coach?{coach:true}:undefined); };
 $('bSolo').onclick=()=>{ saveNick(); startSolo(); };
 $('bCreate').onclick=()=>{ if(!checkNick()) return; saveNick(); createTable(); };
 $('bJoin').onclick=()=>{ if(!checkNick()) return; saveNick(); joinTable($('joinCode').value); };
@@ -58,7 +58,12 @@ $('bResume').onclick=()=>{ const r=savedHost(); if(r){ saveNick(); createTable(r
 function botLevel(k,sel){ const v=+$(sel).value; return v || [2,3,1,4][k%4]; }
 function applyOpts(kind){
   store.set('pion-last', kind);
+  // game and format: Hold'em or Omaha (pot-limit); regular (rebuys) or knockout (no rebuys, last one wins)
+  const pre = kind==='solo' ? 'solo' : 'tbl';
+  S.game = $(pre+'Game').value==='omaha' ? 'omaha' : 'holdem';
+  S.ko = $(pre+'Fmt').value==='ko';
   if(kind==='solo'){ S.blindEvery=+$('soloBlinds').value; { const on=$('sOn').checked; S.help=on&&$('sOdds').checked; S.hMade=on&&$('sMade').checked; S.hDraws=on&&$('sDraws').checked; S.hAdvice=on&&$('sAdv').checked;  } S.bombEvery=+$('soloBomb').value; S.bombBB=5; S.public=false; S.botRebuy=$('soloRebuy').checked; }
+  if(S.ko){ S.botRebuy=false; if(!S.blindEvery) S.blindEvery=8; } // a knockout needs rising blinds to finish
   else { S.blindEvery=+$('blindMode').value; { const on=$('hOn').checked; S.help=on&&$('hOdds').checked; S.hMade=on&&$('hMade').checked; S.hDraws=on&&$('hDraws').checked; S.hAdvice=on&&$('hAdv').checked;  } S.bombEvery=+$('bombEvery').value; S.bombBB=+$('bombSize').value; S.public=$('publicOn').checked; S.botRebuy=$('botRebuy').checked; S.tname=cleanName($('tableName').value).slice(0,24); if(S.tname==='Игрок') S.tname=''; }
 }
 const QUICK=['👍','😂','😱','🤔','🔥','nh','gg'];

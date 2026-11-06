@@ -83,7 +83,7 @@ $('cfgNotify').onchange=async e=>{
 $('turnSave').onclick=()=>{ CFG.turn={url:$('turnUrl').value.trim(), user:$('turnUser').value.trim(), pass:$('turnPass').value}; saveCfg(); toast(t('Сохранено. Подействует при следующем подключении')); };
 document.documentElement.classList.toggle('fourc', !!CFG.four);
 /* remember lobby choices, so starting again is one click */
-const LOBBY_IDS=['tableName','botsN','botLvl','stackN','blindMode','bombEvery','bombSize','publicOn','hOn','hOdds','hMade','hDraws','hAdv','soloLvl','soloBlinds','soloBomb','sOn','sOdds','sMade','sDraws','sAdv','soloN','soloRebuy','botRebuy'];
+const LOBBY_IDS=['tblGame','tblFmt','soloGame','soloFmt','tableName','botsN','botLvl','stackN','blindMode','bombEvery','bombSize','publicOn','hOn','hOdds','hMade','hDraws','hAdv','soloLvl','soloBlinds','soloBomb','sOn','sOdds','sMade','sDraws','sAdv','soloN','soloRebuy','botRebuy'];
 try{ const sv=JSON.parse(localStorage.getItem('pion-lobby')||'{}'); LOBBY_IDS.forEach(id=>{ const el=$(id); if(!el || sv[id]==null) return; if(el.type==='checkbox') el.checked=!!sv[id]; else el.value=sv[id]; }); }catch(e){}
 function saveLobby(){ const o={}; LOBBY_IDS.forEach(id=>{ const el=$(id); if(el) o[id]= el.type==='checkbox' ? el.checked : el.value; }); store.set('pion-lobby', JSON.stringify(o)); }
 LOBBY_IDS.forEach(id=>$(id)?.addEventListener('change', ()=>{ saveLobby(); syncHelpSets(); }));

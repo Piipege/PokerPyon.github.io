@@ -8,13 +8,16 @@ async function startHand(){
     const di = seats().findIndex(s=>s.uid===dUid);
     S.dealer = di>=0 ? di : Math.min(S.dealer, seats().length-1) - 1;
   }
+  if(S.ko) koCheckEnd();
+  if(S.koDone) return commit();
   seats().forEach(s=>{
+    if(S.ko){ s.out = s.stack<=0 || !!s.away || !!s.busted; return; } // knockout: no rebuys, busted players stay out
     if(s.stack<=0 && s.rebuy>s.rebuySeen){ s.stack=buyIn(); s.rebuySeen=s.rebuy; log(L('{0} докупается на {1}', s.name, s.stack)); }
     if(s.bot && s.stack<=0 && S.botRebuy!==false){ s.stack=buyIn(); s.rebuys=(s.rebuys||0)+1; log(L('{0} докупается на {1}', s.name, s.stack)); if(Math.random()<.5) botSay(s, pick(['Ещё разок!','Новая попытка','Я вернулся','Теперь точно отыграюсь'])); }
     s.out = s.stack<=0 || !!s.away;
   });
   const alive = seats().filter(p=>!p.out).length;
-  if(MODE==='offline'){
+  if(MODE==='offline' && !S.ko){
     if(seats()[0].stack<=0) return gameOver(t('Вы выбыли'), t('Раздач сыграно: {0}. Попробуйте ещё раз.', S.handNo));
     if(alive===1) return gameOver(t('Стол ваш'), t('Вы забрали все фишки. Раздач сыграно: {0}.', S.handNo));
   } else if(alive<2){
@@ -28,7 +31,7 @@ async function startHand(){
   H = {deck:shuffle(freshDeck()), hands:{}, pos:{}}; H.deck0=H.deck.slice(); S.fair=null; S.fairOpen={};
   Object.assign(S,{board:[],banner:'',best:[],winFx:null,collect:false,handOver:false,street:'preflop',currentBet:S.bb,minRaise:S.bb,nextAt:0,ghost:null,canGhost:false,waits:{}});
   seats().forEach(p=>Object.assign(p,{bet:0,total:0,folded:p.out,allIn:false,acted:false,last:'',won:0,shown:null,handName:'',enc:null,inHand:!p.out}));
-  for(let r=0;r<2;r++) seats().forEach((p,i)=>{ if(!p.out) (H.hands[i]=H.hands[i]||[]).push(dealCard()); });
+  for(let r=0;r<holeN();r++) seats().forEach((p,i)=>{ if(!p.out) (H.hands[i]=H.hands[i]||[]).push(dealCard()); });
   if(MODE==='host'){ try{ await fairCommit(seats().filter(p=>!p.out).map(p=>p.uid)); }catch(e){ S.fair=null; } }
 
   if(S.blindEvery && S.handNo>1 && (S.handNo-1)%S.blindEvery===0 && S.lvl<BLIND_LEVELS.length-1){
@@ -53,6 +56,7 @@ async function startHand(){
   const sb = alive===2 ? S.dealer : nextIdx(S.dealer,p=>!p.out);
   const bb = nextIdx(sb,p=>!p.out);
   log(L('Раздача №{0}', S.handNo),'sep');
+  if(S.handNo===1 && (S.game==='omaha' || S.ko)) S.banner = S.game==='omaha' ? L('Омаха: из четырёх своих карт используйте ровно две, из общих — три') : L('Нокаут: докупок нет, блайнды растут, побеждает последний за столом');
   recEv(sb,'sb',post(sb,S.sb)); seats()[sb].last='SB';
   recEv(bb,'bb',post(bb,S.bb)); seats()[bb].last='BB';
   log(L('{0}: малый блайнд {1}, {2}: большой блайнд {3}', seats()[sb].name, S.sb, seats()[bb].name, S.bb));
@@ -126,8 +130,8 @@ function act(i, type, to=0, auto=false){
     if(toCall<=0){ p.last='Чек'; log(L(auto?'{0}: чек (время вышло)':'{0}: чек', p.name)); }
     else { const a=post(i,toCall); p.last = p.allIn?'Олл-ин':'Колл'; log(L(p.allIn?'{0}: колл {1} (олл-ин)':'{0}: колл {1}', p.name, a)); }
   } else if(type==='raise'){
-    to = Math.min(Math.floor(+to||0), p.bet+p.stack);
-    const minTo = Math.min(p.bet+p.stack, S.currentBet===0 ? S.bb : S.currentBet+S.minRaise);
+    to = Math.min(Math.floor(+to||0), maxRaiseTo(i));
+    const minTo = Math.min(maxRaiseTo(i), S.currentBet===0 ? S.bb : S.currentBet+S.minRaise);
     if(to<minTo) to=minTo;
     if(to<=S.currentBet) return act(i,'call');
     const size = to - S.currentBet;

@@ -37,6 +37,7 @@ function rangeOf(p){
   return Math.max(r, .05);
 }
 function equityRanged(hand, board, opps, iters){
+  if(hand.length===4) return equity(hand, board, opps.length, iters); // Omaha: no starting-hand table, plain equity
   const known=new Set([...hand,...board].map(cardKey));
   const rest=freshDeck().filter(c=>!known.has(cardKey(c)));
   const ranges=opps.map(rangeOf); const need=5-board.length; let score=0;
@@ -77,7 +78,7 @@ function botAct(){
   const late = L.pos && isLate(i);
   const bluff = L.bluff*(late?1.6:1)*(opps<=2?1.3:.6)*(p.loose/.08);
   const aggr = Math.min(.95, p.aggr*L.aggr);
-  const minTo=S.currentBet+S.minRaise, maxTo=p.bet+p.stack;
+  const maxTo=maxRaiseTo(i), minTo=Math.min(maxTo, S.currentBet+S.minRaise);
   const sizeTo=f=>Math.min(maxTo, Math.max(minTo, round10(S.currentBet+pot*f)));
   const value = (p.lvl||2)>=3 ? .65 : .5;
   if(toCall<=0){

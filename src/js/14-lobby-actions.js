@@ -7,7 +7,7 @@ function startSolo(opts){
   clearFlow(); stopNet();
   MODE='offline'; code=null;
   S = mkState(1000); applyOpts('solo');
-  if(opts && opts.coach){ S.coach=true; S.botRebuy=true; S.help=true; S.hMade=true; S.hDraws=true; S.hAdvice=true; S.bombEvery=0; S.blindEvery=0; S.banner='Тренировка: после каждого вашего решения тренер даст подсказку'; }
+  if(opts && opts.coach){ S.game='holdem'; S.ko=false; S.coach=true; S.botRebuy=true; S.help=true; S.hMade=true; S.hDraws=true; S.hAdvice=true; S.bombEvery=0; S.blindEvery=0; S.banner='Тренировка: после каждого вашего решения тренер даст подсказку'; }
   S.seats = [mkSeat({uid:myUid,name:myName()==='Игрок'?'Вы':myName(),av:{...CFG.av},pf:mySummary(),stack:1000,out:false}), ...BOTS.slice(0,+$('soloN').value||4).map((b,k)=>mkSeat({...b,uid:'bot'+k,bot:true,lvl:(opts&&opts.coach?1:botLevel(k,'soloLvl')),stack:1000,out:false}))];
   S.started=true;
   $('lobby').hidden=true; resetView(); startHand();
@@ -26,6 +26,7 @@ function exitToLobby(silent){
   setTimeout(stopNet, wasHost ? 400 : 0);
   MODE='lobby'; S=null; code=null; myCards=null; pending=null;
   setHash('');
+  { const sub=document.querySelector('h1 .sub'); if(sub) sub.textContent=t('Техасский холдем'); }
   $('overlay').hidden=true; $('lobby').hidden=false; resetView(); render(); renderGuestNet(); showResume();
   maybeRecap();
 }

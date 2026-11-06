@@ -100,7 +100,8 @@ function onConn(c){
     const uid=c.uid;
     if(uid && conns.get(uid)===c){
       conns.delete(uid);
-      if(S && S.watchers && S.watchers[uid]){ delete S.watchers[uid]; commit(); }
+      if(!S || MODE!=='host') return; // the table was just closed: guests leaving now need no bookkeeping
+      if(S.watchers && S.watchers[uid]){ delete S.watchers[uid]; commit(); }
       const i=seats().findIndex(s=>s.uid===uid);
       if(i>=0 && MODE==='host'){ seats()[i].offline=true; commit(); }
     }
@@ -122,7 +123,7 @@ function onGuestMsg(c,m){
     const i=seats().findIndex(s=>s.uid===uid);
     // a spectator watches without a seat; the same connection can sit down later with a normal join
     S.watchers=S.watchers||{};
-    if(m.watch && i<0){
+    if((m.watch || (S.ko && S.started)) && i<0){ // in a knockout that has started, newcomers watch
       if(Object.keys(S.watchers).length>=20 && !S.watchers[uid]){ try{ c.send({t:'full'}); }catch(e){} return; }
       c.watch=true; S.watchers[uid]=cleanName(m.name); commit(); return;
     }
@@ -163,7 +164,7 @@ function onGuestMsg(c,m){
 }
 function maybeAutoStart(){ if(S && S.started && !S.paused && S.handOver && !timers.flow && seats().filter(s=>s.stack>0&&!s.left&&!s.away).length>=2) flow(startHand, 2500); }
 function doRebuy(i){
-  const s=seats()[i]; if(!s || s.stack>0 || s.rebuy>s.rebuySeen) return;
+  const s=seats()[i]; if(!s || S.ko || s.stack>0 || s.rebuy>s.rebuySeen) return;
   s.rebuy=(s.rebuy||0)+1;
   if(S.handOver || !s.inHand){ s.stack=buyIn(); s.rebuySeen=s.rebuy; s.out=false; log(L('{0} докупается на {1}', s.name, s.stack)); }
   commit(); maybeAutoStart();

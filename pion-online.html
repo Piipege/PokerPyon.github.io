@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <title>Покерный стол «Пион»</title>
-<link rel="preload" href="assets/app.782e199713.js" as="script">
+<link rel="preload" href="assets/app.6645dc7c2d.js" as="script">
 <link rel="preload" href="assets/peerjs.f69f573cb6.js" as="script">
 <style>
 /* extra scripts: Noto Sans Georgian, Noto Sans Hebrew (SIL OFL) */
@@ -938,6 +938,18 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
 @media (min-width:621px) and (min-height:501px) and (max-height:760px){
   body.inlobby .wrap{row-gap:6px}
 }
+.setfoot{border-top:1px solid var(--line);padding-top:12px;margin-top:4px}
+/* Omaha: four hole cards overlap a little so the seat keeps its size */
+.table.omaha .seat .cards .card + .card{margin-inline-start:calc(var(--cw) * -0.38)}
+.table.omaha .seat.me .cards .card + .card{margin-inline-start:calc(var(--cw) * -0.28)}
+.tight .table.omaha .seat:not(.me) .cards{--cw:21px}
+.kolist{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;text-align:start}
+.kolist li{display:flex;gap:10px;align-items:center;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:6px 10px}
+.kolist li.me{border-color:var(--pink)}
+.kolist b{font-family:var(--f-num);width:22px;text-align:center;color:var(--pink)}
+.kolist span{flex:1}
+.kolist em{font-style:normal;color:var(--text-2)}
+.seat .name em.kos{color:#ffd86b}
 </style>
 </head>
 <body>
@@ -1031,6 +1043,14 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
           <div data-lpane="create" class="part" hidden>
             <h4 class="ptitle">Стол для друзей</h4>
             <div class="split">
+              <label class="field" for="tblGame">Игра
+                <select id="tblGame"><option value="holdem" selected>Техасский холдем</option><option value="omaha">Омаха (пот-лимит)</option></select>
+              </label>
+              <label class="field" for="tblFmt">Формат
+                <select id="tblFmt"><option value="cash" selected>Обычный — с докупками</option><option value="ko">Нокаут — без докупок, до последнего</option></select>
+              </label>
+            </div>
+            <div class="split">
               <label class="field" for="botsN">Ботов за столом
                 <select id="botsN"><option value="0">Без ботов</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
               </label>
@@ -1074,6 +1094,14 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
           </div>
           <div data-lpane="solo" class="part" hidden>
             <h4 class="ptitle">Игра с ботами</h4>
+            <div class="split">
+              <label class="field" for="soloGame">Игра
+                <select id="soloGame"><option value="holdem" selected>Техасский холдем</option><option value="omaha">Омаха (пот-лимит)</option></select>
+              </label>
+              <label class="field" for="soloFmt">Формат
+                <select id="soloFmt"><option value="cash" selected>Обычный — с докупками</option><option value="ko">Нокаут — без докупок, до последнего</option></select>
+              </label>
+            </div>
             <div class="split">
               <label class="field" for="soloN">Ботов за столом
                 <select id="soloN"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
@@ -1277,7 +1305,6 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
       <label class="check" for="cfgContrast"><input type="checkbox" id="cfgContrast"> Высокий контраст: ярче текст и рамки</label>
       <label class="check" for="cfgCalm"><input type="checkbox" id="cfgCalm"> Меньше анимации</label>
       <label class="check" for="cfgFour"><input type="checkbox" id="cfgFour"> Четырёхцветная колода: ♦ синие, ♣ зелёные</label>
-      <button class="btn small" id="tourAgain" type="button">Показать подсказки для новичков снова</button>
       <label class="check" for="cfgHide"><input type="checkbox" id="cfgHide"> Прятать свои карты: нажмите на них, чтобы посмотреть (удобно играть на людях)</label>
       <label class="check" for="cfgFoldWarn"><input type="checkbox" id="cfgFoldWarn"> Спрашивать, если вы сбрасываете, когда можно бесплатно сделать чек</label>
       <label class="check" for="cfgConfirm"><input type="checkbox" id="cfgConfirm"> Подтверждать ставки больше половины стека</label>
@@ -1287,6 +1314,7 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
       <label class="field" for="cfgDelay">Пауза перед следующей раздачей (за вашим столом или с ботами)
         <select id="cfgDelay"><option value="3">3 секунды</option><option value="5">5 секунд</option><option value="8">8 секунд</option><option value="12">12 секунд</option></select>
       </label>
+      <div class="setfoot"><button class="btn small ghost" id="tourAgain" type="button">↺ Показать подсказки для новичков снова</button></div>
     </div>
     <div data-spane="sound" class="part" hidden>
       <label class="check" for="cfgSound"><input type="checkbox" id="cfgSound"> Звук включён</label>
@@ -1325,6 +1353,6 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
     </div>
   </div>
 </div>
-<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.1a86cee2c6.js","uk":"assets/lang-uk.c2d27b555c.js","ka":"assets/lang-ka.8afbf9d704.js","fr":"assets/lang-fr.3cee93016e.js","de":"assets/lang-de.d5b26f3f2f.js","ro":"assets/lang-ro.8b9cdc186a.js","he":"assets/lang-he.75b6f04aaa.js","kk":"assets/lang-kk.466e7432c8.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.782e199713.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
+<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.47fade87c8.js","uk":"assets/lang-uk.e67ec9c33d.js","ka":"assets/lang-ka.9a7f3f6e03.js","fr":"assets/lang-fr.eb1dc631b3.js","de":"assets/lang-de.6f180fed2d.js","ro":"assets/lang-ro.f1c0ee076c.js","he":"assets/lang-he.c8325c4670.js","kk":"assets/lang-kk.26781f7e0d.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.6645dc7c2d.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
 </body>
 </html>

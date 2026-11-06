@@ -26,7 +26,7 @@ const init = () => {
   const P = window.RTCPeerConnection;
   window.RTCPeerConnection = function(...a){ const pc = new P(...a); window.__pcs.push(pc); return pc; };
   window.RTCPeerConnection.prototype = P.prototype;
-  try{ localStorage.setItem('pion-cfg', JSON.stringify({ lang: 'ru' })); }catch(e){}
+  try{ localStorage.setItem('pion-cfg', JSON.stringify({ lang: 'ru' })); localStorage.setItem('pion-tour', '1'); localStorage.setItem('pion-tour3', '1'); }catch(e){}
 };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 let failed = 0;
@@ -37,7 +37,7 @@ const browser = await chromium.launch();
 const hostCtx = await browser.newContext(), guestCtx = await browser.newContext();
 await hostCtx.addInitScript(init); await guestCtx.addInitScript(init);
 const host = await hostCtx.newPage(), guest = await guestCtx.newPage();
-for(const [n, p] of [['host', host], ['guest', guest]]) p.on('pageerror', e => { console.log(`  ! ${n} page error: ${e.message}`); failed++; });
+for(const [n, p] of [['host', host], ['guest', guest]]) p.on('pageerror', e => { console.log(`  ! ${n} page error: ${e.message}\n${(e.stack||'').split('\n').slice(0,4).join('\n')}`); failed++; });
 
 await host.goto(URL);
 await host.fill('#nick', 'Хозяйка');
@@ -121,6 +121,31 @@ await host.click('#bExit'); await sleep(300); await host.click('#bExit');
 ok(await waitFor(guest, () => !document.querySelector('#lobby').hidden, 15000), 'guest returns to the lobby when the table is closed');
 ok(await guest.evaluate(() => !localStorage.getItem('pion-guest')), 'and forgets the table');
 
+console.log('7. Omaha knockout with a friend: four cards, fair deck check');
+{
+  const hC = await browser.newContext(), gC = await browser.newContext(); await hC.addInitScript(init); await gC.addInitScript(init);
+  const h2 = await hC.newPage(), g2 = await gC.newPage();
+  for(const [n, pg] of [['host2', h2], ['guest2', g2]]) pg.on('pageerror', e => { console.log(`  ! ${n} page error: ${e.message}`); failed++; });
+  await h2.goto(URL); await h2.fill('#nick', 'Ведущая'); await h2.click('[data-ltab="create"]');
+  await h2.selectOption('#tblGame', 'omaha'); await h2.selectOption('#tblFmt', 'ko'); await h2.selectOption('#botsN', '1'); await h2.click('#bCreate');
+  await waitFor(h2, () => /#t-/.test(location.hash));
+  const code2 = (await h2.evaluate(() => location.hash)).slice(3).toUpperCase();
+  await g2.goto(URL); await g2.fill('#nick', 'Друг'); await g2.click('[data-ltab="open"]'); await g2.fill('#joinCode', code2); await g2.click('#bJoin');
+  await waitFor(h2, () => /Друг/.test(document.querySelector('#seats').textContent));
+  await h2.click('#bNext');
+  ok(await waitFor(g2, () => document.querySelectorAll('.seat.me .cards .card:not(.back)').length === 4, 20000), 'guest gets four hole cards in Omaha');
+  // play calls until a flop is out, then the guest's fair-deck check must pass
+  const t0 = Date.now(); let flop = false;
+  while(Date.now() - t0 < 40000 && !flop){
+    for(const pg of [h2, g2]) await pg.evaluate(() => { const b = ['bCall', 'bNext'].map(id => document.getElementById(id)).find(b => b && !b.hidden && !b.disabled && b.offsetParent); if(b) b.click(); });
+    flop = await g2.evaluate(() => document.querySelectorAll('#board .card:not(.ghost)').length >= 3);
+    await g2.waitForTimeout(300);
+  }
+  ok(flop, 'the hand reaches the flop');
+  ok(await waitFor(g2, () => { const f = document.getElementById('fairChip'); return f && !f.hidden && f.classList.contains('ok') && !f.classList.contains('bad'); }, 10000), 'fair-deck check passes with four hole cards');
+  ok(await g2.evaluate(() => /Омаха/.test(document.querySelector('h1 .sub').textContent)), 'header shows the game');
+  await hC.close(); await gC.close();
+}
 await browser.close();
 console.log(failed ? `FAILED: ${failed}` : 'all network checks passed');
 process.exit(failed ? 1 : 0);

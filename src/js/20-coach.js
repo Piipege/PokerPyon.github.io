@@ -158,7 +158,9 @@ function reviewOf(rec){
   const key=rec.no+'|'+rec.at;
   if(REVIEW_CACHE.has(key)) return REVIEW_CACHE.get(key);
   let res=null;
-  if(rec.mine && rec.seats.some(s=>s.u===myUid)){
+  if(rec.mine && rec.mine.length===4 && rec.seats.some(s=>s.u===myUid)){
+    res={rec, hand:rec.mine.map(keyCard), pos:posOf(rec, myUid), ds:[], score:1, net:(rec.delta||{})[myUid]||0, omaha:true, made:(rec.board||[]).length>=3 ? bestHand(rec.mine.map(keyCard), rec.board.map(keyCard)) : null};
+  } else if(rec.mine && rec.seats.some(s=>s.u===myUid)){
     const hand=rec.mine.map(keyCard), pos=posOf(rec, myUid);
     const ds=decisionsOf(rec, myUid).map(d=>({...d, ...judge(d, hand, pos)}));
     const score = ds.length ? ds.reduce((a,d)=>a+(d.verdict==='good'?1:d.verdict==='ok'?.5:0),0)/ds.length : 1;
@@ -236,7 +238,7 @@ function coachSay(parts, extra){ COACH.msgs.push({from:'coach', parts:[].concat(
 function coachIntro(){
   const R=reviewOf(HIST[COACH.i]); if(!R) return;
   const bad=R.ds.filter(d=>d.verdict==='bad').length, ok=R.ds.filter(d=>d.verdict==='ok').length;
-  const head = !R.ds.length ? L('В этой раздаче вы не принимали решений — карты сбросились за вас или раздача закончилась раньше.')
+  const head = R.omaha ? L('Это раздача в Омаху. Тренер пока разбирает только техасский холдем, но здесь видно ваши карты, стол и итог.') : !R.ds.length ? L('В этой раздаче вы не принимали решений — карты сбросились за вас или раздача закончилась раньше.')
     : bad ? L('Разберём раздачу №{0}. Решений: {1}, ошибок: {2}, спорных: {3}.', R.rec.no, R.ds.length, bad, ok)
     : ok ? L('Разберём раздачу №{0}. Решений: {1}, грубых ошибок нет, спорных: {2}.', R.rec.no, R.ds.length, ok)
     : L('Разберём раздачу №{0}. Все {1} решений хорошие — так держать!', R.rec.no, R.ds.length);

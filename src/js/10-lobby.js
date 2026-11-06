@@ -33,7 +33,7 @@ function lobbyRetry(ms=3000){
 }
 function cleanTable(t){
   const num=(v,d=0)=>Number.isFinite(+v)?Math.max(0,Math.min(100000,Math.floor(+v))):d;
-  return {code:String(t.code).toUpperCase().slice(0,4), name:cleanName(String(t.name||'Стол').slice(0,30)).slice(0,30), tn:!!t.tn, humans:num(t.humans), bots:num(t.bots), seats:num(t.seats), max:num(t.max,6), sb:num(t.sb,10), bb:num(t.bb,20), start:num(t.start,1000), bomb:num(t.bomb), started:!!t.started, ts:Date.now()};
+  return {code:String(t.code).toUpperCase().slice(0,4), name:cleanName(String(t.name||'Стол').slice(0,30)).slice(0,30), tn:!!t.tn, humans:num(t.humans), bots:num(t.bots), seats:num(t.seats), max:num(t.max,6), sb:num(t.sb,10), bb:num(t.bb,20), start:num(t.start,1000), bomb:num(t.bomb), started:!!t.started, game:t.game==='omaha'?'omaha':'holdem', ko:!!t.ko, ts:Date.now()};
 }
 function lobbyMsg(c,m){
   if(!m || typeof m!=='object') return;
@@ -50,7 +50,7 @@ function lobbyBroadcast(){
 function myTableInfo(){
   if(MODE!=='host' || !S || !S.public) return null;
   const me=seats().find(s=>s.uid===myUid);
-  return {code, name: S.tname || (me?me.name:'—'), tn: !!S.tname, humans:seats().filter(s=>!s.bot&&!s.left).length, bots:seats().filter(s=>s.bot).length, seats:seats().filter(s=>!s.left).length, max:MAX_SEATS, sb:S.sb, bb:S.bb, start:buyIn(), bomb:S.bombEvery||0, started:!!S.started};
+  return {code, name: S.tname || (me?me.name:'—'), tn: !!S.tname, humans:seats().filter(s=>!s.bot&&!s.left).length, bots:seats().filter(s=>s.bot).length, seats:seats().filter(s=>!s.left).length, max:MAX_SEATS, sb:S.sb, bb:S.bb, start:buyIn(), game:S.game==='omaha'?'omaha':'holdem', ko:!!S.ko, bomb:S.bombEvery||0, started:!!S.started};
 }
 function lobbyReg(){
   const t=myTableInfo(); if(!t) return;
@@ -69,6 +69,7 @@ function lobbyRender(){
   $('tablesNote').textContent = lob.role ? '' : t('Подключаемся к лобби…');
   ul.innerHTML = list.length ? list.map(x=>{
     const info=[t('Игроков: {0}', x.humans)];
+    if(x.game==='omaha') info.push(t('Омаха')); if(x.ko) info.push(t('Нокаут'));
     if(x.bots) info.push(t('ботов: {0}', x.bots));
     info.push(t('блайнды {0}/{1}', x.sb, x.bb), t('стек {0}', x.start));
     if(x.bomb) info.push(t('бомб-пот каждые {0}', x.bomb));
