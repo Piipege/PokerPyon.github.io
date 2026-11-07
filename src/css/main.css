@@ -895,3 +895,5 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
 .kolist span{flex:1}
 .kolist em{font-style:normal;color:var(--text-2)}
 .seat .name em.kos{color:#ffd86b}
+/* a button's label never spills over its neighbours (it used to cover «Check» on phones) */
+#actRow .btn,#preRow .btn,#raiseRow .btn{overflow:hidden;text-overflow:ellipsis}

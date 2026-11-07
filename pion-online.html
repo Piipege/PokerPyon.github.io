@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <title>Покерный стол «Пион»</title>
-<link rel="preload" href="assets/app.6645dc7c2d.js" as="script">
+<link rel="preload" href="assets/app.1f5673089e.js" as="script">
 <link rel="preload" href="assets/peerjs.f69f573cb6.js" as="script">
 <style>
 /* extra scripts: Noto Sans Georgian, Noto Sans Hebrew (SIL OFL) */
@@ -950,6 +950,8 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
 .kolist span{flex:1}
 .kolist em{font-style:normal;color:var(--text-2)}
 .seat .name em.kos{color:#ffd86b}
+/* a button's label never spills over its neighbours (it used to cover «Check» on phones) */
+#actRow .btn,#preRow .btn,#raiseRow .btn{overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body>
@@ -1353,6 +1355,6 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
     </div>
   </div>
 </div>
-<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.47fade87c8.js","uk":"assets/lang-uk.e67ec9c33d.js","ka":"assets/lang-ka.9a7f3f6e03.js","fr":"assets/lang-fr.eb1dc631b3.js","de":"assets/lang-de.6f180fed2d.js","ro":"assets/lang-ro.f1c0ee076c.js","he":"assets/lang-he.c8325c4670.js","kk":"assets/lang-kk.26781f7e0d.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.6645dc7c2d.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
+<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.5dea9c6943.js","uk":"assets/lang-uk.533d137084.js","ka":"assets/lang-ka.fac21aaf2d.js","fr":"assets/lang-fr.a490a27892.js","de":"assets/lang-de.b72f5b665b.js","ro":"assets/lang-ro.f35e3eb1a0.js","he":"assets/lang-he.70da0dce2c.js","kk":"assets/lang-kk.46c4f74f3b.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.1f5673089e.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
 </body>
 </html>
