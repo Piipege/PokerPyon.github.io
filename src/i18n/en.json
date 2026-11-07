@@ -1023,5 +1023,7 @@
  "Формат": "Format",
  "Обычный — с докупками": "Regular — with rebuys",
  "Нокаут — без докупок, до последнего": "Knockout — no rebuys, last one standing",
- "↺ Показать подсказки для новичков снова": "↺ Show beginner tips again"
+ "↺ Показать подсказки для новичков снова": "↺ Show beginner tips again",
+ "Чек бесплатный: нажмите «Чек», чтобы остаться в раздаче": "Checking is free: tap «Check» to stay in the hand",
+ "Пас?": "Fold?"
 }

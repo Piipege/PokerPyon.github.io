@@ -316,11 +316,12 @@ function renderControls(){
     $('pAll').textContent = t(S.game==='omaha' ? 'Макс.' : 'Олл-ин');
     ['bCall','bRaise','bFold'].forEach(id=>$(id).classList.remove('confirm')); $('bFold').textContent=t('Сбросить');
     if(confirmArm && Date.now()-confirmArm.at<3500){
-      if(confirmArm.type==='fold'){ $('bFold').classList.add('confirm'); $('bFold').textContent=t('Чек бесплатный. Всё равно пас?'); }
+      if(confirmArm.type==='fold'){ $('bFold').classList.add('confirm'); $('bFold').textContent=t('Пас?'); } // short: it must fit a phone button
       else { const id=confirmArm.type==='raise'?'bRaise':'bCall'; $(id).classList.add('confirm'); $(id).textContent=t('Точно? {0}', fmt(confirmArm.paid)); }
     }
     const odds = toCall>0 ? Math.round(toCall/(potTotal()+toCall)*100) : 0;
     hint = t('Ваш ход'); minor=true;
+    if(confirmArm && confirmArm.type==='fold' && Date.now()-confirmArm.at<3500){ hint=t('Чек бесплатный: нажмите «Чек», чтобы остаться в раздаче'); minor=false; }
   } else if(pending!==null){
     hint=t('Ход отправлен ведущему…');
   } else if(MODE==='host' && !S.started){

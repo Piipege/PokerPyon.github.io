@@ -129,7 +129,8 @@ console.log('fold warning when checking is free');
     if(st.free){
       const hand = await p.evaluate(() => window.__pion.S.handNo);
       await p.click('#bFold');
-      ok(await p.locator('#bFold.confirm').count() === 1 && /бесплатн/.test(await p.locator('#bFold').textContent()), 'first tap on Fold asks: ' + (await p.locator('#bFold').textContent()).trim());
+      ok(await p.locator('#bFold.confirm').count() === 1 && /бесплатн/.test(await p.locator('#hint').textContent()), 'first tap on Fold asks: «' + (await p.locator('#bFold').textContent()).trim() + '» + ' + (await p.locator('#hint').textContent()).trim());
+      ok(await p.evaluate(() => ['bCall', 'bRaise'].every(id => { const e = document.getElementById(id), b = e.getBoundingClientRect(), top = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2); return top === e || e.contains(top); })), 'Check and Bet stay tappable while Fold asks');
       ok(await p.evaluate(h => { const S = window.__pion.S, me = S.seats.find(s => s.uid === window.__pion.myUid); return S.handNo === h && !me.folded; }, hand), 'and does not fold yet');
       await p.click('#bFold');
       ok(await p.evaluate(h => { const S = window.__pion.S, me = S.seats.find(s => s.uid === window.__pion.myUid); return S.handNo !== h || me.folded; }, hand), 'second tap folds');
