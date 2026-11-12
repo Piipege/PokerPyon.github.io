@@ -6,7 +6,7 @@ async function wantWake(on){
     if(!on && wakeLock){ await wakeLock.release(); wakeLock=null; }
   }catch(e){ wakeLock=null; }
 }
-document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ document.title=t('Покерный стол «Пион»'); wantWake(!!S); } });
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ document.title=t('Покерный стол «PyonPoker»'); wantWake(!!S); } });
 let titleT=null;
 /* vibration: a different pattern for each event, each one can be switched off */
 const VIB = {turn:[90,60,90], win:[40,40,40,40,180], timer:[250,120,250]};
@@ -16,8 +16,8 @@ function myTurnAlert(){
   buzz('turn');
   if(document.hidden){
     clearInterval(titleT); let on=false;
-    titleT=setInterval(()=>{ if(!document.hidden){ clearInterval(titleT); document.title=t('Покерный стол «Пион»'); return; } on=!on; document.title = on ? '● '+t('Ваш ход') : t('Покерный стол «Пион»'); }, 900);
-    if(CFG.notify && window.Notification && Notification.permission==='granted'){ try{ new Notification(t('Ваш ход'), {body:t('Покерный стол «Пион»'), tag:'pion-turn'}); }catch(e){} }
+    titleT=setInterval(()=>{ if(!document.hidden){ clearInterval(titleT); document.title=t('Покерный стол «PyonPoker»'); return; } on=!on; document.title = on ? '● '+t('Ваш ход') : t('Покерный стол «PyonPoker»'); }, 900);
+    if(CFG.notify && window.Notification && Notification.permission==='granted'){ try{ new Notification(t('Ваш ход'), {body:t('Покерный стол «PyonPoker»'), tag:'pion-turn'}); }catch(e){} }
   }
 }
 let confirmArm=null;

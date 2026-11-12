@@ -179,7 +179,7 @@ function recapCanvas(){
   const g=cv.getContext('2d'), F=(w,s,f)=>`${w} ${s}px ${f==='d'?'Unbounded':f==='n'?'"JetBrains Mono"':'Onest'}, "Noto Sans Georgian", "Noto Sans Hebrew", sans-serif`;
   const rtl = LANG==='he'; g.direction = rtl ? 'rtl' : 'ltr'; const X = x => rtl ? W-x : x; g.textAlign = rtl ? 'right' : 'left';
   const grd=g.createLinearGradient(0,0,W,H); grd.addColorStop(0,'#5a1438'); grd.addColorStop(.55,'#2a0c1e'); grd.addColorStop(1,'#170912'); g.fillStyle=grd; g.fillRect(0,0,W,H);
-  g.fillStyle='#ff8cc0'; g.font=F(700,30,'d'); g.fillText(t('Пион'), X(72), 96);
+  g.fillStyle='#ff8cc0'; g.font=F(700,30,'d'); g.fillText('PyonPoker', X(72), 96);
   g.fillStyle='#fff3f8'; g.font=F(700,58,'d'); g.fillText(t('Мой вечер'), X(72), 176);
   g.fillStyle='#c49ab4'; g.font=F(500,30); g.fillText(`${myName()} · ${fmtDate(Date.now())}`, X(72), 226);
   const round=(x,y,w,h,r)=>{ g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); };
@@ -207,11 +207,11 @@ function recapCanvas(){
   return cv;
 }
 function recapBlob(){ return new Promise(res=>recapCanvas().toBlob(res, 'image/jpeg', .9)); } // JPEG: ~10× smaller than PNG for messengers
-function sessionText(){ const {list,facts}=sessionData(); return [t('Итоги вечера — «Пион»'), ...list.map((p,k)=>`${k+1}. ${p.name}: ${p.net>0?'+':''}${p.net} (${t('раздач')}: ${p.hands}, ${t('банков')}: ${p.wins})`), '', ...facts].join('\n'); }
+function sessionText(){ const {list,facts}=sessionData(); return [t('Итоги вечера — «PyonPoker»'), ...list.map((p,k)=>`${k+1}. ${p.name}: ${p.net>0?'+':''}${p.net} (${t('раздач')}: ${p.hands}, ${t('банков')}: ${p.wins})`), '', ...facts].join('\n'); }
 $('bSession').onclick=openSession;
 $('sessClose').onclick=()=>$('sessOv').hidden=true;
 $('sessOv').addEventListener('click', e=>{ if(e.target.id==='sessOv') $('sessOv').hidden=true; });
 $('sessCopy').onclick=()=>{ try{ navigator.clipboard.writeText(sessionText()).then(()=>toast(t('Итоги скопированы')),()=>toast(t('Не получилось скопировать'))); }catch(e){} };
-$('sessImg').onclick=async()=>{ const b=await recapBlob(); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='pion-moy-vecher.jpg'; document.body.append(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1000); };
-$('sessShare').onclick=async()=>{ try{ const b=await recapBlob(), f=new File([b], 'pion-moy-vecher.jpg', {type:'image/jpeg'}); if(navigator.canShare({files:[f]})) await navigator.share({files:[f], title:t('Мой вечер'), text:sessionText().split('\n').slice(0,3).join('\n')}); else $('sessImg').click(); }catch(e){} };
+$('sessImg').onclick=async()=>{ const b=await recapBlob(); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='pyonpoker-my-evening.jpg'; document.body.append(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1000); };
+$('sessShare').onclick=async()=>{ try{ const b=await recapBlob(), f=new File([b], 'pyonpoker-my-evening.jpg', {type:'image/jpeg'}); if(navigator.canShare({files:[f]})) await navigator.share({files:[f], title:t('Мой вечер'), text:sessionText().split('\n').slice(0,3).join('\n')}); else $('sessImg').click(); }catch(e){} };
 
