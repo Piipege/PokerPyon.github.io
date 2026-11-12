@@ -1237,5 +1237,8 @@
  "c17.body": "La Hold'em o mână medie câștigă des. În Omaha adversarii au câte patru cărți, așa că potul îl ia mai des cea mai bună mână posibilă — nuts. Înainte de un pariu mare întreabă-te: «Am nuts? Dacă nu — ce mă bate?»\n\nDraw-urile în Omaha pot fi uriașe. Wrap-ul e un draw de chintă cu mai multe cărți proprii deodată: ai J-T-8-7 pe flop 9-6-2, iar chinta o fac zeci de cărți diferite — 13 outs și mai mult. Draw-ul de flush maxim (cu as) împreună cu un wrap poate fi favorit chiar și contra unui set.\n\nPericolul sunt draw-urile care nu sunt maxime. Un flush cu rege sau o chintă mică se fac des când adversarul are una mai mare. Asemenea draw-uri valorează mai puțin decât par: îți faci mâna și pierzi un pot mare.",
  "c18.title": "Omaha: strategie",
  "c18.body": "Înainte de flop șansele mâinilor sunt apropiate: cea mai bună mână, A♠ A♥ K♠ K♥, câștigă contra uneia oarecare doar ≈70%. De aceea principalul se întâmplă după flop.\n\n• Joacă nuts și draw-urile maxime agresiv — cu un pariu cât potul.\n• O pereche, chiar și top pair, e o mână slabă contra mai multor adversari. Și două perechi pierd des.\n• Poziția contează și mai mult decât la Hold'em: poturile sunt mari, iar greșelile scumpe.\n• Pot-limit limitează pariurile, așa că un pot mare crește în câteva străzi. Gândește înainte: ajunge mâna pentru tot stack-ul?\n• Fă bluff mai rar: cu patru cărți adversarul are mai des ceva cu care plătește.",
- "{0} играет мало рук, но агрессивно — осторожнее с его ставками.": "{0} joacă puține mâini, dar agresiv — atenție la pariurile lui."
+ "{0} играет мало рук, но агрессивно — осторожнее с его ставками.": "{0} joacă puține mâini, dar agresiv — atenție la pariurile lui.",
+ "играет мало рук": "joacă puține mâini",
+ "играет много рук": "joacă multe mâini",
+ "чаще входит в банк рейзом, чем коллом": "intră în pot mai des cu raise decât cu call"
 }

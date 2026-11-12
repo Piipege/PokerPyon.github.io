@@ -228,10 +228,9 @@ function renderExtras(){
 
   const pc=(a,b)=>b?Math.round(a/b*100)+'%':'—';
   const rows=S.seats.map(s=>{
-    const q=s.st||EMPTY_ST, tags=[];
-    if(q.h>=10){ const v=q.v/q.h; if(v<.18) tags.push(t('тайт')); else if(v>.42) tags.push(t('луз')); if(q.v && q.p/q.v>.6) tags.push(t('агро')); }
+    const q=s.st||EMPTY_ST;
     const net=q.net||0, nm=esc(s.bot?t(s.name):s.name);
-    return `<tr><td title="${nm}">${nm}${tags.length?`<span class="tg">${tags.join('-')}</span>`:''}</td><td>${q.h}</td><td>${pc(q.v,q.h)}</td><td>${pc(q.p,q.h)}</td><td>${pc(q.sdw,q.sd)}</td><td class="${net>0?'pos':net<0?'neg':''}">${net>0?'+':''}${net}</td></tr>`;
+    return `<tr><td title="${nm}">${nm}</td><td>${q.h}</td><td>${pc(q.v,q.h)}</td><td>${pc(q.p,q.h)}</td><td>${pc(q.sdw,q.sd)}</td><td class="${net>0?'pos':net<0?'neg':''}">${net>0?'+':''}${net}</td></tr>`;
   }).join('');
   const html=`<thead><tr><th>${t('Игрок')}</th><th>${t('Раздач')}</th><th>VPIP</th><th>PFR</th><th>W$SD</th><th>${t('Итог')}</th></tr></thead><tbody>${rows}</tbody>`;
   if(html!==statsHtml){ statsHtml=html; $('stats').innerHTML=html; }
