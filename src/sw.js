@@ -1,4 +1,4 @@
-// Pion service worker: the installed app opens and plays offline (bots, course, coach).
+// PyonPoker service worker: the installed app opens and plays offline (bots, course, coach).
 // The page: network first (fresh version when online, 4 s timeout), cache when offline.
 // assets/*: file names contain a content hash, so they never change — cache first.
 const CACHE = 'pion-__VERSION__';

@@ -184,7 +184,7 @@ function render(){
   $('street').textContent = t(STREETS[S.street] || '—');
   tbl.classList.toggle('myturn', myTurn());
   if(S.bomb && !S.handOver && bombFxHand!==S.handNo && CFG.fx){ bombFxHand=S.handNo; const r=$('potBox').getBoundingClientRect(); burstAt(r.left+r.width/2, r.top+r.height/2, 'spark', 70); }
-  { const br = S.tname ? JSON.stringify(String(S.tname).toUpperCase()) : JSON.stringify(String(t('Пион')).toUpperCase()); if(document.documentElement.style.getPropertyValue('--brand')!==br) document.documentElement.style.setProperty('--brand', br); }
+  { const br = S.tname ? JSON.stringify(String(S.tname).toUpperCase()) : JSON.stringify(String('PyonPoker').toUpperCase()); if(document.documentElement.style.getPropertyValue('--brand')!==br) document.documentElement.style.setProperty('--brand', br); }
 
   const lastId = S.log.length ? S.log[S.log.length-1].id : null;
   if(lastId!==logTop){

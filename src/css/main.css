@@ -64,7 +64,8 @@ h1 span{color:var(--pink)}
   box-shadow:0 0 0 14px var(--rim),0 0 0 15px var(--rim-hi),0 0 0 17px #0007,0 30px 70px #000c,inset 0 0 70px #0008;
   transition:box-shadow 1.2s var(--ease)}
 .felt::after{content:"";position:absolute;inset:7%;border-radius:999px;border:1px solid #ff8cc033}
-.felt::before{content:var(--brand,"ПИОН");direction:ltr;position:absolute;left:50%;top:72%;transform:translate(-50%,-50%);font:700 clamp(14px,2.4vw,22px)/1 var(--f-display);letter-spacing:.5em;color:#ffffff10}
+.felt::before{content:var(--brand,"PYONPOKER");direction:ltr;position:absolute;left:50%;top:70%;transform:translate(-50%,-50%);font:700 clamp(12px,2vw,20px)/1 var(--f-display);letter-spacing:.28em;color:#ffffff10;white-space:nowrap}
+.tight .felt::before{top:64%;font-size:12px;letter-spacing:.2em}
 .table.myturn .felt{box-shadow:0 0 0 14px var(--rim),0 0 0 15px var(--pink),0 0 0 17px #0007,0 0 80px #ff8cc044,inset 0 0 70px #0008}
 .center{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:2}
 .board{display:flex;gap:6px;perspective:700px}
@@ -897,3 +898,5 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
 .seat .name em.kos{color:#ffd86b}
 /* a button's label never spills over its neighbours (it used to cover «Check» on phones) */
 #actRow .btn,#preRow .btn,#raiseRow .btn{overflow:hidden;text-overflow:ellipsis}
+/* long labels wrap to two lines instead of being cut (e.g. «Call any») */
+#actRow .btn,#preRow .btn{white-space:normal;text-overflow:clip;line-height:1.12;overflow-wrap:anywhere;hyphens:auto}

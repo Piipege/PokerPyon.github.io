@@ -7,13 +7,13 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Pion">
+<meta name="apple-mobile-web-app-title" content="PyonPoker">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
-<title>Покерный стол «Пион»</title>
-<link rel="preload" href="assets/app.1f5673089e.js" as="script">
+<title>Покерный стол «PyonPoker»</title>
+<link rel="preload" href="assets/app.ad1a5ef2e6.js" as="script">
 <link rel="preload" href="assets/peerjs.f69f573cb6.js" as="script">
 <style>
 /* extra scripts: Noto Sans Georgian, Noto Sans Hebrew (SIL OFL) */
@@ -119,7 +119,8 @@ h1 span{color:var(--pink)}
   box-shadow:0 0 0 14px var(--rim),0 0 0 15px var(--rim-hi),0 0 0 17px #0007,0 30px 70px #000c,inset 0 0 70px #0008;
   transition:box-shadow 1.2s var(--ease)}
 .felt::after{content:"";position:absolute;inset:7%;border-radius:999px;border:1px solid #ff8cc033}
-.felt::before{content:var(--brand,"ПИОН");direction:ltr;position:absolute;left:50%;top:72%;transform:translate(-50%,-50%);font:700 clamp(14px,2.4vw,22px)/1 var(--f-display);letter-spacing:.5em;color:#ffffff10}
+.felt::before{content:var(--brand,"PYONPOKER");direction:ltr;position:absolute;left:50%;top:70%;transform:translate(-50%,-50%);font:700 clamp(12px,2vw,20px)/1 var(--f-display);letter-spacing:.28em;color:#ffffff10;white-space:nowrap}
+.tight .felt::before{top:64%;font-size:12px;letter-spacing:.2em}
 .table.myturn .felt{box-shadow:0 0 0 14px var(--rim),0 0 0 15px var(--pink),0 0 0 17px #0007,0 0 80px #ff8cc044,inset 0 0 70px #0008}
 .center{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:2}
 .board{display:flex;gap:6px;perspective:700px}
@@ -952,6 +953,8 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
 .seat .name em.kos{color:#ffd86b}
 /* a button's label never spills over its neighbours (it used to cover «Check» on phones) */
 #actRow .btn,#preRow .btn,#raiseRow .btn{overflow:hidden;text-overflow:ellipsis}
+/* long labels wrap to two lines instead of being cut (e.g. «Call any») */
+#actRow .btn,#preRow .btn{white-space:normal;text-overflow:clip;line-height:1.12;overflow-wrap:anywhere;hyphens:auto}
 </style>
 </head>
 <body>
@@ -959,7 +962,7 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
 <canvas id="fxCanvas" class="fxcanvas" aria-hidden="true"></canvas>
 <div class="wrap">
   <header>
-    <h1>Пион <span>·</span> <span class="sub">Техасский холдем</span></h1>
+    <h1>PyonPoker <span>·</span> <span class="sub">Техасский холдем</span></h1>
     <div class="meta">
       <span id="tableChip" class="chip" hidden>Стол <b id="tableCode"></b><span id="hostTag" class="tag" hidden>ведущий</span><button class="btn small ghost" id="bCopy">Позвать друзей</button></span>
       <span class="gi">Блайнды <b id="blinds">10/20</b><span id="blindUp" class="up"></span></span>
@@ -1355,6 +1358,6 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
     </div>
   </div>
 </div>
-<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.5dea9c6943.js","uk":"assets/lang-uk.533d137084.js","ka":"assets/lang-ka.fac21aaf2d.js","fr":"assets/lang-fr.a490a27892.js","de":"assets/lang-de.b72f5b665b.js","ro":"assets/lang-ro.f35e3eb1a0.js","he":"assets/lang-he.70da0dce2c.js","kk":"assets/lang-kk.46c4f74f3b.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.1f5673089e.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
+<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.0d6efdbdd6.js","uk":"assets/lang-uk.9c99f83d2a.js","ka":"assets/lang-ka.3a8f69f82a.js","fr":"assets/lang-fr.9e62de3859.js","de":"assets/lang-de.894cfc9611.js","ro":"assets/lang-ro.ed8adbfa83.js","he":"assets/lang-he.0e0e2cac81.js","kk":"assets/lang-kk.1d871315e5.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.ad1a5ef2e6.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
 </body>
 </html>

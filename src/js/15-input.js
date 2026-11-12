@@ -51,7 +51,7 @@ $('bExit').onclick=()=>{
 };
 $('bCopy').onclick=()=>{
   const link=inviteLink();
-  const msg = link ? t('Садись за мой покерный стол «Пион»: {0}', link) : t('Садись за мой покерный стол «Пион». Код стола: {0}', code);
+  const msg = link ? t('Садись за мой покерный стол «PyonPoker»: {0}', link) : t('Садись за мой покерный стол «PyonPoker». Код стола: {0}', code);
   try{ navigator.clipboard.writeText(msg).then(()=>toast(t(link?'Ссылка-приглашение скопирована':'Код скопирован')),()=>toast(t('Код стола: {0}', code))); }catch(e){ toast(t('Код стола: {0}', code)); }
 };
 $('bResume').onclick=()=>{ const r=savedHost(); if(r){ saveNick(); createTable(r); return; } const g=savedGuest(); if(g){ if(!checkNick()) return; saveNick(); joinTable(g.code); } };
