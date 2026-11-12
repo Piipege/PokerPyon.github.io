@@ -1,6 +1,6 @@
 /* ---------- hand records: history, summary, replay, evening results ---------- */
 let HIST=[]; const SESS=[];
-try{ HIST=JSON.parse(localStorage.getItem('pion-hist')||'[]')||[]; }catch(e){ HIST=[]; }
+try{ HIST=JSON.parse(localStorage.getItem('pyonpoker-hist')||'[]')||[]; }catch(e){ HIST=[]; }
 function recStart(){
   H.rec={no:S.handNo, sb:S.sb, bb:S.bb, bomb:!!S.bomb, at:Date.now(), dealer:seats()[S.dealer]?.uid,
     seats:seats().filter(p=>p.inHand).map(p=>({u:p.uid, n:p.name, b:!!p.bot, st:p.stack})), ev:[], shown:{}};
@@ -28,7 +28,7 @@ function histAdd(rec){
   if(!rec || HIST.some(h=>h.no===rec.no && h.at===rec.at)) return;
   HIST.push(rec); if(HIST.length>20) HIST.splice(0, HIST.length-20);
   SESS.push(rec);
-  try{ localStorage.setItem('pion-hist', JSON.stringify(HIST)); }catch(e){}
+  try{ localStorage.setItem('pyonpoker-hist', JSON.stringify(HIST)); }catch(e){}
   renderHandList();
   profileSave([rec]);
 }

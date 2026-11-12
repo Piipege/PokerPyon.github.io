@@ -1,5 +1,5 @@
 /* ---------- sound (synthesized, off by default) ---------- */
-const snd = {on: store.get('pion-sound')==='1', ctx:null};
+const snd = {on: store.get('pyonpoker-sound')==='1', ctx:null};
 function actx(){ if(!snd.ctx) snd.ctx=new (window.AudioContext||window.webkitAudioContext)(); if(snd.ctx.state==='suspended') snd.ctx.resume(); return snd.ctx; }
 function tone(freq, dur, type='sine', vol=.06, when=0){
   if(!snd.on) return;
@@ -118,7 +118,7 @@ function endHand(){
 
 function gameOver(title, text){
   S.handOver=true; S.turn=-1; commit();
-  $('restart').hidden=false; $('restart').textContent=t('Новая игра');
+  $('restart').hidden=false; setT($('restart'), 'Новая игра');
   $('ovTitle').textContent=title; $('ovText').textContent=text; $('overlay').hidden=false;
 }
 

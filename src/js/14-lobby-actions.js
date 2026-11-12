@@ -19,14 +19,13 @@ function exitToLobby(silent){
   if(MODE==='guest' && !silent){ sendHost({t:'leave'}); forgetGuest(); }
   if(MODE==='host'){
     for(const c of conns.values()){ try{ c.send({t:'closed'}); }catch(e){} }
-    try{ localStorage.removeItem('pion-host'); }catch(e){}
+    try{ localStorage.removeItem('pyonpoker-host'); }catch(e){}
   }
   clearFlow();
   const wasHost = MODE==='host';
   setTimeout(stopNet, wasHost ? 400 : 0);
   MODE='lobby'; S=null; code=null; myCards=null; pending=null;
   setHash('');
-  { const sub=document.querySelector('h1 .sub'); if(sub) sub.textContent=t('Техасский холдем'); }
   $('overlay').hidden=true; $('lobby').hidden=false; resetView(); render(); renderGuestNet(); showResume();
   maybeRecap();
 }

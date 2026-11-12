@@ -10,7 +10,8 @@
 <meta name="apple-mobile-web-app-title" content="PyonPoker">
 <!-- @icons -->
 <link rel="manifest" href="manifest.webmanifest">
-<script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
+<script>try{var ks=[],i,k,n;for(i=0;i<localStorage.length;i++){k=localStorage.key(i);if(k&&k.slice(0,5)==="pion-")ks.push(k)}for(i=0;i<ks.length;i++){k=ks[i];n="pyonpoker-"+k.slice(5);if(localStorage.getItem(n)==null)localStorage.setItem(n,localStorage.getItem(k));localStorage.removeItem(k)}}catch(e){}
+try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <title>Покерный стол «PyonPoker»</title>
 <!-- @head -->
 <style>@inline(css/main.css)</style>

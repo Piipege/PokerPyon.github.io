@@ -7,14 +7,14 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const { chromium, devices } = require('playwright');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const URL = 'file://' + path.join(ROOT, process.env.PION_PAGE || 'pion-online.html');
+const URL = 'file://' + path.join(ROOT, process.env.PYONPOKER_PAGE || 'pyonpoker.html');
 const SHOTS = process.argv.includes('--shots') ? path.join(ROOT, 'tools', 'shots') : null;
 if(SHOTS) fs.mkdirSync(SHOTS, { recursive: true });
 
 let failed = 0;
 const ok = (c, m) => { console.log((c ? '  ✓ ' : '  ✗ ') + m); if(!c) failed++; };
 const browser = await chromium.launch();
-const init = (lang) => { window.PION_TEST = 1; try{ localStorage.setItem('pion-cfg', JSON.stringify({ lang, speed: 'fast' })); localStorage.setItem('pion-nick', 'Тест'); }catch(e){} };
+const init = (lang) => { window.PYONPOKER_TEST = 1; try{ localStorage.setItem('pyonpoker-cfg', JSON.stringify({ lang, speed: 'fast' })); localStorage.setItem('pyonpoker-nick', 'Тест'); }catch(e){} };
 
 async function page(lang = 'ru', opts = {}){
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 820 }, ...opts });
@@ -22,7 +22,7 @@ async function page(lang = 'ru', opts = {}){
   const p = await ctx.newPage();
   p.on('pageerror', e => { console.log('  ! page error: ' + e.message); failed++; });
   await p.goto(URL);
-  await p.waitForFunction(() => window.__pion);
+  await p.waitForFunction(() => window.__pyonpoker);
   return p;
 }
 
@@ -30,7 +30,7 @@ console.log('course generators');
 {
   const p = await page();
   const res = await p.evaluate(() => {
-    const { GEN, LESSONS, DRILLS } = window.__pion, bad = [];
+    const { GEN, LESSONS, DRILLS } = window.__pyonpoker, bad = [];
     const names = new Set([...LESSONS.flatMap(l => l.gen), ...DRILLS.flatMap(d => d.gen)]);
     for(const g of names) for(let i = 0; i < 60; i++){
       try{
@@ -42,7 +42,7 @@ console.log('course generators');
   });
   ok(!res.bad.length, `${res.n} generators × 60 questions are well-formed` + (res.bad.length ? '\n     ' + res.bad.join('\n     ') : ''));
   // open the course, a new lesson, its practice and a drill
-  await p.evaluate(() => window.__pion.openLearn(10));
+  await p.evaluate(() => window.__pyonpoker.openLearn(10));
   ok(await p.locator('#lesson h4').textContent() === 'Позиции за столом', 'new lesson 11 opens with its title');
   await p.click('[data-act="start"]');
   for(let k = 0; k < 5; k++){ await p.click('#lesson [data-opt="0"]'); await p.click('[data-act="next"]'); }
@@ -69,10 +69,10 @@ console.log('language switch loads its dictionary');
 console.log('beginner tour, hidden own cards, vibration');
 {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
-  await ctx.addInitScript(() => { window.PION_TEST = 1; window.PION_TOUR = 1; window.__vib = []; Object.defineProperty(navigator, 'vibrate', { value: p => { window.__vib.push(JSON.stringify(p)); return true; }, configurable: true }); localStorage.setItem('pion-nick', 'Тест'); localStorage.setItem('pion-cfg', JSON.stringify({ lang: 'ru', speed: 'fast' })); });
+  await ctx.addInitScript(() => { window.PYONPOKER_TEST = 1; window.PYONPOKER_TOUR = 1; window.__vib = []; Object.defineProperty(navigator, 'vibrate', { value: p => { window.__vib.push(JSON.stringify(p)); return true; }, configurable: true }); localStorage.setItem('pyonpoker-nick', 'Тест'); localStorage.setItem('pyonpoker-cfg', JSON.stringify({ lang: 'ru', speed: 'fast' })); });
   const p = await ctx.newPage();
   p.on('pageerror', e => { console.log('  ! page error: ' + e.message); failed++; });
-  await p.goto(URL); await p.waitForFunction(() => window.__pion);
+  await p.goto(URL); await p.waitForFunction(() => window.__pyonpoker);
   ok(await p.waitForSelector('.tourcard', { timeout: 4000 }).then(() => true, () => false) && /1 \/ 3/.test(await p.locator('.tourcard').textContent()), 'tour starts on the first visit (1 / 3)');
   ok(await p.locator('.ltiles.tourfocus').count() === 1, 'and points at the menu tiles');
   await p.click('[data-tour="next"]');
@@ -92,7 +92,7 @@ console.log('beginner tour, hidden own cards, vibration');
   await p.mouse.up();
   ok(await p.locator('.seat.me .cards .card:not(.back)').count() === 2, 'a short tap keeps them open for a moment');
   await p.waitForTimeout(3400);
-  ok(await p.locator('.seat.me .cards .card.back').count() === 2 || await p.evaluate(() => !!window.__pion.S.seats.find(s => s.uid === window.__pion.myUid).shown), 'and then they hide again');
+  ok(await p.locator('.seat.me .cards .card.back').count() === 2 || await p.evaluate(() => !!window.__pyonpoker.S.seats.find(s => s.uid === window.__pyonpoker.myUid).shown), 'and then they hide again');
   await p.evaluate(() => { const c = document.getElementById('cfgHide'); c.checked = false; c.dispatchEvent(new Event('change')); });
   ok(await p.locator('.seat.me .cards .card.back').count() === 0, 'switching it off shows the cards as usual');
   // vibration settings
@@ -114,7 +114,7 @@ console.log('buy-in in big blinds, open / private table');
   ok(await p.evaluate(() => document.getElementById('publicOn').checked), 'and «Open» turns it back on');
   ok(await p.locator('#pubSeg').isVisible(), 'the choice is in the main options, not folded away');
   await p.click('#lobbyBack'); await p.click('[data-ltab="solo"]'); await p.click('#bSolo');
-  const r = await p.evaluate(() => { const P = window.__pion, S = P.S, a = P.buyIn(); S.sb = 50; S.bb = 100; const b = P.buyIn(); S.sb = 250; S.bb = 500; const c = P.buyIn(); return [a, b, c]; });
+  const r = await p.evaluate(() => { const P = window.__pyonpoker, S = P.S, a = P.buyIn(); S.sb = 50; S.bb = 100; const b = P.buyIn(); S.sb = 250; S.bb = 500; const c = P.buyIn(); return [a, b, c]; });
   ok(r[0] === 1000 && r[1] === 5000 && r[2] === 25000, `buy-in stays 50 BB as blinds rise: ${r.join(' → ')}`);
   await p.context().close();
 }
@@ -127,13 +127,13 @@ console.log('fold warning when checking is free');
   while(!tested && Date.now() - t0 < 60000){
     const st = await p.evaluate(() => { const b = id => document.getElementById(id); const my = b('bFold') && !b('bFold').hidden && !b('bFold').disabled && b('bFold').offsetParent; return { my: !!my, free: my && /Чек/.test(b('bCall').textContent) }; });
     if(st.free){
-      const hand = await p.evaluate(() => window.__pion.S.handNo);
+      const hand = await p.evaluate(() => window.__pyonpoker.S.handNo);
       await p.click('#bFold');
       ok(await p.locator('#bFold.confirm').count() === 1 && /бесплатн/.test(await p.locator('#hint').textContent()), 'first tap on Fold asks: «' + (await p.locator('#bFold').textContent()).trim() + '» + ' + (await p.locator('#hint').textContent()).trim());
       ok(await p.evaluate(() => ['bCall', 'bRaise'].every(id => { const e = document.getElementById(id), b = e.getBoundingClientRect(), top = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2); return top === e || e.contains(top); })), 'Check and Bet stay tappable while Fold asks');
-      ok(await p.evaluate(h => { const S = window.__pion.S, me = S.seats.find(s => s.uid === window.__pion.myUid); return S.handNo === h && !me.folded; }, hand), 'and does not fold yet');
+      ok(await p.evaluate(h => { const S = window.__pyonpoker.S, me = S.seats.find(s => s.uid === window.__pyonpoker.myUid); return S.handNo === h && !me.folded; }, hand), 'and does not fold yet');
       await p.click('#bFold');
-      ok(await p.evaluate(h => { const S = window.__pion.S, me = S.seats.find(s => s.uid === window.__pion.myUid); return S.handNo !== h || me.folded; }, hand), 'second tap folds');
+      ok(await p.evaluate(h => { const S = window.__pyonpoker.S, me = S.seats.find(s => s.uid === window.__pyonpoker.myUid); return S.handNo !== h || me.folded; }, hand), 'second tap folds');
       tested = true;
     } else {
       await p.evaluate(() => { const b = ['bCall', 'bNext'].map(id => document.getElementById(id)).find(b => b && !b.hidden && !b.disabled && b.offsetParent); if(b) b.click(); });
@@ -151,18 +151,18 @@ console.log('game modes: Omaha (pot-limit) and knockout');
   await p.click('[data-ltab="solo"]'); await p.selectOption('#soloGame', 'omaha'); await p.selectOption('#soloN', '3'); await p.click('#bSolo');
   ok(await p.waitForFunction(() => document.querySelectorAll('.seat.me .cards .card').length === 4, null, { timeout: 10000 }).then(() => true, () => false), 'Omaha deals four hole cards');
   ok(await playUntil(() => { const b = document.getElementById('bRaise'); return b && !b.hidden && !b.disabled && b.offsetParent; }, 30000), 'reached my turn in Omaha');
-  const pl = await p.evaluate(() => { const S = window.__pion.S, me = S.seats.find(s => s.uid === window.__pion.myUid), pot = S.seats.reduce((a, s) => a + s.total, 0); return { max: +document.getElementById('amt').max, cap: Math.min(me.bet + me.stack, S.currentBet + pot + Math.max(0, S.currentBet - me.bet)), all: me.bet + me.stack, label: document.getElementById('pAll').textContent }; });
+  const pl = await p.evaluate(() => { const S = window.__pyonpoker.S, me = S.seats.find(s => s.uid === window.__pyonpoker.myUid), pot = S.seats.reduce((a, s) => a + s.total, 0); return { max: +document.getElementById('amt').max, cap: Math.min(me.bet + me.stack, S.currentBet + pot + Math.max(0, S.currentBet - me.bet)), all: me.bet + me.stack, label: document.getElementById('pAll').textContent }; });
   ok(pl.max === pl.cap && pl.max < pl.all, `pot-limit caps the raise: max ${pl.max} = pot limit ${pl.cap} < all-in ${pl.all}, button «${pl.label}»`);
-  ok(await playUntil(() => window.__pion.HIST().length >= 2, 60000) && await p.evaluate(() => window.__pion.HIST().every(r => !r.mine || r.mine.length === 4)), 'Omaha hands are played and recorded with four cards');
+  ok(await playUntil(() => window.__pyonpoker.HIST().length >= 2, 60000) && await p.evaluate(() => window.__pyonpoker.HIST().every(r => !r.mine || r.mine.length === 4)), 'Omaha hands are played and recorded with four cards');
   await p.context().close();
   const q = await page();
   await q.click('[data-ltab="solo"]'); await q.selectOption('#soloFmt', 'ko'); await q.selectOption('#soloN', '1'); await q.click('#bSolo');
-  await q.waitForFunction(() => window.__pion.S && window.__pion.S.handNo >= 1);
-  ok(await q.evaluate(() => window.__pion.S.ko === true && window.__pion.S.blindEvery > 0 && window.__pion.S.botRebuy === false), 'knockout: no rebuys, blinds rise');
-  await q.evaluate(() => { const S = window.__pion.S; S.seats[1].stack = 30; S.seats[0].stack = 3000; });
-  const done = await (async () => { const t0 = Date.now(); while(Date.now() - t0 < 90000){ if(await q.evaluate(() => !!window.__pion.S.koDone)) return true; await q.evaluate(() => { const v = id => { const b = document.getElementById(id); return b && !b.hidden && !b.disabled && b.offsetParent ? b : null; }; const b = v('bRaise') ? (document.getElementById('amt').value = document.getElementById('amt').max, v('bRaise')) : v('bCall') || v('bNext'); if(b) b.click(); }); await q.waitForTimeout(150); } return false; })();
+  await q.waitForFunction(() => window.__pyonpoker.S && window.__pyonpoker.S.handNo >= 1);
+  ok(await q.evaluate(() => window.__pyonpoker.S.ko === true && window.__pyonpoker.S.blindEvery > 0 && window.__pyonpoker.S.botRebuy === false), 'knockout: no rebuys, blinds rise');
+  await q.evaluate(() => { const S = window.__pyonpoker.S; S.seats[1].stack = 30; S.seats[0].stack = 3000; });
+  const done = await (async () => { const t0 = Date.now(); while(Date.now() - t0 < 90000){ if(await q.evaluate(() => !!window.__pyonpoker.S.koDone)) return true; await q.evaluate(() => { const v = id => { const b = document.getElementById(id); return b && !b.hidden && !b.disabled && b.offsetParent ? b : null; }; const b = v('bRaise') ? (document.getElementById('amt').value = document.getElementById('amt').max, v('bRaise')) : v('bCall') || v('bNext'); if(b) b.click(); }); await q.waitForTimeout(150); } return false; })();
   ok(done, 'the knockout ends when one player is left');
-  const r = await q.evaluate(() => { const S = window.__pion.S; return { bot: S.seats[1], me: S.seats[0], ov: !document.getElementById('overlay').hidden, rows: document.querySelectorAll('.kolist li').length, title: document.getElementById('ovTitle').textContent }; });
+  const r = await q.evaluate(() => { const S = window.__pyonpoker.S; return { bot: S.seats[1], me: S.seats[0], ov: !document.getElementById('overlay').hidden, rows: document.querySelectorAll('.kolist li').length, title: document.getElementById('ovTitle').textContent }; });
   ok(r.ov && r.rows === 2 && /турнир/i.test(r.title), `standings shown: «${r.title}», ${r.rows} places`);
   ok((r.bot.busted && r.bot.place === 2 && r.me.kos === 1) || (r.me.busted && r.me.place === 2), 'places and knockouts are counted');
   ok(!(r.bot.rebuys > 0), 'nobody rebought');
@@ -173,7 +173,7 @@ console.log('coach verdicts on fixed hands');
 {
   const p = await page();
   const v = await p.evaluate(() => {
-    const P = window.__pion, me = P.myUid, k = (r, s) => r * 4 + s;
+    const P = window.__pyonpoker, me = P.myUid, k = (r, s) => r * 4 + s;
     // 6 players, dealer = 'd'; seat order: me is first after the big blind (early position)
     const seats = ['d', 's', 'b', me, 'x', 'y'].map(u => ({ u, n: u, b: u !== me, st: 1000 }));
     const base = (mine, ev, board = []) => ({ no: 1, at: Math.random(), sb: 10, bb: 20, dealer: 'd', seats, ev: [{ a: 'sb', u: 's', p: 10, to: 10 }, { a: 'bb', u: 'b', p: 20, to: 20 }, ...ev], board, win: [], shown: {}, delta: {}, mine });
@@ -212,7 +212,7 @@ console.log('hands against bots + coach');
   // play: call or check most of the time, sometimes fold or raise; wait for 6 recorded hands
   const t0 = Date.now();
   while(Date.now() - t0 < 180000){
-    const n = await p.evaluate(() => window.__pion.HIST().length);
+    const n = await p.evaluate(() => window.__pyonpoker.HIST().length);
     if(n >= 6) break;
     const acted = await p.evaluate(() => {
       const v = id => { const b = document.getElementById(id); return b && !b.hidden && !b.disabled && b.offsetParent ? b : null; };
@@ -222,14 +222,14 @@ console.log('hands against bots + coach');
     });
     await p.waitForTimeout(acted ? 150 : 300);
   }
-  const n = await p.evaluate(() => window.__pion.HIST().length);
+  const n = await p.evaluate(() => window.__pyonpoker.HIST().length);
   ok(n >= 6, `played ${n} hands`);
-  const reviews = await p.evaluate(() => window.__pion.HIST().map(r => { const R = window.__pion.reviewOf(r); return R ? { ds: R.ds.length, bad: R.ds.filter(d => !d.why).length } : null; }));
+  const reviews = await p.evaluate(() => window.__pyonpoker.HIST().map(r => { const R = window.__pyonpoker.reviewOf(r); return R ? { ds: R.ds.length, bad: R.ds.filter(d => !d.why).length } : null; }));
   ok(reviews.every(Boolean), 'every hand has a review');
   ok(reviews.every(r => r.bad === 0), 'every decision has an explanation');
   ok(reviews.some(r => r.ds > 0), 'reviews contain decisions');
   await p.click('#bPanel').catch(() => {});
-  await p.evaluate(() => window.__pion.openCoach());
+  await p.evaluate(() => window.__pyonpoker.openCoach());
   ok(await p.locator('#coachLog .step').count() >= 0, 'coach opens with the step list');
   for(const id of ['mistakes', 'better', 'odds', 'outs', 'opp', 'lesson', 'style', 'prev']){
     const before = await p.locator('#coachLog .cm').count();
@@ -242,7 +242,7 @@ console.log('hands against bots + coach');
     ok(last.length > 10 && !/undefined|\{0\}|NaN/.test(last), `answers "${q}": ${last.slice(0, 70).replace(/\s+/g, ' ')}…`);
   }
   if(SHOTS){
-    await p.evaluate(() => window.__pion.openCoach());
+    await p.evaluate(() => window.__pyonpoker.openCoach());
     await p.screenshot({ path: path.join(SHOTS, 'coach-desktop.png') });
   }
   // evening recap: personal block and the picture
@@ -264,7 +264,7 @@ console.log('hands against bots + coach');
   await p.mouse.move(box.x + box.width * .6, box.y + box.height / 2);
   ok(await p.locator('.ctip').isVisible(), 'chart tooltip appears on hover');
   ok(await p.locator('.ach.on').count() >= 1, 'at least one achievement unlocked');
-  ok(await p.evaluate(() => !!JSON.parse(localStorage.getItem('pion-pf') || 'null')?.h), 'summary for the table is saved');
+  ok(await p.evaluate(() => !!JSON.parse(localStorage.getItem('pyonpoker-pf') || 'null')?.h), 'summary for the table is saved');
   if(SHOTS) await p.screenshot({ path: path.join(SHOTS, 'profile-desktop.png') });
   await p.click('#profClose');
   await p.locator('#seats .seat:not(.me) .plate').first().click();
@@ -273,8 +273,8 @@ console.log('hands against bots + coach');
   await p.locator('#seats .seat.me .plate').click();
   ok(/За всё время/.test(await p.locator('#pcardBody').textContent()), 'my card shows lifetime stats');
   await p.click('#pcardClose');
-  const reload = await p.evaluate(async () => { localStorage.setItem('pion-hist', '[]'); return true; });
-  await p.reload(); await p.waitForFunction(() => window.__pion); await p.click('#bProfile2');
+  const reload = await p.evaluate(async () => { localStorage.setItem('pyonpoker-hist', '[]'); return true; });
+  await p.reload(); await p.waitForFunction(() => window.__pyonpoker); await p.click('#bProfile2');
   ok(await p.waitForFunction(() => +(document.querySelector('.ptile b')?.textContent || 0) >= 6, null, { timeout: 8000 }).then(() => true, () => false), 'stats survive a reload even with the history list cleared');
   await p.context().close();
 }
@@ -285,8 +285,8 @@ console.log('coach at the table (live advice, opponents, Omaha)');
   const clickAny = () => p.evaluate(() => { const b = ['bCall', 'bNext'].map(id => document.getElementById(id)).find(b => b && !b.hidden && !b.disabled && b.offsetParent); if(b) b.click(); });
   const myTurn = ms => p.waitForFunction(() => { const b = document.getElementById('bFold'); return b && !b.hidden && !b.disabled; }, null, { timeout: ms }).then(() => true, () => false);
   const ask = async q => { await p.fill('#coachIn', q); await p.press('#coachIn', 'Enter'); return p.evaluate(() => [...document.querySelectorAll('#coachLog .cm.coach')].slice(-4).map(m => m.textContent).join(' | ')); };
-  ok(await p.evaluate(() => window.__pion.LESSONS.filter(l => l.omaha).length === 4 && window.__pion.DRILLS.length === 11), 'four Omaha lessons and four new drills in the course');
-  await p.evaluate(() => window.__pion.openLearn(14));
+  ok(await p.evaluate(() => window.__pyonpoker.LESSONS.filter(l => l.omaha).length === 4 && window.__pyonpoker.DRILLS.length === 11), 'four Omaha lessons and four new drills in the course');
+  await p.evaluate(() => window.__pyonpoker.openLearn(14));
   ok(await p.locator('#lesson h4').textContent() === 'Омаха: правила', 'Omaha lesson opens with its title');
   await p.click('#learnClose');
   await p.click('[data-ltab="solo"]'); await p.selectOption('#soloN', '3'); await p.click('#bSolo');
@@ -300,7 +300,7 @@ console.log('coach at the table (live advice, opponents, Omaha)');
   for(const [q, re] of [['а если рейз?', /Если|недоступен/], ['что меня бьёт?', /рано|бьют|натсы|Натсы/], ['сколько ставить?', /поставил|не ставил/], ['можно блефовать?', /Блеф|блеф/], ['какие шансы?', /шансы|топ/]]){
     const a = await ask(q); ok(re.test(a), `answers «${q}»: ${a.slice(-90)}`);
   }
-  const bot = await p.evaluate(() => window.__pion.S.seats.find(s => s.bot).name);
+  const bot = await p.evaluate(() => window.__pyonpoker.S.seats.find(s => s.bot).name);
   const ab = await ask('как играть против ' + bot + '?');
   ok(ab.includes(bot), `talks about an opponent by name: ${ab.slice(-100)}`);
   // the table stays usable while the panel is open
@@ -314,10 +314,10 @@ console.log('coach at the table (live advice, opponents, Omaha)');
   ok(auto, 'with «advise on each turn» the coach speaks up on my turn by itself');
   await p.uncheck('#coachAuto');
   // after a few hands it reads the opponents
-  t0 = Date.now(); while(Date.now() - t0 < 90000 && await p.evaluate(() => window.__pion.S.handNo < 10)){ await clickAny(); await p.waitForTimeout(120); }
+  t0 = Date.now(); while(Date.now() - t0 < 90000 && await p.evaluate(() => window.__pyonpoker.S.handNo < 10)){ await clickAny(); await p.waitForTimeout(120); }
   const tab = await ask('кто как играет за столом?');
   ok(/VPIP|мало/.test(tab), 'discusses the table by stats: ' + tab.slice(-120));
-  ok(await p.evaluate(() => { const st = window.__pion.S.seats.find(s => s.bot).st; return st && st.h >= 5 && 'fb' in st; }), 'postflop opponent stats are tracked');
+  ok(await p.evaluate(() => { const st = window.__pyonpoker.S.seats.find(s => s.bot).st; return st && st.h >= 5 && 'fb' in st; }), 'postflop opponent stats are tracked');
   await p.click('#bTutor');
   ok(await p.evaluate(() => document.getElementById('coachOv').hidden), 'the coach button closes the panel');
   await p.context().close();
@@ -330,9 +330,26 @@ console.log('coach at the table (live advice, opponents, Omaha)');
   await q.fill('#coachIn', 'что делать?'); await q.press('#coachIn', 'Enter');
   const oa = await q.evaluate(() => [...document.querySelectorAll('#coachLog .cm.coach')].slice(-4).map(m => m.textContent).join(' | '));
   ok(/Мой совет/.test(oa), 'advises in Omaha: ' + oa.slice(0, 140) + '…');
-  t0 = Date.now(); while(Date.now() - t0 < 60000 && await q.evaluate(() => window.__pion.HIST().filter(r => r.mine).length < 3)){ await q.evaluate(() => { const b = ['bCall', 'bNext'].map(id => document.getElementById(id)).find(b => b && !b.hidden && !b.disabled && b.offsetParent); if(b) b.click(); }); await q.waitForTimeout(150); }
-  ok(await q.evaluate(() => { const P = window.__pion, rs = P.HIST().filter(r => r.mine).map(r => P.reviewOf(r)).filter(Boolean); return rs.length >= 2 && rs.some(R => R.ds.length) && rs.every(R => R.ds.every(d => d.why)); }), 'Omaha hands are reviewed decision by decision');
+  t0 = Date.now(); while(Date.now() - t0 < 60000 && await q.evaluate(() => window.__pyonpoker.HIST().filter(r => r.mine).length < 3)){ await q.evaluate(() => { const b = ['bCall', 'bNext'].map(id => document.getElementById(id)).find(b => b && !b.hidden && !b.disabled && b.offsetParent); if(b) b.click(); }); await q.waitForTimeout(150); }
+  ok(await q.evaluate(() => { const P = window.__pyonpoker, rs = P.HIST().filter(r => r.mine).map(r => P.reviewOf(r)).filter(Boolean); return rs.length >= 2 && rs.some(R => R.ds.length) && rs.every(R => R.ds.every(d => d.why)); }), 'Omaha hands are reviewed decision by decision');
   await q.context().close();
+}
+
+console.log('switching languages leaves no text in the old one');
+{
+  const p = await page('he');
+  const heb = () => p.evaluate(() => { const out = []; const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n; while((n = w.nextNode())){ const el = n.parentElement; if(el.closest('select,script,style,[hidden]') || !el.getClientRects().length) continue; if(/[֐-׿]/.test(n.nodeValue)) out.push((el.id || el.className || el.tagName) + ': ' + n.nodeValue.trim().slice(0, 30)); } return out; });
+  await p.click('[data-ltab="solo"]'); await p.selectOption('#soloGame', 'omaha'); await p.click('#bSolo');
+  await p.waitForFunction(() => window.__pyonpoker.S && window.__pyonpoker.S.handNo >= 1);
+  await p.selectOption('#langSel', 'ru'); await p.waitForTimeout(500);
+  let left = await heb(); ok(!left.length, 'in a game, he → ru' + (left.length ? ': ' + left.join(' | ') : ''));
+  await p.selectOption('#langSel', 'he'); await p.waitForTimeout(500);
+  await p.click('#bExit'); await p.waitForTimeout(300); if(await p.evaluate(() => !document.getElementById('bExit').hidden)) await p.click('#bExit');
+  await p.waitForFunction(() => !document.getElementById('lobby').hidden);
+  await p.selectOption('#langSel', 'ru'); await p.waitForTimeout(500);
+  left = await heb(); ok(!left.length, 'in the menu after a game, he → ru' + (left.length ? ': ' + left.join(' | ') : ''));
+  ok(await p.evaluate(() => document.querySelector('h1 .sub').textContent === 'Техасский холдем' && document.documentElement.dir === 'ltr'), 'the subtitle under the logo follows the language');
+  await p.context().close();
 }
 
 console.log('coach in English, on a phone');
@@ -340,18 +357,18 @@ console.log('coach in English, on a phone');
   const p = await page('en', { ...devices['Pixel 5'] });
   await p.click('[data-ltab="solo"]'); await p.click('#bSolo');
   const t0 = Date.now();
-  while(Date.now() - t0 < 60000 && await p.evaluate(() => window.__pion.HIST().length) < 2){
+  while(Date.now() - t0 < 60000 && await p.evaluate(() => window.__pyonpoker.HIST().length) < 2){
     await p.evaluate(() => { const b = ['bCall', 'bNext'].map(id => document.getElementById(id)).find(b => b && !b.hidden && !b.disabled && b.offsetParent); if(b) b.click(); });
     await p.waitForTimeout(200);
   }
-  await p.evaluate(() => window.__pion.openCoach());
+  await p.evaluate(() => window.__pyonpoker.openCoach());
   await p.click('[data-intent="odds"]');
   const txt = await p.locator('#coachOv').textContent();
   ok(!/[А-Яа-яЁё]{4,}/.test(txt.replace(/Тест/g, '')), 'no Russian text left in the English coach');
   const fits = await p.evaluate(() => { const b = document.querySelector('.coachbox').getBoundingClientRect(); return b.left >= 0 && b.right <= innerWidth + 1 && document.documentElement.scrollWidth <= innerWidth; });
   ok(fits, 'coach window fits the phone screen');
   if(SHOTS) await p.screenshot({ path: path.join(SHOTS, 'coach-phone-en.png') });
-  await p.evaluate(() => { window.__pion.openLiveCoach(); });
+  await p.evaluate(() => { window.__pyonpoker.openLiveCoach(); });
   for(const id of ['advise', 'table', 'beats']) await p.click('[data-intent="'+id+'"]');
   const ltxt = await p.locator('#coachOv').textContent();
   ok(!/[А-Яа-яЁё]{4,}/.test(ltxt.replace(/Тест/g, '')), 'no Russian text left in the English live coach');

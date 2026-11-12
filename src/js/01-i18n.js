@@ -1,10 +1,10 @@
 /* ---------- languages: every visible string goes through t(); shared table data stores keys, not text ---------- */
 const LANGS=[['ru','Русский'],['en','English'],['uk','Українська'],['ka','ქართული'],['fr','Français'],['de','Deutsch'],['ro','Română'],['he','עברית'],['kk','Қазақша']]; // i18n-skip
-const I18N = window.PION_I18N = window.PION_I18N || {};
-// on the site each language is a separate file (window.PION_LANG_URL); the single-file build has them all
+const I18N = window.PYONPOKER_I18N = window.PYONPOKER_I18N || {};
+// on the site each language is a separate file (window.PYONPOKER_LANG_URL); the single-file build has them all
 function loadLang(c){
   return new Promise(res=>{
-    const url=(window.PION_LANG_URL||{})[c];
+    const url=(window.PYONPOKER_LANG_URL||{})[c];
     if(I18N[c] || !url) return res();
     const s=document.createElement('script'); s.src=url; s.onload=s.onerror=()=>res(); document.head.append(s);
   });
@@ -21,6 +21,10 @@ function t(k, ...a){
 const L = (k, ...a) => ({k, a});
 const AM = n => ({amt:n, bb:(typeof S!=='undefined' && S && S.bb) || 20});
 function fmtWin(n, bb){ if(!(CFG.bb && bb)) return String(n); const v=n/bb; return `${n} · ${v>=100?Math.round(v):Math.round(v*10)/10} BB`; }
+// text set from code once (not on every render): remembered, so a language switch can translate it again
+const SET_T = new Map();
+function setT(el, k, ...a){ SET_T.set(el, [k, a]); el.textContent = t(k, ...a); }
+function applySetT(){ for(const [el, [k, a]] of SET_T){ if(el.isConnected) el.textContent = t(k, ...a); else SET_T.delete(el); } }
 const tr = x => x==null ? '' : Array.isArray(x) ? x.map(tr).join(' · ') : typeof x==='object' ? t(x.k, ...(x.a||[])) : t(x);
 const I18N_NODES=[];
 (function collectStatic(){

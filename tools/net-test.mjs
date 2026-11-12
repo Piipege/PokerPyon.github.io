@@ -15,18 +15,18 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PEER_PORT = 9411, WEB_PORT = 8411;
 { const app = express(); const srv = app.listen(PEER_PORT, '127.0.0.1'); app.use('/', ExpressPeerServer(srv, { path: '/' })); }
 http.createServer((q, r) => {
-  const f = path.join(ROOT, decodeURIComponent(q.url.split('?')[0].split('#')[0]).replace(/^\/+/, '') || 'pion-online.html');
+  const f = path.join(ROOT, decodeURIComponent(q.url.split('?')[0].split('#')[0]).replace(/^\/+/, '') || 'index.html');
   fs.readFile(f, (e, d) => { if(e){ r.writeHead(404); r.end(); return; } r.writeHead(200, {'content-type': f.endsWith('.html') ? 'text/html; charset=utf-8' : f.endsWith('.js') ? 'text/javascript' : 'application/octet-stream'}); r.end(d); });
 }).listen(WEB_PORT, '127.0.0.1');
-const URL = `http://127.0.0.1:${WEB_PORT}/pion-online.html`;
+const URL = `http://127.0.0.1:${WEB_PORT}/pyonpoker.html`;
 
 const init = () => {
-  window.PION_PEER_OPTS = { host: '127.0.0.1', port: 9411, path: '/', secure: false, config: { iceServers: [] } };
+  window.PYONPOKER_PEER_OPTS = { host: '127.0.0.1', port: 9411, path: '/', secure: false, config: { iceServers: [] } };
   window.__pcs = [];
   const P = window.RTCPeerConnection;
   window.RTCPeerConnection = function(...a){ const pc = new P(...a); window.__pcs.push(pc); return pc; };
   window.RTCPeerConnection.prototype = P.prototype;
-  try{ localStorage.setItem('pion-cfg', JSON.stringify({ lang: 'ru' })); localStorage.setItem('pion-tour', '1'); localStorage.setItem('pion-tour3', '1'); }catch(e){}
+  try{ localStorage.setItem('pyonpoker-cfg', JSON.stringify({ lang: 'ru' })); localStorage.setItem('pyonpoker-tour', '1'); localStorage.setItem('pyonpoker-tour3', '1'); }catch(e){}
 };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 let failed = 0;
@@ -58,7 +58,7 @@ ok(await waitFor(guest, seated), 'guest joins and sees its seat');
 ok(await waitFor(host, () => /Гость/.test(document.querySelector('#seats').textContent)), 'host sees the guest');
 const seatsCount = () => document.querySelectorAll('#seats .seat').length;
 console.log('0. profile cards');
-await guest.evaluate(() => { localStorage.setItem('pion-pf', JSON.stringify({ h: 4242, bb100: 3.5, vp: 22, pr: 15, wsd: 55, acc: 81, ls: 7, since: 1700000000000 })); });
+await guest.evaluate(() => { localStorage.setItem('pyonpoker-pf', JSON.stringify({ h: 4242, bb100: 3.5, vp: 22, pr: 15, wsd: 55, acc: 81, ls: 7, since: 1700000000000 })); });
 await guest.evaluate(() => document.querySelector('#lobby') && document.getElementById('avRand')?.click());
 await host.waitForTimeout(1500);
 await host.locator('#seats .seat:not(.me)', { hasText: 'Гость' }).locator('.plate').click();
@@ -119,7 +119,7 @@ await wCtx.close();
 console.log('6. host closes the table');
 await host.click('#bExit'); await sleep(300); await host.click('#bExit');
 ok(await waitFor(guest, () => !document.querySelector('#lobby').hidden, 15000), 'guest returns to the lobby when the table is closed');
-ok(await guest.evaluate(() => !localStorage.getItem('pion-guest')), 'and forgets the table');
+ok(await guest.evaluate(() => !localStorage.getItem('pyonpoker-guest')), 'and forgets the table');
 
 console.log('7. Omaha knockout with a friend: four cards, fair deck check');
 {
@@ -152,6 +152,28 @@ console.log('7. Omaha knockout with a friend: four cards, fair deck check');
   ok(await waitFor(g2, () => { const f = document.getElementById('fairChip'); return f && !f.hidden && f.classList.contains('ok') && !f.classList.contains('bad'); }, 10000), 'fair-deck check passes with four hole cards');
   ok(await g2.evaluate(() => /Омаха/.test(document.querySelector('h1 .sub').textContent)), 'header shows the game');
   await hC.close(); await gC.close();
+}
+console.log('8. old address and data from before the rename');
+{
+  const c = await browser.newContext(), p = await c.newPage();
+  p.on('pageerror', e => { console.log('  ! page error: ' + e.message); failed++; });
+  await p.goto(`http://127.0.0.1:${WEB_PORT}/no-such-page`);
+  await p.evaluate(() => new Promise(res => {
+    localStorage.setItem('pion-cfg', JSON.stringify({ lang: 'ru', theme: 'light' })); localStorage.setItem('pion-nick', 'Старый');
+    localStorage.setItem('pion-tour', '1'); localStorage.setItem('pion-tour3', '1');
+    const rq = indexedDB.open('pion-profile', 1);
+    rq.onupgradeneeded = () => rq.result.createObjectStore('hands', { keyPath: 'id' });
+    rq.onsuccess = () => { const tx = rq.result.transaction('hands', 'readwrite'); tx.objectStore('hands').put({ id: 'old-1', at: Date.now(), net: 50 }); tx.oncomplete = () => { rq.result.close(); res(); }; };
+  }));
+  await p.goto(`http://127.0.0.1:${WEB_PORT}/pion-online.html?x=1#keep`);
+  ok(await waitFor(p, () => /\/pyonpoker\.html$/.test(location.pathname) && location.hash === '#keep' && location.search === '?x=1', 10000), 'the old address opens pyonpoker.html and keeps the link part');
+  ok(await waitFor(p, () => document.getElementById('nick').value === 'Старый' && document.documentElement.dataset.theme === 'light', 10000), 'settings and nick moved to the new keys');
+  ok(await p.evaluate(() => !Object.keys(localStorage).some(k => k.startsWith('pion-'))), 'no old keys left');
+  const moved = await p.evaluate(() => new Promise(res => setTimeout(() => { const rq = indexedDB.open('pyonpoker-profile', 1); rq.onsuccess = () => { const g = rq.result.transaction('hands').objectStore('hands').getAll(); g.onsuccess = () => res(g.result.map(r => r.id)); }; rq.onerror = () => res([]); }, 2500)));
+  ok(moved.includes('old-1'), 'saved hands moved to the new profile database');
+  await p.goto(`http://127.0.0.1:${WEB_PORT}/`);
+  ok(await waitFor(p, () => /\/pyonpoker\.html$/.test(location.pathname), 10000), 'the site root opens the game');
+  await c.close();
 }
 await browser.close();
 console.log(failed ? `FAILED: ${failed}` : 'all network checks passed');

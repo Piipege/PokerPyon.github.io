@@ -92,7 +92,7 @@ function renderKo(){
   $('ovTitle').textContent = me && me.place===1 ? t('Вы выиграли турнир!') : t('Турнир окончен');
   $('ovText').innerHTML = (me?`<p>${esc(t('Ваше место: {0} из {1}. Выбито соперников: {2}.', me.place, st.length, me.kos))}</p>`:'')
     + `<ol class="kolist">${st.map(x=>`<li class="${x.uid===myUid?'me':''}"><b>${x.place}</b><span>${esc(x.name)}</span>${x.kos?`<em>🎯 ${x.kos}</em>`:''}</li>`).join('')}</ol>`;
-  $('restart').hidden = !isDealer(); $('restart').textContent = t('Новый турнир');
+  $('restart').hidden = !isDealer(); setT($('restart'), 'Новый турнир');
   $('overlay').hidden=false;
   if(me && me.place===1){ try{ SFX.win(); }catch(e){} buzz('win'); }
 }

@@ -2,7 +2,7 @@
 function fillLangSelects(){ const o=LANGS.map(([c,n])=>`<option value="${c}">${n}</option>`).join(''); $('langSel').innerHTML=o; $('cfgLang').innerHTML=o; }
 function applyLang(){
   LANG = CFG.lang; document.documentElement.lang=LANG; document.documentElement.dir = LANG==='he' ? 'rtl' : 'ltr';
-  applyStatic(); document.title=t('Покерный стол «PyonPoker»');
+  applyStatic(); applySetT(); document.title=t('Покерный стол «PyonPoker»');
   $('chat').dataset.empty=t('Здесь будут сообщения стола');
   document.documentElement.style.setProperty('--brand', JSON.stringify(String('PyonPoker').toUpperCase()));
   $('langSel').value=LANG; $('cfgLang').value=LANG;
