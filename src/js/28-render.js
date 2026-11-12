@@ -45,7 +45,7 @@ function render(){
   $('hostTag').hidden = MODE!=='host';
   $('bExit').hidden = MODE==='lobby';
   document.body.classList.toggle('inlobby', !S);
-  if(!S){ renderControls(); return; }
+  if(!S){ renderControls(); liveTick(); return; }
 
   const n=S.seats.length, me=mySeat();
   const pos=layout(n, me);
@@ -196,6 +196,7 @@ function render(){
   renderExtras();
   checkPre();
   renderControls();
+  liveTick();
 }
 
 function renderExtras(){

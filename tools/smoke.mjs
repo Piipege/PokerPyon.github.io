@@ -48,7 +48,7 @@ console.log('course generators');
   for(let k = 0; k < 5; k++){ await p.click('#lesson [data-opt="0"]'); await p.click('[data-act="next"]'); }
   ok(await p.locator('.result .big').isVisible(), 'practice runs to the result screen');
   await p.click('[data-view="drills"]');
-  ok(await p.locator('.drill').count() === 7, 'drills list shows 7 drills');
+  ok(await p.locator('.drill').count() === 11, 'drills list shows 11 drills');
   await p.click('[data-drill="nuts"]');
   for(let k = 0; k < 4; k++){ await p.click('#lesson [data-opt="0"]'); await p.click('[data-act="drillNext"]'); }
   ok(/Решено: 4/.test(await p.locator('.qhead').textContent()), 'drill counts answers');
@@ -279,6 +279,62 @@ console.log('hands against bots + coach');
   await p.context().close();
 }
 
+console.log('coach at the table (live advice, opponents, Omaha)');
+{
+  const p = await page();
+  const clickAny = () => p.evaluate(() => { const b = ['bCall', 'bNext'].map(id => document.getElementById(id)).find(b => b && !b.hidden && !b.disabled && b.offsetParent); if(b) b.click(); });
+  const myTurn = ms => p.waitForFunction(() => { const b = document.getElementById('bFold'); return b && !b.hidden && !b.disabled; }, null, { timeout: ms }).then(() => true, () => false);
+  const ask = async q => { await p.fill('#coachIn', q); await p.press('#coachIn', 'Enter'); return p.evaluate(() => [...document.querySelectorAll('#coachLog .cm.coach')].slice(-4).map(m => m.textContent).join(' | ')); };
+  ok(await p.evaluate(() => window.__pion.LESSONS.filter(l => l.omaha).length === 4 && window.__pion.DRILLS.length === 11), 'four Omaha lessons and four new drills in the course');
+  await p.evaluate(() => window.__pion.openLearn(14));
+  ok(await p.locator('#lesson h4').textContent() === 'Омаха: правила', 'Omaha lesson opens with its title');
+  await p.click('#learnClose');
+  await p.click('[data-ltab="solo"]'); await p.selectOption('#soloN', '3'); await p.click('#bSolo');
+  ok(await p.waitForFunction(() => !document.getElementById('bTutor').hidden).then(() => true, () => false), 'the coach button is in the header during a game');
+  await p.click('#bTutor');
+  ok(await p.evaluate(() => { const o = document.getElementById('coachOv'); return !o.hidden && o.classList.contains('live') && document.getElementById('coachSel').hidden; }), 'the live coach opens as a side panel');
+  let t0 = Date.now(); while(Date.now() - t0 < 40000 && !(await myTurn(500))) await clickAny();
+  ok(await myTurn(100), 'reached my turn with the panel open');
+  const adv = await ask('Что делать?');
+  ok(/Мой совет/.test(adv) && /шансы|топ/.test(adv), 'advises with reasoning: ' + adv.slice(0, 120) + '…');
+  for(const [q, re] of [['а если рейз?', /Если|недоступен/], ['что меня бьёт?', /рано|бьют|натсы|Натсы/], ['сколько ставить?', /поставил|не ставил/], ['можно блефовать?', /Блеф|блеф/], ['какие шансы?', /шансы|топ/]]){
+    const a = await ask(q); ok(re.test(a), `answers «${q}»: ${a.slice(-90)}`);
+  }
+  const bot = await p.evaluate(() => window.__pion.S.seats.find(s => s.bot).name);
+  const ab = await ask('как играть против ' + bot + '?');
+  ok(ab.includes(bot), `talks about an opponent by name: ${ab.slice(-100)}`);
+  // the table stays usable while the panel is open
+  await p.click('#bCall');
+  ok(await p.waitForFunction(() => document.getElementById('bFold').disabled || document.getElementById('bFold').hidden, null, { timeout: 5000 }).then(() => true, () => false), 'buttons of the table work with the panel open');
+  // advice on every turn
+  await p.check('#coachAuto');
+  const n0 = await p.locator('#coachLog .cm.coach').count();
+  t0 = Date.now(); let auto = false;
+  while(Date.now() - t0 < 60000 && !auto){ await clickAny(); await p.waitForTimeout(200); auto = await p.evaluate(n => document.querySelectorAll('#coachLog .cm.coach').length > n && /советую/.test(document.querySelector('#coachLog .cm.coach:last-child')?.textContent || ''), n0); }
+  ok(auto, 'with «advise on each turn» the coach speaks up on my turn by itself');
+  await p.uncheck('#coachAuto');
+  // after a few hands it reads the opponents
+  t0 = Date.now(); while(Date.now() - t0 < 90000 && await p.evaluate(() => window.__pion.S.handNo < 10)){ await clickAny(); await p.waitForTimeout(120); }
+  const tab = await ask('кто как играет за столом?');
+  ok(/VPIP|мало/.test(tab), 'discusses the table by stats: ' + tab.slice(-120));
+  ok(await p.evaluate(() => { const st = window.__pion.S.seats.find(s => s.bot).st; return st && st.h >= 5 && 'fb' in st; }), 'postflop opponent stats are tracked');
+  await p.click('#bTutor');
+  ok(await p.evaluate(() => document.getElementById('coachOv').hidden), 'the coach button closes the panel');
+  await p.context().close();
+  // Omaha: live advice and the review of decisions
+  const q = await page();
+  await q.click('[data-ltab="solo"]'); await q.selectOption('#soloGame', 'omaha'); await q.selectOption('#soloN', '3'); await q.click('#bSolo');
+  await q.click('#bTutor');
+  const qTurn = ms => q.waitForFunction(() => { const b = document.getElementById('bFold'); return b && !b.hidden && !b.disabled; }, null, { timeout: ms }).then(() => true, () => false);
+  t0 = Date.now(); while(Date.now() - t0 < 40000 && !(await qTurn(500))) await q.evaluate(() => { const b = ['bCall', 'bNext'].map(id => document.getElementById(id)).find(b => b && !b.hidden && !b.disabled && b.offsetParent); if(b) b.click(); });
+  await q.fill('#coachIn', 'что делать?'); await q.press('#coachIn', 'Enter');
+  const oa = await q.evaluate(() => [...document.querySelectorAll('#coachLog .cm.coach')].slice(-4).map(m => m.textContent).join(' | '));
+  ok(/Мой совет/.test(oa), 'advises in Omaha: ' + oa.slice(0, 140) + '…');
+  t0 = Date.now(); while(Date.now() - t0 < 60000 && await q.evaluate(() => window.__pion.HIST().filter(r => r.mine).length < 3)){ await q.evaluate(() => { const b = ['bCall', 'bNext'].map(id => document.getElementById(id)).find(b => b && !b.hidden && !b.disabled && b.offsetParent); if(b) b.click(); }); await q.waitForTimeout(150); }
+  ok(await q.evaluate(() => { const P = window.__pion, rs = P.HIST().filter(r => r.mine).map(r => P.reviewOf(r)).filter(Boolean); return rs.length >= 2 && rs.some(R => R.ds.length) && rs.every(R => R.ds.every(d => d.why)); }), 'Omaha hands are reviewed decision by decision');
+  await q.context().close();
+}
+
 console.log('coach in English, on a phone');
 {
   const p = await page('en', { ...devices['Pixel 5'] });
@@ -295,7 +351,13 @@ console.log('coach in English, on a phone');
   const fits = await p.evaluate(() => { const b = document.querySelector('.coachbox').getBoundingClientRect(); return b.left >= 0 && b.right <= innerWidth + 1 && document.documentElement.scrollWidth <= innerWidth; });
   ok(fits, 'coach window fits the phone screen');
   if(SHOTS) await p.screenshot({ path: path.join(SHOTS, 'coach-phone-en.png') });
-  await p.evaluate(() => { document.getElementById('coachOv').hidden = true; });
+  await p.evaluate(() => { window.__pion.openLiveCoach(); });
+  for(const id of ['advise', 'table', 'beats']) await p.click('[data-intent="'+id+'"]');
+  const ltxt = await p.locator('#coachOv').textContent();
+  ok(!/[А-Яа-яЁё]{4,}/.test(ltxt.replace(/Тест/g, '')), 'no Russian text left in the English live coach');
+  ok(await p.evaluate(() => { const b = document.querySelector('.coachbox').getBoundingClientRect(); return b.left >= 0 && b.right <= innerWidth + 1 && b.bottom <= innerHeight + 1; }), 'live coach panel fits the phone screen');
+  if(SHOTS) await p.screenshot({ path: path.join(SHOTS, 'coach-live-phone-en.png') });
+  await p.evaluate(() => { document.getElementById('coachOv').hidden = true; document.getElementById('coachOv').classList.remove('live'); });
   await p.waitForTimeout(600);
   await p.click('#bMenu'); await p.click('[data-proxy="bProfile"]');
   await p.waitForSelector('.ptile');

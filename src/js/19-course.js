@@ -25,9 +25,13 @@ const LESSONS=[
   {id:12, gen:['l12tex','l12cbet','l12tex','l12multi','l12size'], play:true},
   {id:13, gen:['l13set','l13set','l13draw','l13reverse','l13set']},
   {id:14, gen:['l14nuts','l14nuts','l14pair','l14kick','l14nuts']},
+  {id:15, gen:['o15rule','o15read','o15flush','o15read','o15pl'], omaha:true},
+  {id:16, gen:['o16pre','o16dang','o16pre','o16ds','o16pre'], omaha:true, play:true},
+  {id:17, gen:['o17outs','o17nuts','o17nfd','o17outs','o17nuts'], omaha:true},
+  {id:18, gen:['o18eq','o18tp','o18call','o15pl','o18call'], omaha:true, play:true},
 ];
 // the course in three levels; the numbers are lesson ids, in the order they are taught
-const LEVELS=[{n:'Основы', ids:[1,2,3,4]}, {n:'Стратегия', ids:[5,11,6,7,13]}, {n:'Мастерство', ids:[8,12,14,9,10]}];
+const LEVELS=[{n:'Основы', ids:[1,2,3,4]}, {n:'Стратегия', ids:[5,11,6,7,13]}, {n:'Мастерство', ids:[8,12,14,9,10]}, {n:'Омаха', ids:[15,16,17,18]}];
 const ORDER=LEVELS.flatMap(l=>l.ids.map(id=>id-1));
 // endless drills: the same generators as in the lessons, one question after another
 const DRILLS=[
@@ -38,6 +42,10 @@ const DRILLS=[
   {id:'name', n:'Комбинации', d:'Назовите комбинацию', gen:['l2name']},
   {id:'nuts', n:'Натсы', d:'Лучшая возможная рука на столе', gen:['l14nuts']},
   {id:'tex', n:'Текстура флопа', d:'Сухой или мокрый флоп', gen:['l12tex']},
+  {id:'omRead', n:'Омаха: лучшая рука', d:'Две карты из руки, три со стола', gen:['o15read']},
+  {id:'omPre', n:'Омаха: стартовые руки', d:'Какая рука сильнее до флопа', gen:['o16pre']},
+  {id:'omOuts', n:'Омаха: ауты', d:'Дро с четырьмя картами', gen:['o17outs']},
+  {id:'pl', n:'Пот-лимит', d:'Максимальный рейз', gen:['o15pl','o18call']},
 ];
 const rint=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const shuf=a=>{ for(let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } return a; };
@@ -177,6 +185,69 @@ const GEN = {
     }
   },
   l14pair(){ return {q:'На столе спарилась карта (лежит пара). Какие комбинации стали возможны?', ...mc('Фулл-хаус и каре',['Только флеш','Только стрит','Никакие новые']), exp:'Без пары на столе фулл-хаус и каре невозможны. Когда стол спарился, ваш стрит или флеш может уже проигрывать.'}; },
+  // ----- Omaha -----
+  o15rule(){ return {q:'Сколько своих карт нужно использовать в Омахе?', ...mc('Ровно две',['Одну или две','Сколько угодно','Все четыре']), exp:'В Омахе у вас четыре карты, но комбинация всегда собирается из двух своих и трёх общих — ни больше, ни меньше.'}; },
+  o15flush(){ return {q:'Омаха. На столе четыре карты одной масти, а у вас в руке одна карта этой масти — туз. Есть ли у вас флеш?', ...mc('Нет',['Да, натсовый флеш','Да, но младший','Только на ривере']), exp:'Для флеша в Омахе нужны две карты масти в руке и три на столе. С одной картой масти флеша нет, даже если на столе их четыре.'}; },
+  o15read(){
+    let h, board, om, he;
+    for(let i=0;i<600;i++){
+      const d=deal(9); board=d.slice(0,5); h=d.slice(5,9);
+      om=bestHand(h, board); he=best(h.concat(board));
+      if(om.cat!==he.cat || i>400 || Math.random()<.25) break;
+    }
+    const exp=[L('Лучшая рука в Омахе — {0}: {1} (две карты из руки и три со стола).', HAND_NAMES[om.cat], fmtCards(om.cards))];
+    if(he.cat!==om.cat) exp.push(L('Если брать карты как в холдеме, вышло бы «{0}», но в Омахе так нельзя.', HAND_NAMES[he.cat]));
+    return {q:'Омаха: какая лучшая комбинация у игрока?', scene:scene([['Стол',cardsRow(board)],['Карты игрока',cardsRow(h)]]), ...mc(HAND_NAMES[om.cat], shuf([HAND_NAMES[he.cat], ...HAND_NAMES.filter((_,k)=>k!==om.cat && k!==he.cat && Math.abs(k-om.cat)<=3)])), exp};
+  },
+  o15pl(){
+    if(Math.random()<.35){
+      const bb=[10,20,50,100][rint(0,3)], sb=bb/2, ans=3*bb+sb;
+      return {q:L('Пот-лимит, блайнды {0}/{1}. Все до вас сбросили. До какой суммы максимум можно повысить?', sb, bb), ...numOpts(ans,[2*bb+sb, 3*bb, 4*bb, 2*bb, ans+bb]),
+        exp:L('В банке {0} + {1}. Мысленно уравниваем {1} — банк становится {2}. Рейз — на всю эту сумму: {1} + {2} = {3}.', sb, bb, sb+2*bb, ans)};
+    }
+    const P=rint(4,30)*10, B=Math.max(10, Math.round(P*[.33,.5,.66,.75,1][rint(0,4)]/10)*10), ans=P+3*B;
+    return {q:L('Пот-лимит. В банке {0}, соперник ставит {1}. До какой суммы максимум можно повысить?', P, B), ...numOpts(ans,[P+2*B, 3*B, 2*P+B, ans+B, ans-B]),
+      exp:L('Сначала мысленно уравниваем {0} — в банке станет {1}. Рейз можно сделать на всю эту сумму: {0} + {1} = {2}.', B, P+2*B, ans)};
+  },
+  o16pre(){
+    for(let i=0;i<800;i++){
+      const d=deal(8), A=d.slice(0,4), B=d.slice(4,8), sa=omScore(A), sb=omScore(B);
+      if(Math.abs(sa-sb)<12 || Math.min(omPct(A), omPct(B))>.3) continue;
+      return {q:'Омаха: какая рука лучше для игры до флопа?', scene:scene([['Рука A',cardsRow(A)],['Рука B',cardsRow(B)]]), opts:['Рука A','Рука B'], ans: sa>sb?0:1,
+        exp:[L('Рука A: {0}.', omFeatureKeys(A)), L('Рука B: {0}.', omFeatureKeys(B)), L('Сильнее руки, где все четыре карты работают вместе: пары, масти, связанность.')]};
+    }
+  },
+  o16dang(){ return {q:'Что такое «висящая» карта в руке Омахи?', ...mc('Карта, которая не работает с остальными тремя',['Самая старшая карта','Карта, которая открывается на ривере','Пятая карта на столе']), exp:'Например, в K♠ Q♠ J♦ 3♣ тройка не помогает ни стриту, ни флешу, ни паре. Такая рука по сути играет тремя картами — это заметный минус.'}; },
+  o16ds(){ return {q:'Что делает руку в Омахе сильной до флопа?', ...mc('Все четыре карты работают вместе',['Одна очень старшая карта','Три карты одного ранга','Четыре карты одной масти']), exp:'Пары, две масти по две карты и связанность дают много способов собрать сильную руку. Четыре карты одной масти — минус: флеш всё равно собирается только из двух, а остальные «съедают» ауты.'}; },
+  o17nuts(){
+    for(let i=0;i<50;i++){
+      const b=deal(5), nu=nutsOf([], b, true); if(nu.top===8 && Math.random()<.6) continue;
+      return {q:'Омаха: какие натсы на этом столе (две карты из руки и три со стола)?', scene:scene([['Стол',cardsRow(b.sort((p,q)=>q.r-p.r))]]), ...mc(HAND_NAMES[nu.top], shuf(HAND_NAMES.filter((_,k)=>k!==nu.top && Math.abs(k-nu.top)<=3))),
+        exp:L('Натсы здесь — {0}. Проверяйте по порядку: пара на столе (фулл-хаус и каре), три карты одной масти (флеш), три карты рядом (стрит).', HAND_NAMES[nu.top])};
+    }
+  },
+  o17outs(){
+    for(let i=0;i<5000;i++){
+      const d=deal(7), h=d.slice(0,4), f=d.slice(4,7);
+      if(new Set(f.map(c=>c.r)).size<3 || bestHand(h, f).cat>=3) continue;
+      const known=new Set(d.map(cardKey)), outs=freshDeck().filter(c=>!known.has(cardKey(c)) && bestHand(h, f.concat([c])).cat>=4);
+      if(outs.length<8 || outs.length>20) continue;
+      return {q:'Омаха, флоп. Сколько у вас аутов на стрит или флеш?', scene:scene([['Флоп',cardsRow(f)],['Ваши карты',cardsRow(h)]]), ...numOpts(outs.length,[outs.length-4,outs.length-2,outs.length+3,outs.length+5,9,13,16,20]),
+        exp:L('{0} аутов: {1}. В Омахе дро бывают огромными: врап (стрит-дро сразу с несколькими своими картами) даёт до 20 аутов.', outs.length, fmtCards(outs))};
+    }
+  },
+  o17nfd(){ return {q:'Омаха. У вас флеш-дро с королём, а не с тузом. Чем это опасно?', ...mc('У соперника часто есть туз той же масти — натсовый флеш',['Флеш в Омахе не собирается','Ничем: флеш всегда выигрывает','Король не может быть во флеше']), exp:'У каждого соперника по четыре карты, поэтому натсовые руки встречаются намного чаще, чем в холдеме. Собрав ненатсовый флеш, можно проиграть большой банк.'}; },
+  o18eq(){ return {q:'В холдеме AA против случайной руки до флопа выигрывает ≈85%. А лучшая рука Омахи A♠ A♥ K♠ K♥ против случайной?', ...mc('≈70%',['≈95%','≈85%','≈50%']), exp:'В Омахе шансы рук намного ближе: у каждого шесть пар своих карт для комбинации. Огромного преимущества до флопа почти не бывает — главное решается после флопа.'}; },
+  o18tp(){ return {q:'Омаха, флоп, против вас трое. У вас топ-пара с лучшим кикером, один соперник ставит банк, другой уравнивает. Что обычно правильно?', ...mc('Пас',['Рейз на весь стек','Колл до конца','Минимальный рейз']), exp:'В Омахе против нескольких соперников одна пара почти всегда проигрывает: у кого-то уже две пары, сет или большое дро. Крупно играйте натсы и натсовые дро.'}; },
+  o18call(){
+    for(let i=0;i<80;i++){
+      const d=deal(7), h=d.slice(0,4), f=d.slice(4,7), eq=equityOmaha(h, f, 1, 400);
+      const P=[100,150,200,300][rint(0,3)], B=Math.max(10, Math.round(P*[.5,.66,.75,1][rint(0,3)]/10)*10), pot=P+B, need=B/(pot+B);
+      if(Math.abs(eq-need)<.1) continue;
+      return {q:L('Омаха, флоп, один соперник. В банке {0} вместе с его ставкой {1}. Колл или пас?', pot, B), scene:scene([['Флоп',cardsRow(f)],['Ваши карты',cardsRow(h)]]), opts:['Колл','Пас'], ans: eq>need?0:1,
+        exp:L('Против случайной руки ваши шансы ≈{0}%, а для колла нужно {1}%. {2}', Math.round(eq*100), Math.round(need*100), eq>need ? 'Колл выгоден.' : 'Колл невыгоден — пас.')};
+    }
+  },
   l14kick(){
     for(let i=0;i<200;i++){
       const ks=shuf([13,12,11,10]).slice(0,2).sort((x,y)=>y-x), lows=shuf([2,3,4,5,6,7,8,9]).slice(0,4);
@@ -234,7 +305,7 @@ function renderLearn(){
   const les=LESSONS[course.i];
   const pos=ORDER.indexOf(course.i), lvl=LEVELS.find(l=>l.ids.includes(les.id));
   const head=`<div class="eyebrow">${esc(t(lvl.n))} · ${t('Урок {0} из {1}', pos+1, LESSONS.length)}</div><h4>${esc(t('c'+les.id+'.title'))}</h4>`;
-  const playBtn = les.play ? `<button type="button" class="btn" data-act="play">${t('Сыграть с ботами и тренером')}</button>` : '';
+  const playBtn = les.play ? `<button type="button" class="btn" data-act="play">${t(les.omaha ? 'Сыграть Омаху с ботами и тренером' : 'Сыграть с ботами и тренером')}</button>` : '';
   if(course.view==='theory'){
     const paras=String(t('c'+les.id+'.body')).split(/\n\n/).map(p=>`<p>${esc(p).replace(/\n/g,'<br>')}</p>`).join('');
     const ex = les.ex ? `<div class="combos">${COMBO_EX.map((s,k)=>`<div class="combo"><span>${esc(t(HAND_NAMES[k]))}</span>${cardsRow(cardsOf(s))}</div>`).join('')}</div>` : '';
@@ -284,7 +355,7 @@ $('lesson').onclick=e=>{
     else { const p=loadProgress(), k='l'+LESSONS[course.i].id; p[k]=Math.max(p[k]||0, course.score); saveProgress(p); course.view='result'; if(course.score>=4) SFX.win(); renderLearn(); }
   }
   else if(act==='nextLesson'){ course.i=ORDER[ORDER.indexOf(course.i)+1]; course.view='theory'; renderLearn(); }
-  else if(act==='play'){ closeLearn(); if(!$('nick').value.trim()) $('nick').value=t('Ученик'); saveNick(); startSolo({coach:true}); }
+  else if(act==='play'){ closeLearn(); if(!$('nick').value.trim()) $('nick').value=t('Ученик'); saveNick(); startSolo({coach:true, game: LESSONS[course.i].omaha ? 'omaha' : 'holdem'}); }
 };
 $('learnClose').onclick=closeLearn;
 $('learnOv').addEventListener('click', e=>{ if(e.target.id==='learnOv') closeLearn(); });
@@ -302,7 +373,7 @@ function coachTip(i, type){
   const E=Math.round(eq*100), N=Math.round(need*100);
   let msg=null;
   if(S.street==='preflop' && S.currentBet<=S.bb){
-    const pc=pctOf(cs[0],cs[1]);
+    const pc=handPct(cs);
     if(type==='fold' && pc<=.12) msg=L('Тренер: с такой рукой (топ {0}%) стоило играть рейзом.', Math.max(1,Math.round(pc*100)));
     else if(type!=='fold' && pc>.6 && toCall>0) msg=L('Тренер: это слабая рука (топ {0}%). Её обычно сбрасывают.', Math.round(pc*100));
   }
