@@ -119,7 +119,7 @@ $('cfgContrast').onchange=e=>{ CFG.contrast=e.target.checked; saveCfg(); applyA1
 $('cfgCalm').onchange=e=>{ CFG.calm=e.target.checked; saveCfg(); applyA11y(); applyLook2(); };
 $('cfgBB').onchange=e=>{ CFG.bb=e.target.checked; saveCfg(); potShown=-1; render(); };
 $('cfgDelay').onchange=e=>{ CFG.delay=+e.target.value; saveCfg(); };
-$('cfgSound').onchange=e=>{ snd.on=e.target.checked; store.set('pion-sound', snd.on?'1':'0'); updSound(); };
+$('cfgSound').onchange=e=>{ snd.on=e.target.checked; store.set('pyonpoker-sound', snd.on?'1':'0'); updSound(); };
 $('cfgVol').oninput=e=>{ CFG.vol=(+e.target.value)/100; saveCfg(); };
 $('cfgVol').onchange=()=>SFX.turn();
 document.querySelectorAll('[data-sfx]').forEach(cb=>cb.onchange=()=>{ CFG.sfx[cb.dataset.sfx]=cb.checked; saveCfg(); });

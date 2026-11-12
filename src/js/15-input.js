@@ -57,7 +57,7 @@ $('bCopy').onclick=()=>{
 $('bResume').onclick=()=>{ const r=savedHost(); if(r){ saveNick(); createTable(r); return; } const g=savedGuest(); if(g){ if(!checkNick()) return; saveNick(); joinTable(g.code); } };
 function botLevel(k,sel){ const v=+$(sel).value; return v || [2,3,1,4][k%4]; }
 function applyOpts(kind){
-  store.set('pion-last', kind);
+  store.set('pyonpoker-last', kind);
   // game and format: Hold'em or Omaha (pot-limit); regular (rebuys) or knockout (no rebuys, last one wins)
   const pre = kind==='solo' ? 'solo' : 'tbl';
   S.game = $(pre+'Game').value==='omaha' ? 'omaha' : 'holdem';
@@ -85,7 +85,7 @@ function updSound(){
   b.textContent = snd.on ? '🔊' : '🔇'; b.title=label; b.setAttribute('aria-label', label); b.setAttribute('aria-pressed', snd.on);
   const m=$('mSound'); if(m){ m.querySelector('i').textContent=b.textContent; m.querySelector('span').textContent=label; }
 }
-$('bSound').onclick=()=>{ snd.on=!snd.on; store.set('pion-sound', snd.on?'1':'0'); updSound(); if(snd.on) SFX.turn(); };
+$('bSound').onclick=()=>{ snd.on=!snd.on; store.set('pyonpoker-sound', snd.on?'1':'0'); updSound(); if(snd.on) SFX.turn(); };
 updSound();
 function checkPre(){
   if(!pre || !S) return;
@@ -105,4 +105,4 @@ function checkPre(){
   }
 }
 function checkNick(){ if(!$('nick').value.trim()){ setLobbyErr(t('Введите имя, чтобы друзья вас узнали.')); $('nick').focus(); return false; } return true; }
-function saveNick(){ store.set('pion-nick', $('nick').value.trim()); }
+function saveNick(){ store.set('pyonpoker-nick', $('nick').value.trim()); }

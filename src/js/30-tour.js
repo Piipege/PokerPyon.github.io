@@ -6,7 +6,7 @@ const TOUR_LOBBY = [
   ['.hnav', 'Здесь ваш профиль со статистикой, обучение с тренером и настройки: тема, звук, вибрация, размер текста.'],
 ];
 const TOUR_GAME = ['.controls', 'Ваш ход. «Сбросить» — выйти из раздачи, «Чек» или «Колл» — продолжить, «Рейз» — повысить; ползунок задаёт ставку. Нажмите на игрока, чтобы увидеть его статистику.'];
-const tourOn = () => !window.PION_TEST || window.PION_TOUR;
+const tourOn = () => !window.PYONPOKER_TEST || window.PYONPOKER_TOUR;
 let tourEl=null, tourTarget=null;
 function tourClose(){ if(tourEl){ tourEl.remove(); tourEl=null; } if(tourTarget){ tourTarget.classList.remove('tourfocus'); tourTarget=null; } removeEventListener('resize', tourPlace); }
 function tourPlace(){
@@ -29,15 +29,15 @@ function tourShow(sel, text, n, total, next){
   setTimeout(()=>{ try{ tourEl && tourEl.querySelector('[data-tour="next"]').focus({preventScroll:true}); }catch(e){} }, 50);
 }
 function tourLobby(k=0){
-  if(k>=TOUR_LOBBY.length || MODE!=='lobby'){ store.set('pion-tour','1'); return; }
-  tourShow(TOUR_LOBBY[k][0], TOUR_LOBBY[k][1], k+1, TOUR_LOBBY.length+1, go=>{ if(go) tourLobby(k+1); else { store.set('pion-tour','1'); store.set('pion-tour3','1'); } });
+  if(k>=TOUR_LOBBY.length || MODE!=='lobby'){ store.set('pyonpoker-tour','1'); return; }
+  tourShow(TOUR_LOBBY[k][0], TOUR_LOBBY[k][1], k+1, TOUR_LOBBY.length+1, go=>{ if(go) tourLobby(k+1); else { store.set('pyonpoker-tour','1'); store.set('pyonpoker-tour3','1'); } });
 }
-function tourStart(){ if(tourOn() && !store.get('pion-tour') && MODE==='lobby' && !$('lobby').hidden) tourLobby(0); }
+function tourStart(){ if(tourOn() && !store.get('pyonpoker-tour') && MODE==='lobby' && !$('lobby').hidden) tourLobby(0); }
 // the third card waits for the first own turn
 setInterval(()=>{
-  if(!tourOn() || tourEl || store.get('pion-tour3') || !S || !myTurn()) return;
-  tourShow(TOUR_GAME[0], TOUR_GAME[1], 3, 3, ()=>store.set('pion-tour3','1'));
+  if(!tourOn() || tourEl || store.get('pyonpoker-tour3') || !S || !myTurn()) return;
+  tourShow(TOUR_GAME[0], TOUR_GAME[1], 3, 3, ()=>store.set('pyonpoker-tour3','1'));
 }, 800);
-document.addEventListener('keydown', e=>{ if(e.key==='Escape' && tourEl){ tourClose(); store.set('pion-tour','1'); store.set('pion-tour3','1'); } });
-$('tourAgain').onclick=()=>{ try{ localStorage.removeItem('pion-tour'); localStorage.removeItem('pion-tour3'); }catch(e){} closeSettings(); if(MODE==='lobby'){ lobbyTab('home'); setTimeout(tourStart, 300); } else toast(t('Подсказки покажутся снова в главном меню и на следующем ходу')); };
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && tourEl){ tourClose(); store.set('pyonpoker-tour','1'); store.set('pyonpoker-tour3','1'); } });
+$('tourAgain').onclick=()=>{ try{ localStorage.removeItem('pyonpoker-tour'); localStorage.removeItem('pyonpoker-tour3'); }catch(e){} closeSettings(); if(MODE==='lobby'){ lobbyTab('home'); setTimeout(tourStart, 300); } else toast(t('Подсказки покажутся снова в главном меню и на следующем ходу')); };
 setTimeout(tourStart, 900);

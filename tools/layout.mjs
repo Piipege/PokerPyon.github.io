@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const URL = 'file://' + path.join(ROOT, 'pion-online.html');
+const URL = 'file://' + path.join(ROOT, 'pyonpoker.html');
 const SHOTS = process.argv.includes('--shots') ? path.join(ROOT, 'tools', 'shots') : null;
 const A11Y = process.argv.includes('--a11y');
 if(SHOTS) fs.mkdirSync(SHOTS, { recursive: true });
@@ -26,7 +26,7 @@ let failed = 0;
 for(const [name, w, h, touch] of SIZES.filter(s => !ONLY || s[0].includes(ONLY))){
   for(const bots of [3, 8]){
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: touch, isMobile: touch && w < 1100, deviceScaleFactor: 1 });
-    await ctx.addInitScript(([a11y]) => { window.PION_TEST = 1; localStorage.setItem('pion-nick', 'Тест'); localStorage.setItem('pion-cfg', JSON.stringify({ lang: 'ru', speed: 'fast', ...(a11y ? { fs: 1.3, contrast: true } : {}) })); }, [A11Y]);
+    await ctx.addInitScript(([a11y]) => { window.PYONPOKER_TEST = 1; localStorage.setItem('pyonpoker-nick', 'Тест'); localStorage.setItem('pyonpoker-cfg', JSON.stringify({ lang: 'ru', speed: 'fast', ...(a11y ? { fs: 1.3, contrast: true } : {}) })); }, [A11Y]);
     const p = await ctx.newPage();
     p.on('pageerror', e => { console.log('  ! ' + e.message); failed++; });
     await p.goto(URL);
@@ -36,7 +36,7 @@ for(const [name, w, h, touch] of SIZES.filter(s => !ONLY || s[0].includes(ONLY))
     // wait until it is our turn on the flop or later, so that board and controls are all visible
     const t0 = Date.now();
     while(Date.now() - t0 < 40000){
-      const st = await p.evaluate(() => { const S = window.__pion.S; const b = document.getElementById('bFold'); return { street: S && S.street, my: b && !b.hidden && !b.disabled && b.offsetParent !== null }; });
+      const st = await p.evaluate(() => { const S = window.__pyonpoker.S; const b = document.getElementById('bFold'); return { street: S && S.street, my: b && !b.hidden && !b.disabled && b.offsetParent !== null }; });
       if(st.my && st.street !== 'preflop') break;
       await p.evaluate(() => { const b = ['bCall', 'bNext'].map(id => document.getElementById(id)).find(b => b && !b.hidden && !b.disabled && b.offsetParent); if(b) b.click(); });
       await p.waitForTimeout(250);

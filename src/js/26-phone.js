@@ -17,7 +17,7 @@ function myTurnAlert(){
   if(document.hidden){
     clearInterval(titleT); let on=false;
     titleT=setInterval(()=>{ if(!document.hidden){ clearInterval(titleT); document.title=t('Покерный стол «PyonPoker»'); return; } on=!on; document.title = on ? '● '+t('Ваш ход') : t('Покерный стол «PyonPoker»'); }, 900);
-    if(CFG.notify && window.Notification && Notification.permission==='granted'){ try{ new Notification(t('Ваш ход'), {body:t('Покерный стол «PyonPoker»'), tag:'pion-turn'}); }catch(e){} }
+    if(CFG.notify && window.Notification && Notification.permission==='granted'){ try{ new Notification(t('Ваш ход'), {body:t('Покерный стол «PyonPoker»'), tag:'pyonpoker-turn'}); }catch(e){} }
   }
 }
 let confirmArm=null;
@@ -49,7 +49,7 @@ $('bPanel').onclick=()=>openSheet(!document.querySelector('aside').classList.con
 $('sheetBg').onclick=()=>openSheet(false);
 $('sheetClose').onclick=()=>openSheet(false);
 $('hdrVol').value=Math.round(CFG.vol*100);
-$('hdrVol').oninput=e=>{ CFG.vol=(+e.target.value)/100; saveCfg(); if(!snd.on && CFG.vol>0){ snd.on=true; store.set('pion-sound','1'); updSound(); } };
+$('hdrVol').oninput=e=>{ CFG.vol=(+e.target.value)/100; saveCfg(); if(!snd.on && CFG.vol>0){ snd.on=true; store.set('pyonpoker-sound','1'); updSound(); } };
 $('hdrVol').onchange=()=>SFX.chip();
 $('cfgFour').onchange=e=>{ CFG.four=e.target.checked; saveCfg(); document.documentElement.classList.toggle('fourc', CFG.four); };
 $('cfgConfirm').onchange=e=>{ CFG.confirm=e.target.checked; saveCfg(); };
@@ -84,8 +84,8 @@ $('turnSave').onclick=()=>{ CFG.turn={url:$('turnUrl').value.trim(), user:$('tur
 document.documentElement.classList.toggle('fourc', !!CFG.four);
 /* remember lobby choices, so starting again is one click */
 const LOBBY_IDS=['tblGame','tblFmt','soloGame','soloFmt','tableName','botsN','botLvl','stackN','blindMode','bombEvery','bombSize','publicOn','hOn','hOdds','hMade','hDraws','hAdv','soloLvl','soloBlinds','soloBomb','sOn','sOdds','sMade','sDraws','sAdv','soloN','soloRebuy','botRebuy'];
-try{ const sv=JSON.parse(localStorage.getItem('pion-lobby')||'{}'); LOBBY_IDS.forEach(id=>{ const el=$(id); if(!el || sv[id]==null) return; if(el.type==='checkbox') el.checked=!!sv[id]; else el.value=sv[id]; }); }catch(e){}
-function saveLobby(){ const o={}; LOBBY_IDS.forEach(id=>{ const el=$(id); if(el) o[id]= el.type==='checkbox' ? el.checked : el.value; }); store.set('pion-lobby', JSON.stringify(o)); }
+try{ const sv=JSON.parse(localStorage.getItem('pyonpoker-lobby')||'{}'); LOBBY_IDS.forEach(id=>{ const el=$(id); if(!el || sv[id]==null) return; if(el.type==='checkbox') el.checked=!!sv[id]; else el.value=sv[id]; }); }catch(e){}
+function saveLobby(){ const o={}; LOBBY_IDS.forEach(id=>{ const el=$(id); if(el) o[id]= el.type==='checkbox' ? el.checked : el.value; }); store.set('pyonpoker-lobby', JSON.stringify(o)); }
 LOBBY_IDS.forEach(id=>$(id)?.addEventListener('change', ()=>{ saveLobby(); syncHelpSets(); }));
 function syncHelpSets(){ $('hSet').hidden=!$('hOn').checked; $('sSet').hidden=!$('sOn').checked; }
 syncHelpSets();
@@ -94,11 +94,11 @@ function syncPub(){ document.querySelectorAll('input[name="pubMode"]').forEach(r
 document.querySelectorAll('input[name="pubMode"]').forEach(r=>r.addEventListener('change', ()=>{ $('publicOn').checked = r.value==='1'; syncPub(); saveLobby(); }));
 syncPub();
 function showQuick(){
-  const last=store.get('pion-last'), b=$('bQuick');
+  const last=store.get('pyonpoker-last'), b=$('bQuick');
   if(!last || savedHost()){ b.hidden=true; return; }
   b.hidden=false; b.textContent = last==='solo' ? '▶ '+t('Сыграть с ботами, как в прошлый раз') : '▶ '+t('Создать стол, как в прошлый раз');
 }
-$('bQuick').onclick=()=>{ const last=store.get('pion-last'); if(last==='solo') $('bSolo').click(); else if(last==='create') $('bCreate').click(); };
+$('bQuick').onclick=()=>{ const last=store.get('pyonpoker-last'); if(last==='solo') $('bSolo').click(); else if(last==='create') $('bCreate').click(); };
 
 
 /* phone menu (☰): profile, learning and settings in big labelled buttons; sound, invite and exit too */

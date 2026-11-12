@@ -8,13 +8,36 @@ function pdbOpen(){
   if(PDB.ready) return PDB.ready;
   PDB.ready = new Promise(res=>{
     try{
-      const rq=indexedDB.open('pion-profile', 1);
-      rq.onupgradeneeded=()=>{ const db=rq.result; if(!db.objectStoreNames.contains('hands')) db.createObjectStore('hands', {keyPath:'id'}); };
-      rq.onsuccess=()=>{ PDB.db=rq.result; res(PDB.db); };
+      let fresh=false;
+      const rq=indexedDB.open('pyonpoker-profile', 1);
+      rq.onupgradeneeded=()=>{ fresh=true; const db=rq.result; if(!db.objectStoreNames.contains('hands')) db.createObjectStore('hands', {keyPath:'id'}); };
+      rq.onsuccess=()=>{ PDB.db=rq.result; if(fresh) pdbMigrate(PDB.db).then(()=>res(PDB.db)); else res(PDB.db); };
       rq.onerror=rq.onblocked=()=>res(null);
     }catch(e){ res(null); }
   });
   return PDB.ready;
+}
+// hands saved before the rename (database «pion-profile») move into «pyonpoker-profile» once
+function pdbMigrate(db){
+  return new Promise(done=>{
+    try{
+      const old=indexedDB.open('pion-profile');
+      old.onupgradeneeded=()=>{ try{ old.transaction.abort(); }catch(e){} }; // there was no old database: do not create one
+      old.onerror=old.onblocked=()=>done();
+      old.onsuccess=()=>{
+        const odb=old.result;
+        if(!odb.objectStoreNames.contains('hands')){ odb.close(); done(); return; }
+        const g=odb.transaction('hands').objectStore('hands').getAll();
+        g.onerror=()=>{ odb.close(); done(); };
+        g.onsuccess=()=>{
+          const tx=db.transaction('hands','readwrite'), st=tx.objectStore('hands');
+          (g.result||[]).forEach(r=>st.put(r));
+          tx.oncomplete=()=>{ odb.close(); try{ indexedDB.deleteDatabase('pion-profile'); }catch(e){} done(); };
+          tx.onerror=tx.onabort=()=>{ odb.close(); done(); };
+        };
+      };
+    }catch(e){ done(); }
+  });
 }
 async function pdbAll(){
   const db=await pdbOpen(); if(!db) return PDB.mem.slice();
@@ -107,11 +130,11 @@ function styleOf(V, P){ return V>=35 ? (P>=V*.5 ? STYLES[2] : STYLES[1]) : (P>=V
 function lessonsDone(){ const pr=loadProgress(); return LESSONS.filter(l=>lessonDone(pr,l)).length; }
 
 // the short summary that goes with my seat (numbers only, checked again by the host)
-function mySummary(){ try{ return JSON.parse(localStorage.getItem('pion-pf')||'null'); }catch(e){ return null; } }
+function mySummary(){ try{ return JSON.parse(localStorage.getItem('pyonpoker-pf')||'null'); }catch(e){ return null; } }
 async function profileSummaryUpdate(){
   const st=profileStats(await profileRows());
   const pf={h:st.h, bb100:st.bb100, vp:st.vpP, pr:st.pfP, wsd:st.wsdP, acc:st.accP, ls:lessonsDone(), since:st.since};
-  store.set('pion-pf', JSON.stringify(pf));
+  store.set('pyonpoker-pf', JSON.stringify(pf));
   pushProfile();
 }
 // host side: keep only sane numbers from what a guest says about itself

@@ -15,15 +15,15 @@ const GN = {
 };
 const GUEST_QUIET_MS = 9000, GUEST_PROBE_MS = 6000;
 const QUEUE_KINDS = new Set(['chat','profile','away','show','rebuy','emote']);
-function saveGuest(){ if(code) store.set('pion-guest', JSON.stringify({code, at:Date.now()})); }
-function savedGuest(){ try{ const r=JSON.parse(localStorage.getItem('pion-guest')||'null'); if(r && r.code && Date.now()-r.at < 6*3600e3) return r; }catch(e){} return null; }
-function forgetGuest(){ try{ localStorage.removeItem('pion-guest'); }catch(e){} }
+function saveGuest(){ if(code) store.set('pyonpoker-guest', JSON.stringify({code, at:Date.now()})); }
+function savedGuest(){ try{ const r=JSON.parse(localStorage.getItem('pyonpoker-guest')||'null'); if(r && r.code && Date.now()-r.at < 6*3600e3) return r; }catch(e){} return null; }
+function forgetGuest(){ try{ localStorage.removeItem('pyonpoker-guest'); }catch(e){} }
 
 async function joinTable(c, watch){
   if(typeof Peer==='undefined') return setLobbyErr(t('Не загрузилась библиотека для игры по сети. Проверьте интернет и обновите страницу.'));
   c = String(c||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
   if(c.length!==4) return setLobbyErr(t('Код стола — четыре символа, например K7QM.'));
-  setLobbyErr(''); $('bJoin').disabled=true; $('bJoin').textContent=t('Подключаемся…');
+  setLobbyErr(''); $('bJoin').disabled=true; setT($('bJoin'), 'Подключаемся…');
   try{
     Object.assign(GN, {state:'ok', tries:0, lastMsg:Date.now(), outbox:[], hostGone:false, busy:false, watch:!!watch});
     await guestPeer();
@@ -36,7 +36,7 @@ async function joinTable(c, watch){
     stopNet(); MODE='lobby'; code=null; S=null;
     setLobbyErr(e && e.type==='taken' ? t('Это место уже занято с другого устройства') : e && e.type==='full' ? t('За столом нет свободных мест') : netErr(e));
   }
-  $('bJoin').disabled=false; $('bJoin').textContent=t('Войти по коду');
+  $('bJoin').disabled=false; setT($('bJoin'), 'Войти по коду');
 }
 
 // a working connection to the PeerJS signalling server: reuse, reconnect or create anew

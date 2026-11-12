@@ -1,5 +1,5 @@
 /* ---------- open lobby: whoever has the site open first keeps the list of public tables ---------- */
-const LOBBY_ID='pion-poker-lobby-v1';
+const LOBBY_ID='pyonpoker-lobby-v1';
 const lob={peer:null, role:null, conn:null, tables:new Map(), subs:new Set(), retryT:null};
 async function lobbyStart(){
   if(typeof Peer==='undefined') return;

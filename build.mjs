@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 // Builds the game from src/ in two forms:
 //
-//   pion-online.html + assets/   the site (GitHub Pages). A small page; the code, PeerJS, one
+//   pyonpoker.html + assets/     the site (GitHub Pages). A small page; the code, PeerJS, one
 //                                dictionary per language and the fonts are separate files with a
 //                                content hash in the name, so browsers cache them for good and
 //                                download only what is needed: the player's language and the font
 //                                subsets that the page really uses (unicode-range).
-//   pion-offline.html            everything in one self-contained file (works from disk, can be sent
+//   pyonpoker-offline.html       everything in one self-contained file (works from disk, can be sent
 //                                to a friend). Fonts, scripts and all 9 languages are inlined.
 //
 // `node build.mjs`            build;   `node build.mjs --check`  also check syntax and t/L/tr shadowing.
@@ -65,47 +65,50 @@ const app = await minify(appSource(), 'app');
 const peer = read(path.join(SRC, 'vendor', 'peerjs.min.js'));
 const fontsCss = read(path.join(SRC, 'css', 'fonts.css'));
 
-// ---------- the site: pion-online.html + assets/ ----------
+// ---------- the site: pyonpoker.html + assets/ ----------
 fs.rmSync(ASSETS, { recursive: true, force: true });
 fs.mkdirSync(path.join(ASSETS, 'fonts'), { recursive: true });
 const written = {};
 function asset(rel, data){ const ext = path.extname(rel), name = rel.slice(0, -ext.length) + '.' + hash(data) + ext; fs.writeFileSync(path.join(ASSETS, name), data); written[name] = Buffer.byteLength(data); return 'assets/' + name; }
 const appUrl = asset('app.js', app), peerUrl = asset('peerjs.js', peer);
 const langUrls = {};
-for(const l of langs) langUrls[l] = asset(`lang-${l}.js`, `(window.PION_I18N=window.PION_I18N||{})[${JSON.stringify(l)}]=${JSON.stringify(dict(l))};`);
+for(const l of langs) langUrls[l] = asset(`lang-${l}.js`, `(window.PYONPOKER_I18N=window.PYONPOKER_I18N||{})[${JSON.stringify(l)}]=${JSON.stringify(dict(l))};`);
 const siteFonts = fontsCss.replace(/@datauri\(\.\.\/fonts\/([^)]+)\)/g, (_, f) => asset('fonts/' + f, fs.readFileSync(path.join(SRC, 'fonts', f))));
 // language is chosen before the app starts (same rule as guessLang in the app), then the scripts run in order
-const loader = `<script>(function(){var U=${JSON.stringify(langUrls)},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;[${JSON.stringify(peerUrl)},U[l],${JSON.stringify(appUrl)}].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>\n`;
+const loader = `<script>(function(){var U=${JSON.stringify(langUrls)},c={},l;try{c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PYONPOKER_LANG_URL=U;[${JSON.stringify(peerUrl)},U[l],${JSON.stringify(appUrl)}].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>\n`;
 const site = fill(template, {
   icons: '<link rel="icon" href="icons/icon-192.png">\n<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">\n',
   head: `<link rel="preload" href="${appUrl}" as="script">\n<link rel="preload" href="${peerUrl}" as="script">\n<style>${siteFonts}</style>\n`,
   scripts: loader,
 });
-fs.writeFileSync(path.join(ROOT, 'pion-online.html'), site);
+fs.writeFileSync(path.join(ROOT, 'pyonpoker.html'), site);
 
-// ---------- one self-contained file: pion-offline.html ----------
+// ---------- one self-contained file: pyonpoker-offline.html ----------
 const allLangs = {}; for(const l of langs) allLangs[l] = dict(l);
 const offline = fill(template, {
   icons: processText('<link rel="icon" href="@datauri(assets/icon-192.png)">\n<link rel="apple-touch-icon" href="@datauri(assets/apple-touch-icon.png)">\n', SRC),
   head: '',
   // fonts and scripts after the content, so the page paints before ~1.5 MB of them is parsed
-  scripts: `<style>${processText(fontsCss, path.join(SRC, 'css'))}</style>\n<script>${safeScript(peer)}</script>\n<script>window.PION_I18N=${safeScript(JSON.stringify(allLangs))};</script>\n<script>${safeScript(app)}</script>\n`,
+  scripts: `<style>${processText(fontsCss, path.join(SRC, 'css'))}</style>\n<script>${safeScript(peer)}</script>\n<script>window.PYONPOKER_I18N=${safeScript(JSON.stringify(allLangs))};</script>\n<script>${safeScript(app)}</script>\n`,
 });
-fs.writeFileSync(path.join(ROOT, 'pion-offline.html'), offline);
+fs.writeFileSync(path.join(ROOT, 'pyonpoker-offline.html'), offline);
 
 // ---------- installable app + offline: manifest, icons, service worker ----------
 fs.mkdirSync(path.join(ROOT, 'icons'), { recursive: true });
 for(const f of ['icon-192.png', 'icon-512.png', 'apple-touch-icon.png']) fs.copyFileSync(path.join(SRC, 'assets', f), path.join(ROOT, 'icons', f));
 fs.copyFileSync(path.join(SRC, 'manifest.webmanifest'), path.join(ROOT, 'manifest.webmanifest'));
-const precache = ['./pion-online.html', './' + appUrl, './' + peerUrl];
+// the old addresses (and the site root) lead to the game, keeping #t-CODE invite links working
+const redirect = to => `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PyonPoker</title><link rel="canonical" href="${to}"><script>location.replace("${to}"+location.search+location.hash)</script><meta http-equiv="refresh" content="1;url=${to}"></head><body style="background:#170912;color:#fff;font-family:system-ui,sans-serif;padding:24px"><a href="${to}" style="color:#ff8ac0">PyonPoker</a></body></html>\n`;
+for(const [from, to] of [['index.html', 'pyonpoker.html'], ['pion-online.html', 'pyonpoker.html'], ['pion-offline.html', 'pyonpoker-offline.html']]) fs.writeFileSync(path.join(ROOT, from), redirect(to));
+const precache = ['./pyonpoker.html', './' + appUrl, './' + peerUrl];
 fs.writeFileSync(path.join(ROOT, 'sw.js'), read(path.join(SRC, 'sw.js')).replace('__VERSION__', hash(site + app)).replace('__PRECACHE__', JSON.stringify(precache)));
 
 const sum = Object.entries(written);
-console.log(`pion-online.html: ${kb(Buffer.byteLength(site))} + assets: app ${kb(written[appUrl.slice(7)])}, peerjs ${kb(written[peerUrl.slice(7)])}, one language ≈ ${kb(written[langUrls.en.slice(7)])}, fonts ${kb(sum.filter(([n]) => n.startsWith('fonts/')).reduce((a, [, b]) => a + b, 0))} (only the needed subsets load)`);
-console.log(`pion-offline.html: ${kb(Buffer.byteLength(offline))}`);
+console.log(`pyonpoker.html: ${kb(Buffer.byteLength(site))} + assets: app ${kb(written[appUrl.slice(7)])}, peerjs ${kb(written[peerUrl.slice(7)])}, one language ≈ ${kb(written[langUrls.en.slice(7)])}, fonts ${kb(sum.filter(([n]) => n.startsWith('fonts/')).reduce((a, [, b]) => a + b, 0))} (only the needed subsets load)`);
+console.log(`pyonpoker-offline.html: ${kb(Buffer.byteLength(offline))}`);
 
 if(CHECK){
-  const tmp = fs.mkdtempSync(path.join(fs.realpathSync(process.env.TMPDIR || '/tmp'), 'pion-'));
+  const tmp = fs.mkdtempSync(path.join(fs.realpathSync(process.env.TMPDIR || '/tmp'), 'pyonpoker-'));
   const checkJs = (code, name) => { const f = path.join(tmp, name); fs.writeFileSync(f, code); execFileSync(process.execPath, ['--check', f], { stdio: 'inherit' }); };
   [...offline.matchAll(/<script>([\s\S]*?)<\/script>/g)].forEach((m, k) => checkJs(m[1], `offline${k}.js`));
   [...site.matchAll(/<script>([\s\S]*?)<\/script>/g)].forEach((m, k) => checkJs(m[1], `site${k}.js`));

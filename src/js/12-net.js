@@ -1,11 +1,11 @@
 /* ---------- network: browsers connect directly, the host's browser deals ---------- */
-const PEER_PREFIX = 'pion-poker-';
+const PEER_PREFIX = 'pyonpoker-';
 let peer = null, hostConn = null, joinTimer = null, reconnectT = null, closeArm = 0;
 const conns = new Map();   // host side: uid -> connection
-function seatKey(){ let k=store.get('pion-key'); if(!k){ k=hex(crypto.getRandomValues(new Uint8Array(16))); store.set('pion-key',k); } return k; }
+function seatKey(){ let k=store.get('pyonpoker-key'); if(!k){ k=hex(crypto.getRandomValues(new Uint8Array(16))); store.set('pyonpoker-key',k); } return k; }
 const seatKeys={}; const rate={};
-function myId(){ let id=store.get('pion-uid'); if(!id){ id='p'+Math.random().toString(36).slice(2,10); store.set('pion-uid',id); } return id; }
-function peerOpts(){ const ice=[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]; if(CFG.turn && CFG.turn.url) ice.push({urls:CFG.turn.url, username:CFG.turn.user||undefined, credential:CFG.turn.pass||undefined}); return Object.assign({debug:0, config:{iceServers:ice}}, window.PION_PEER_OPTS||{}); }
+function myId(){ let id=store.get('pyonpoker-uid'); if(!id){ id='p'+Math.random().toString(36).slice(2,10); store.set('pyonpoker-uid',id); } return id; }
+function peerOpts(){ const ice=[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]; if(CFG.turn && CFG.turn.url) ice.push({urls:CFG.turn.url, username:CFG.turn.user||undefined, credential:CFG.turn.pass||undefined}); return Object.assign({debug:0, config:{iceServers:ice}}, window.PYONPOKER_PEER_OPTS||{}); }
 function openPeer(id){
   return new Promise((res,rej)=>{
     const p = id ? new Peer(id, peerOpts()) : new Peer(peerOpts());
@@ -34,7 +34,7 @@ function broadcast(){
     try{ c.send({t:'state', S:pub, mine, mineOpen, hand:S.handNo}); }catch(e){}
   }
 }
-function saveHost(){ store.set('pion-host', JSON.stringify({code, S, at:Date.now()})); }
+function saveHost(){ store.set('pyonpoker-host', JSON.stringify({code, S, at:Date.now()})); }
 function stopNet(){
   clearTimeout(joinTimer); clearTimeout(reconnectT);
   for(const c of conns.values()){ try{ c.close(); }catch(e){} }

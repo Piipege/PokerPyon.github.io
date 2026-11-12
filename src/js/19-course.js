@@ -262,15 +262,15 @@ const GEN = {
 };
 
 let course={i:0, view:'theory', qs:[], qi:0, score:0, picked:null, drill:null, streak:0, solved:0};
-function loadProgress(){ try{ return JSON.parse(localStorage.getItem('pion-course')||'{}')||{}; }catch(e){ return {}; } }
-function saveProgress(p){ store.set('pion-course', JSON.stringify(p)); }
+function loadProgress(){ try{ return JSON.parse(localStorage.getItem('pyonpoker-course')||'{}')||{}; }catch(e){ return {}; } }
+function saveProgress(p){ store.set('pyonpoker-course', JSON.stringify(p)); }
 const lessonDone = (prog, l) => (prog['l'+l.id]||0)>=4;
 function openLearn(i){ $('learnOv').hidden=false; if(i!=null){ course.i=i; course.view='theory'; } renderLearn(); }
 function closeLearn(){ $('learnOv').hidden=true; }
 function startPractice(){ const les=LESSONS[course.i]; course.qs=les.gen.map(g=>GEN[g]()); course.qi=0; course.score=0; course.picked=null; course.view='practice'; renderLearn(); }
 function startDrill(id){ course.drill=DRILLS.find(d=>d.id===id); course.streak=0; course.solved=0; course.view='drill'; nextDrillQ(); }
 function nextDrillQ(){ const g=pick(course.drill.gen); course.qs=[GEN[g]()]; course.qi=0; course.picked=null; renderLearn(); }
-function drillBest(){ try{ return JSON.parse(localStorage.getItem('pion-drills')||'{}')||{}; }catch(e){ return {}; } }
+function drillBest(){ try{ return JSON.parse(localStorage.getItem('pyonpoker-drills')||'{}')||{}; }catch(e){ return {}; } }
 function questionHTML(q, answered){
   return `${q.scene||''}<p class="q">${esc(tr(q.q))}</p>
     <div class="opts">${q.opts.map((o,k)=>`<button type="button" class="btn opt${answered?(k===q.ans?' ok':k===course.picked?' bad':''):''}" data-opt="${k}" ${answered?'disabled':''}>${esc(tr(o))}</button>`).join('')}</div>
@@ -339,7 +339,7 @@ $('lesson').onclick=e=>{
     const right = course.picked===course.qs[course.qi].ans;
     if(course.view==='drill'){
       course.solved++;
-      if(right){ course.streak++; SFX.chip(); const b=drillBest(); if(course.streak>(b[course.drill.id]||0)){ b[course.drill.id]=course.streak; store.set('pion-drills', JSON.stringify(b)); } }
+      if(right){ course.streak++; SFX.chip(); const b=drillBest(); if(course.streak>(b[course.drill.id]||0)){ b[course.drill.id]=course.streak; store.set('pyonpoker-drills', JSON.stringify(b)); } }
       else course.streak=0;
     } else if(right){ course.score++; SFX.chip(); }
     renderLearn(); return;

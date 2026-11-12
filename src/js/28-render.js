@@ -38,7 +38,10 @@ function cardsFor(i){
   return Array(holeN()).fill(null);
 }
 
+// the subtitle under the logo names the game; set here on every render (in the menu too), so it always follows the language
+function renderSub(){ const sub=document.querySelector('h1 .sub'); if(!sub) return; const v = S ? t(S.game==='omaha'?'Омаха':'Техасский холдем')+(S.ko?' · '+t('Нокаут'):'') : t('Техасский холдем'); if(sub.textContent!==v) sub.textContent=v; }
 function render(){
+  renderSub();
   const tbl=$('table');
   $('tableChip').hidden = !(code && (MODE==='host'||MODE==='guest'));
   $('tableCode').textContent = code||'';
@@ -52,7 +55,6 @@ function render(){
   tbl.classList.toggle('dense', n>=7 || (mq.matches && n>=6));
   document.body.classList.toggle('tight', mq.matches);
   tbl.classList.toggle('omaha', S.game==='omaha');
-  { const sub=document.querySelector('h1 .sub'); const v=t(S.game==='omaha'?'Омаха':'Техасский холдем')+(S.ko?' · '+t('Нокаут'):''); if(sub && sub.textContent!==v) sub.textContent=v; }
   const W=tbl.clientWidth, Ht=tbl.clientHeight;
   const sig=S.seats.map(s=>s.uid).join(',')+'|'+me+'|'+mq.matches;
   if(sig!==seatSig){

@@ -1,8 +1,8 @@
 {
-  "name": "pion-poker",
+  "name": "pyonpoker",
   "private": true,
   "type": "module",
-  "description": "Pion — Texas Hold'em for friends. Sources in src/, built into one self-contained pion-online.html.",
+  "description": "PyonPoker — Texas Hold'em and Omaha for friends. Sources in src/, built into pyonpoker.html (+ assets/) and pyonpoker-offline.html.",
   "scripts": {
     "build": "node build.mjs",
     "check": "node build.mjs --check",
