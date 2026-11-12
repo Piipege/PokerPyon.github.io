@@ -1237,5 +1237,8 @@
  "c17.body": "In Hold'em a medium hand often wins. In Omaha opponents hold four cards each, so the pot more often goes to the best possible hand — the nuts. Before a big bet ask yourself: «Do I have the nuts? If not, what beats me?»\n\nDraws in Omaha can be huge. A wrap is a straight draw using several of your cards at once: you hold J-T-8-7 on a 9-6-2 flop, and many different cards make a straight — 13 outs or more. A nut flush draw (with the ace) together with a wrap can be the favourite even against a set.\n\nThe danger is non-nut draws. A king-high flush or a low straight often gets made when the opponent has a higher one. Such draws are worth less than they seem: you can make your hand and lose a big pot.",
  "c18.title": "Omaha: strategy",
  "c18.body": "Before the flop hands run close: the best hand A♠ A♥ K♠ K♥ wins only ≈70% against a random one. So the main action happens after the flop.\n\n• Play the nuts and nut draws aggressively — with a pot-sized bet.\n• One pair, even top pair, is a weak hand against several opponents. Two pair also lose often.\n• Position matters even more than in Hold'em: pots are big and mistakes are expensive.\n• Pot-limit caps the bets, so a big pot grows over several streets. Think ahead: is your hand good enough for your whole stack?\n• Bluff less: with four cards an opponent more often has something to call with.",
- "{0} играет мало рук, но агрессивно — осторожнее с его ставками.": "{0} plays few hands, but aggressively — be careful with their bets."
+ "{0} играет мало рук, но агрессивно — осторожнее с его ставками.": "{0} plays few hands, but aggressively — be careful with their bets.",
+ "играет мало рук": "plays few hands",
+ "играет много рук": "plays many hands",
+ "чаще входит в банк рейзом, чем коллом": "enters pots with a raise more often than with a call"
 }

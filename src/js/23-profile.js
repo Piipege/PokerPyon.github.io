@@ -231,10 +231,18 @@ $('bProfile').onclick=openProfile;
 $('bProfile2').onclick=openProfile;
 
 /* ---------- player cards at the table ---------- */
+// short style marks from tonight's play (10+ hands): тайт / луз by VPIP, агро if most voluntary entries are raises
+function tableTags(st){
+  if(st.h<10) return '';
+  const v=st.v/st.h, tags=[], why=[];
+  if(v<.18){ tags.push(t('тайт')); why.push(t('играет мало рук')); } else if(v>.42){ tags.push(t('луз')); why.push(t('играет много рук')); }
+  if(st.v && st.p/st.v>.6){ tags.push(t('агро')); why.push(t('чаще входит в банк рейзом, чем коллом')); }
+  return tags.length ? `<span><span class="tag">${esc(tags.join('-'))}</span> <span class="muted">${esc(why.join(' · '))}</span></span>` : '';
+}
 function openCard(i){
   if(!S || !S.seats[i]) return;
   const s=S.seats[i], me=s.uid===myUid, st=s.st||EMPTY_ST, pf=me ? mySummary() : s.pf;
-  const ev = st.h ? `<div class="pcrow"><span class="slabel">${t('За вечер')}</span><span>${t('Раздач')}: <b>${st.h}</b></span>${st.h>=3?`<span>VPIP <b>${Math.round(st.v/st.h*100)}%</b> · PFR <b>${Math.round(st.p/st.h*100)}%</b></span>`:''}<span>${t('Итог')}: <b class="${st.net>0?'win':st.net<0?'loss':''}">${fmtSigned(st.net)}</b></span></div>` : '';
+  const ev = st.h ? `<div class="pcrow"><span class="slabel">${t('За вечер')}</span><span>${t('Раздач')}: <b>${st.h}</b></span>${st.h>=3?`<span>VPIP <b>${Math.round(st.v/st.h*100)}%</b> · PFR <b>${Math.round(st.p/st.h*100)}%</b></span>`:''}<span>${t('Итог')}: <b class="${st.net>0?'win':st.net<0?'loss':''}">${fmtSigned(st.net)}</b></span>${tableTags(st)}</div>` : '';
   let all='';
   if(s.bot) all=`<p class="muted">${esc(t('Бот, уровень «{0}»', t((LVL[s.lvl||2]||LVL[2]).name)))}</p>`;
   else if(pf && pf.h){

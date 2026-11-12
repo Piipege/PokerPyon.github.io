@@ -227,7 +227,6 @@ aside section + section, aside section + h2{border-top:1px solid var(--line);pad
 .stats td:first-child{font-family:var(--f-body);max-width:120px;overflow:hidden;text-overflow:ellipsis}
 .stats .pos{color:var(--ok)}
 .stats .neg{color:var(--pink-soft)}
-.stats .tg{font-size:calc(10px*var(--fs));color:var(--muted);margin-left:5px}
 .small{font-size:calc(12px*var(--fs));margin:0}
 .check{display:flex;gap:8px;align-items:center;font-size:calc(13px*var(--fs));color:var(--muted);cursor:pointer}
 .check input{accent-color:var(--pink);width:16px;height:16px}
