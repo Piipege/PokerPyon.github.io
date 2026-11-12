@@ -38,7 +38,7 @@ async function startHand(){
     S.lvl++; [S.sb,S.bb]=BLIND_LEVELS[S.lvl];
     log(L('Блайнды растут: {0}/{1}',S.sb,S.bb),'sep'); S.banner=L('Блайнды растут: {0}/{1}',S.sb,S.bb);
   }
-  S.currentBet=S.bb; S.minRaise=S.bb; S.aggr=-1;
+  S.currentBet=S.bb; S.minRaise=S.bb; S.aggr=-1; S.raises=0; S.preAggr=null;
   S.bomb = !!(S.bombEvery && S.handNo%S.bombEvery===0);
   recStart();
   seats().forEach(p=>{ p._v=false; p._p=false; p._agg=false; if(p.inHand && !S.bomb) stOf(p).h++; });
@@ -103,7 +103,8 @@ function collectThen(next){
 
 function nextStreet(){
   seats().forEach(p=>{p.bet=0; p.acted=false; if(!p.folded && !p.allIn) p.last='';});
-  S.currentBet=0; S.minRaise=S.bb; S.aggr=-1; seats().forEach(p=>p._agg=false);
+  if(S.street==='preflop') S.preAggr = S.aggr>=0 && seats()[S.aggr] ? seats()[S.aggr].uid : null;
+  S.currentBet=0; S.minRaise=S.bb; S.aggr=-1; S.raises=0; seats().forEach(p=>p._agg=false);
   if(S.street==='preflop'){ S.street='flop'; burn(); S.board.push(dealCard(),dealCard(),dealCard()); }
   else if(S.street==='flop'){ S.street='turn'; burn(); S.board.push(dealCard()); }
   else if(S.street==='turn'){ S.street='river'; burn(); S.board.push(dealCard()); }
@@ -144,7 +145,8 @@ function act(i, type, to=0, auto=false){
     log(L(wasZero ? (p.allIn?'{0}: бет {1} (олл-ин)':'{0}: бет {1}') : (p.allIn?'{0}: рейз до {1} (олл-ин)':'{0}: рейз до {1}'), p.name, to));
   } else return;
   if(S.street==='preflop' && (type==='raise' || (type==='call' && toCall>0)) && !p._v){ p._v=true; stOf(p).v++; }
-  if(type==='raise'){ S.aggr=i; p._agg=true; if(S.street==='preflop' && !p._p){ p._p=true; stOf(p).p++; } }
+  if(S.street!=='preflop' && !auto){ const st=stOf(p); if(toCall>0){ st.fb=(st.fb||0)+1; if(type==='fold') st.ff=(st.ff||0)+1; } if(type==='raise') st.ag=(st.ag||0)+1; else if(type==='call' && toCall>0) st.ca=(st.ca||0)+1; }
+  if(type==='raise'){ S.raises=(S.raises||0)+1; S.aggr=i; p._agg=true; if(S.street==='preflop' && !p._p){ p._p=true; stOf(p).p++; } }
   { const paid=p.total-before; recEv(i, type==='fold'?'fold': type==='call'?(paid>0?'call':'check'):(cb0===0?'bet':'raise'), paid, p.bet, null, p.allIn); }
   p.acted=true;
   if(auto){ p.missed=(p.missed||0)+1; if(p.missed>=2 && !p.bot && MODE==='host'){ p.away=true; log(L('{0} пропустил два хода и отошёл от стола', p.name)); } }

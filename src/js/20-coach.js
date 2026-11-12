@@ -6,12 +6,15 @@
 
 const POS_NAMES = {btn:'Баттон', sb:'Малый блайнд', bb:'Большой блайнд', ep:'Ранняя позиция', mp:'Средняя позиция', co:'Катофф'};
 const OPEN_THR = {ep:.12, mp:.18, co:.27, btn:.40, sb:.30, bb:.30};
+const OPEN_THR_OM = {ep:.15, mp:.22, co:.32, btn:.45, sb:.32, bb:.35}; // Omaha: hands run closer, a bit wider
 const VERDICT_ICON = {good:'✓', ok:'~', bad:'✗'};
 const LESSON_OF = {pre:4, pos:10, odds:6, outs:5, value:7, cbet:11, implied:12};
 
 function posOf(rec, u){
   const n=rec.seats.length, me=rec.seats.findIndex(s=>s.u===u), d=Math.max(0, rec.seats.findIndex(s=>s.u===rec.dealer));
-  const off=(me-d+n)%n;
+  return posByOff((me-d+n)%n, n);
+}
+function posByOff(off, n){
   if(n===2) return off===0 ? 'btn' : 'bb';
   if(off===0) return 'btn'; if(off===1) return 'sb'; if(off===2) return 'bb';
   if(off===n-1) return 'co';
@@ -48,13 +51,38 @@ function decisionsOf(rec, u){
   return out;
 }
 
-function fakeOpps(n, range){ return Array.from({length:n}, ()=>({st:{h:10, v:10*range, p:10*range}})); }
+// the best hand anyone could hold on this board (in Omaha: any two cards + three of the board)
+function nutsOf(hand, board, omaha){
+  const om=omaha!=null ? omaha : hand.length===4, known=new Set([...hand,...board].map(cardKey)), rest=freshDeck().filter(c=>!known.has(cardKey(c)));
+  const mineV=hand.length ? handVal(hand, board) : -1, n=board.length, f=[null,null,null,null,null], h7=[null,null,...board];
+  let top=-1;
+  for(let x=0;x<rest.length;x++) for(let y=x+1;y<rest.length;y++){
+    let v=-1;
+    if(om){ f[0]=rest[x]; f[1]=rest[y]; for(let a=0;a<n;a++) for(let b=a+1;b<n;b++) for(let c=b+1;c<n;c++){ f[2]=board[a]; f[3]=board[b]; f[4]=board[c]; const w=val7(f); if(w>v) v=w; } }
+    else { h7[0]=rest[x]; h7[1]=rest[y]; v=val7(h7); }
+    if(v>top) top=v;
+  }
+  return {mineV, topV:top, mine:Math.floor(mineV/P5), top:Math.floor(top/P5), nuts:mineV>=top};
+}
+// which hands beat yours right now: every two-card hand in Hold'em, a sample of four-card hands in Omaha
+function threatsOf(hand, board){
+  const om=hand.length===4, known=new Set([...hand,...board].map(cardKey)), rest=freshDeck().filter(c=>!known.has(cardKey(c)));
+  const mineV=handVal(hand, board), by={}, h7=[null,null,...board], oh=[null,null,null,null];
+  let total=0, beat=0, tie=0;
+  const count=v=>{ total++; if(v>mineV){ beat++; const c=Math.floor(v/P5); by[c]=(by[c]||0)+1; } else if(v===mineV) tie++; };
+  if(!om){ for(let x=0;x<rest.length;x++) for(let y=x+1;y<rest.length;y++){ h7[0]=rest[x]; h7[1]=rest[y]; count(val7(h7)); } }
+  else for(let it=0; it<1500; it++){
+    for(let k=0;k<4;k++){ const j=k+(Math.random()*(rest.length-k)|0); const x=rest[k]; rest[k]=rest[j]; rest[j]=x; oh[k]=rest[k]; }
+    count(omahaVal(oh, board));
+  }
+  return {total, beat, tie, by, om};
+}
 function outsOf(hand, board){
   if(board.length<3 || board.length>4) return [];
-  const known=new Set([...hand,...board].map(cardKey)), now=best(hand.concat(board)).cat, res=[];
+  const om=hand.length===4, known=new Set([...hand,...board].map(cardKey)), now=bestHand(hand, board).cat, res=[];
   for(const c of freshDeck()){
     if(known.has(cardKey(c))) continue;
-    const nb=board.concat([c]), cat=best(hand.concat(nb)).cat, boardCat=nb.length>=5 ? best(nb).cat : -1;
+    const nb=board.concat([c]), cat=bestHand(hand, nb).cat, boardCat=!om && nb.length>=5 ? best(nb).cat : -1;
     if(cat>now && cat>boardCat && (cat>=4 || (now<=1 && cat>=3))) res.push(c);
   }
   return res;
@@ -64,7 +92,7 @@ function outsOf(hand, board){
 function judge(d, hand, pos){
   const A=d.a, bb=d.bb||20, R={verdict:'good', why:null, better:null, topic:null, eq:null, need:null, outs:null};
   if(d.street===0 && !d.bomb){
-    const pc=pctOf(hand[0],hand[1]), top=Math.max(1,Math.round(pc*100)), thr=OPEN_THR[pos]||.2, short=d.stack<=12*bb;
+    const pc=handPct(hand), top=Math.max(1,Math.round(pc*100)), thr=(hand.length===4?OPEN_THR_OM:OPEN_THR)[pos]||.2, short=d.stack<=12*bb;
     R.topic=LESSON_OF.pre; R.pc=pc;
     if(d.raises===0){ // nobody raised yet: only the blinds (and maybe limpers)
       if(pos==='bb' && d.toCall===0){
@@ -107,13 +135,14 @@ function judge(d, hand, pos){
   }
   // after the flop
   const range = d.toCall===0 ? .8 : d.raises>=2 ? .3 : .5;
-  const opp=Math.max(1, d.opps);
-  const eq = d.board.length ? equityRanged(hand, d.board, fakeOpps(opp, range), 500) : equity(hand, d.board, opp, 400);
+  const opp=Math.max(1, d.opps), om=hand.length===4;
+  const eq = d.eqLive!=null ? d.eqLive : equityVs(hand, d.board, d.ranges || Array(opp).fill(range), om ? 220 : 500);
   const need = d.toCall>0 ? d.toCall/(d.pot+d.toCall) : 0;
   const outs = outsOf(hand, d.board), draw = outs.length>=8 && d.street<3;
   const implied = draw ? .06 : 0;
   const E=Math.round(eq*100), N=Math.round(need*100);
   Object.assign(R, {eq:E, need:N, outs:outs.length});
+  if(om){ const nu=nutsOf(hand, d.board); if(nu.mine>=4 && nu.mine<=5 && !nu.nuts) R.note=L('В Омахе у соперников по четыре карты, поэтому {0} не натсовый — осторожнее с крупными банками: натсы здесь — {1}.', HAND_NAMES[nu.mine], HAND_NAMES[nu.top]); }
   if(d.toCall>0){
     R.topic=LESSON_OF.odds;
     if(A==='fold'){
@@ -158,13 +187,11 @@ function reviewOf(rec){
   const key=rec.no+'|'+rec.at;
   if(REVIEW_CACHE.has(key)) return REVIEW_CACHE.get(key);
   let res=null;
-  if(rec.mine && rec.mine.length===4 && rec.seats.some(s=>s.u===myUid)){
-    res={rec, hand:rec.mine.map(keyCard), pos:posOf(rec, myUid), ds:[], score:1, net:(rec.delta||{})[myUid]||0, omaha:true, made:(rec.board||[]).length>=3 ? bestHand(rec.mine.map(keyCard), rec.board.map(keyCard)) : null};
-  } else if(rec.mine && rec.seats.some(s=>s.u===myUid)){
+  if(rec.mine && rec.seats.some(s=>s.u===myUid)){
     const hand=rec.mine.map(keyCard), pos=posOf(rec, myUid);
     const ds=decisionsOf(rec, myUid).map(d=>({...d, ...judge(d, hand, pos)}));
     const score = ds.length ? ds.reduce((a,d)=>a+(d.verdict==='good'?1:d.verdict==='ok'?.5:0),0)/ds.length : 1;
-    res={rec, hand, pos, ds, score, net:(rec.delta||{})[myUid]||0, made: (rec.board||[]).length>=3 ? best(hand.concat(rec.board.map(keyCard))) : null};
+    res={rec, hand, pos, ds, score, net:(rec.delta||{})[myUid]||0, omaha:hand.length===4, made: (rec.board||[]).length>=3 ? bestHand(hand, rec.board.map(keyCard)) : null};
   }
   REVIEW_CACHE.set(key, res);
   return res;
@@ -195,6 +222,11 @@ const TERMS = [
   {k:['чек-рейз','check-raise','чекрейз'], n:'Чек-рейз', d:'Сначала чек, а после ставки соперника — рейз. Сильный приём с очень сильными руками и дро.'},
   {k:['кикер','kicker'], n:'Кикер', d:'Старшая карта, которая не входит в комбинацию, но решает при равных комбинациях: у AK и AQ на тузовом столе пара тузов, но кикер K сильнее.'},
   {k:['spr'], n:'SPR', d:'Отношение стека к банку на флопе. При маленьком SPR (до 3) с топ-парой можно идти олл-ин, при большом — осторожнее.'},
+  {k:['врап','wrap'], n:'Врап', d:'В Омахе — стрит-дро сразу с несколькими своими картами, например J-T-8-7 на флопе 9-6-2. Даёт до 20 аутов.'},
+  {k:['пот-лимит','пот лимит','pot-limit','pot limit','потлимит'], n:'Пот-лимит', d:'Правило ставок, обычное для Омахи: повысить можно не больше, чем размер банка после вашего колла.'},
+  {k:['double-suited','двойная масть','дабл-сьютед','две масти'], n:'Две масти (double-suited)', d:'Рука Омахи, в которой две пары карт одной масти, например A♠ K♠ Q♥ J♥: два шанса собрать флеш.'},
+  {k:['dangler','висящ','данглер'], n:'Висящая карта', d:'Карта в руке Омахи, которая не работает с остальными тремя: не в пару, не в масть, далеко по рангу.'},
+  {k:['омах','omaha','омаха'], n:'Омаха', d:'Покер, где у каждого четыре карты, а комбинацию собирают ровно из двух своих и трёх общих. Обычно играется пот-лимитом.'},
   {k:['эквити','equity','еквіті'], n:'Эквити', d:'Ваша доля банка, если доиграть до конца: шанс на победу с учётом ничьих.'},
 ];
 
@@ -226,19 +258,19 @@ function coachHands(){ return HIST.map((r,i)=>[r,i]).filter(([r])=>r.mine && r.s
 function openCoach(i){
   const list=coachHands();
   if(i==null || !HIST[i] || !HIST[i].mine) i = list.length ? list[list.length-1][1] : -1;
-  COACH.i=i; COACH.msgs=[]; COACH.focus=null; COACH.open=true;
-  $('coachOv').hidden=false;
+  COACH.i=i; COACH.msgs=[]; COACH.focus=null; COACH.open=true; COACH.live=false;
+  $('coachOv').classList.remove('live'); $('coachOv').hidden=false;
   if(i<0) coachSay([L('Здесь появятся ваши сыгранные раздачи. Сыграйте пару раздач — с ботами, с тренером или с друзьями, — и я разберу ваши решения.'), L('А пока можно спросить меня о терминах: например, «что такое ауты» или «что такое VPIP».')]);
   else coachIntro();
   renderCoach();
-  setTimeout(()=>{ try{ $('coachIn').focus({preventScroll:true}); }catch(e){} }, 50);
+  if(!mq.matches) setTimeout(()=>{ try{ $('coachIn').focus({preventScroll:true}); }catch(e){} }, 50);
 }
-function closeCoach(){ COACH.open=false; $('coachOv').hidden=true; }
+function closeCoach(){ COACH.open=false; $('coachOv').hidden=true; $('coachOv').classList.remove('live'); }
 function coachSay(parts, extra){ COACH.msgs.push({from:'coach', parts:[].concat(parts), ...(extra||{})}); }
 function coachIntro(){
   const R=reviewOf(HIST[COACH.i]); if(!R) return;
   const bad=R.ds.filter(d=>d.verdict==='bad').length, ok=R.ds.filter(d=>d.verdict==='ok').length;
-  const head = R.omaha ? L('Это раздача в Омаху. Тренер пока разбирает только техасский холдем, но здесь видно ваши карты, стол и итог.') : !R.ds.length ? L('В этой раздаче вы не принимали решений — карты сбросились за вас или раздача закончилась раньше.')
+  const head = !R.ds.length ? L('В этой раздаче вы не принимали решений — карты сбросились за вас или раздача закончилась раньше.')
     : bad ? L('Разберём раздачу №{0}. Решений: {1}, ошибок: {2}, спорных: {3}.', R.rec.no, R.ds.length, bad, ok)
     : ok ? L('Разберём раздачу №{0}. Решений: {1}, грубых ошибок нет, спорных: {2}.', R.rec.no, R.ds.length, ok)
     : L('Разберём раздачу №{0}. Все {1} решений хорошие — так держать!', R.rec.no, R.ds.length);
@@ -246,7 +278,7 @@ function coachIntro(){
 }
 function describeDecision(R, d, k){
   const head=L('{0}: вы — {1}', STREET_SHORT[d.street], ACT_NAMES[d.a]);
-  const parts=[head, d.why];
+  const parts=[head, d.why, d.note];
   if(d.better && d.verdict!=='good') parts.push(L('Лучше: {0}.', ACT_NAMES[d.better]));
   return parts;
 }
@@ -292,7 +324,7 @@ function coachAnswer(intent, arg){
   }
   if(intent==='odds'){
     if(!need()) return;
-    const parts=R.ds.map(d=> d.street===0 ? L('{0}: рука из топ {1}% стартовых рук', STREET_SHORT[0], Math.max(1,Math.round((d.pc!=null?d.pc:pctOf(R.hand[0],R.hand[1]))*100)))
+    const parts=R.ds.map(d=> d.street===0 ? L('{0}: рука из топ {1}% стартовых рук', STREET_SHORT[0], Math.max(1,Math.round((d.pc!=null?d.pc:handPct(R.hand))*100)))
       : d.need ? L('{0}: шансы ≈{1}%, для колла нужно {2}%', STREET_SHORT[d.street], d.eq, d.need) : L('{0}: шансы ≈{1}%', STREET_SHORT[d.street], d.eq));
     coachSay([L('Шансы по ходу раздачи (против типичных рук соперников):'), ...parts]); return;
   }
@@ -351,6 +383,7 @@ function coachAsk(text){
   const q=' '+String(text||'').toLowerCase().replace(/ё/g,'е')+' ';
   if(!q.trim()) return;
   COACH.msgs.push({from:'me', text:String(text).slice(0,300)});
+  if(COACH.live){ liveAsk(q); renderCoach(); return; }
   const norm = s => String(s).toLowerCase().replace(/ё/g,'е');
   // a glossary term: «что такое …», or just the term
   const termIdx = TERMS.findIndex(T=>T.k.some(k=>q.includes(norm(k))) || q.includes(norm(t(T.n))));
@@ -368,11 +401,17 @@ const COACH_CHIPS = [['mistakes','Где я ошибся?'],['better','Как н
 
 function renderCoach(){
   if(!COACH.open) return;
-  const R = COACH.i>=0 ? reviewOf(HIST[COACH.i]) : null;
+  const live=COACH.live;
+  $('coachTitle').textContent=t(live ? 'Тренер за столом' : 'Разбор с тренером');
+  $('coachSel').hidden=live; $('coachAutoRow').hidden=!live; $('coachAuto').checked=!!CFG.coachAuto;
+  $('coachOv').querySelector('.coachbox').setAttribute('aria-modal', live ? 'false' : 'true');
+  $('coachIn').placeholder=t(live ? 'Спросите тренера: «что делать?», «а если рейз?», «как играть против него?»' : 'Спросите тренера: «почему пас на флопе — ошибка?», «что такое ауты?»');
+  const R = !live && COACH.i>=0 ? reviewOf(HIST[COACH.i]) : null;
   const list=coachHands();
   $('coachSel').innerHTML = list.length ? list.slice().reverse().map(([r,i])=>{ const d=(r.delta||{})[myUid]||0; return `<option value="${i}"${i===COACH.i?' selected':''}>${esc(t('Раздача №{0}', r.no))} · ${esc((r.mine||[]).map(k=>fmtCard(keyCard(k))).join(' '))} · ${d>0?'+':''}${d}</option>`; }).join('') : `<option>${esc(t('Нет сыгранных раздач'))}</option>`;
   $('coachSel').disabled=!list.length;
-  if(R){
+  if(live){ $('coachHand').innerHTML=liveHeadHTML(); $('coachHand').hidden=false; }
+  else if(R){
     const board=(R.rec.board||[]).map(keyCard);
     $('coachHand').innerHTML=`<div class="sblock"><span class="slabel">${t('Ваши карты')}</span><div class="srow">${R.hand.map(c=>cardHTML(c)).join('')}</div></div>
       <div class="sblock"><span class="slabel">${t('Стол')}</span><div class="srow">${[0,1,2,3,4].map(j=>board[j]?cardHTML(board[j]):'<div class="slot"></div>').join('')}</div></div>
@@ -387,10 +426,10 @@ function renderCoach(){
     if(m.lesson!=null) html+=`<button type="button" class="btn small primary" data-golesson="${m.lesson}">${t('Открыть урок')}</button>`;
     return `<div class="cm coach${m.verdict?' v-'+m.verdict:''}"><span class="cav" aria-hidden="true">🎓</span><div>${html}</div></div>`;
   }).join('');
-  $('coachChips').innerHTML = COACH_CHIPS.map(([id,label])=>`<button type="button" class="qchip" data-intent="${id}">${esc(t(label))}</button>`).join('');
+  $('coachChips').innerHTML = (live ? LIVE_CHIPS : COACH_CHIPS).map(([id,label])=>`<button type="button" class="qchip" data-intent="${id}">${esc(t(label))}</button>`).join('');
   const log=$('coachLog'); log.scrollTop=log.scrollHeight;
 }
-$('coachChips').onclick=e=>{ const b=e.target.closest('[data-intent]'); if(!b) return; COACH.msgs.push({from:'me', text:b.textContent}); coachAnswer(b.dataset.intent); renderCoach(); };
+$('coachChips').onclick=e=>{ const b=e.target.closest('[data-intent]'); if(!b) return; COACH.msgs.push({from:'me', text:b.textContent}); (COACH.live ? liveAnswer : coachAnswer)(b.dataset.intent); renderCoach(); };
 $('coachLog').onclick=e=>{
   const s=e.target.closest('[data-step]'); if(s){ COACH.msgs.push({from:'me', text:t('Подробнее: {0}', s.querySelector('b').textContent)}); coachAnswer('step', +s.dataset.step); renderCoach(); return; }
   const l=e.target.closest('[data-golesson]'); if(l){ closeCoach(); openLearn(+l.dataset.golesson); }

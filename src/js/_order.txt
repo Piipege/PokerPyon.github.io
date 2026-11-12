@@ -19,6 +19,7 @@
 18-look.js
 19-course.js
 20-coach.js
+20-live.js
 21-fair.js
 22-history.js
 23-profile.js

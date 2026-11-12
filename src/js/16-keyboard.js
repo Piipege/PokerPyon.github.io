@@ -32,7 +32,7 @@ document.addEventListener('keydown',e=>{
     else if(pre){ pre=null; render(); }
     return;
   }
-  if(!$('setOv').hidden || !$('coachOv').hidden || !$('learnOv').hidden || !$('profOv').hidden) return;
+  if(!$('setOv').hidden || (!$('coachOv').hidden && !COACH.live) || !$('learnOv').hidden || !$('profOv').hidden) return;
   const a = keyAction[e.code];
   if(!$('keysOv').hidden){ if(a==='help' || e.key==='?'){ toggleKeys(false); e.preventDefault(); } return; }
   if(a==='help' || e.key==='?'){ toggleKeys(true); e.preventDefault(); return; }

@@ -134,6 +134,13 @@ console.log('7. Omaha knockout with a friend: four cards, fair deck check');
   await waitFor(h2, () => /Друг/.test(document.querySelector('#seats').textContent));
   await h2.click('#bNext');
   ok(await waitFor(g2, () => document.querySelectorAll('.seat.me .cards .card:not(.back)').length === 4, 20000), 'guest gets four hole cards in Omaha');
+  // the coach at a table with friends: no hints on your cards unless the table allows them (off here), stats talk is fine
+  await g2.click('#bTutor');
+  await g2.fill('#coachIn', 'что делать?'); await g2.press('#coachIn', 'Enter');
+  ok(/выключил подсказки|не в раздаче|закончилась/.test(await g2.evaluate(() => document.querySelector('#coachLog .cm.coach:last-child').textContent)), 'live coach keeps quiet about cards when the table has hints off');
+  await g2.fill('#coachIn', 'кто как играет?'); await g2.press('#coachIn', 'Enter');
+  ok(/Статистики пока мало|VPIP/.test(await g2.evaluate(() => document.querySelector('#coachLog .cm.coach:last-child').textContent)), 'but talks about the opponents');
+  await g2.click('#bTutor');
   // play calls until a flop is out, then the guest's fair-deck check must pass
   const t0 = Date.now(); let flop = false;
   while(Date.now() - t0 < 40000 && !flop){

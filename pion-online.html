@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <script>try{var c=JSON.parse(localStorage.getItem("pion-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <title>Покерный стол «PyonPoker»</title>
-<link rel="preload" href="assets/app.ad1a5ef2e6.js" as="script">
+<link rel="preload" href="assets/app.a74a13ac0c.js" as="script">
 <link rel="preload" href="assets/peerjs.f69f573cb6.js" as="script">
 <style>
 /* extra scripts: Noto Sans Georgian, Noto Sans Hebrew (SIL OFL) */
@@ -955,6 +955,25 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
 #actRow .btn,#preRow .btn,#raiseRow .btn{overflow:hidden;text-overflow:ellipsis}
 /* long labels wrap to two lines instead of being cut (e.g. «Call any») */
 #actRow .btn,#preRow .btn{white-space:normal;text-overflow:clip;line-height:1.12;overflow-wrap:anywhere;hyphens:auto}
+/* the coach at the table: a panel beside the game, the table stays usable */
+#bTutor .pico{font-style:normal;margin-inline-end:5px}
+#bTutor{border-color:color-mix(in srgb,var(--pink) 55%,transparent)}
+body.inlobby #bTutor{display:none}
+#coachOv.live{background:transparent;pointer-events:none;align-items:flex-start;justify-content:flex-end;padding:var(--coachTop,76px) 12px 12px;animation:none}
+#coachOv.live .coachbox{pointer-events:auto;width:min(430px,100%);max-height:calc(100vh - var(--coachTop,76px) - 12px);max-height:calc(100dvh - var(--coachTop,76px) - 12px);box-shadow:0 20px 60px #000b}
+.coachauto{flex:none;font-size:calc(13px*var(--fs))}
+@media (max-width:620px), (orientation:landscape) and (max-height:500px){
+  #bTutor{font-size:0;padding:5px 8px;min-width:0}
+  #bTutor .pico{font-size:calc(15px*var(--fs));margin:0}
+  body:not(.inlobby) #bTutor:not([hidden]){margin-inline-start:auto}
+  body:not(.inlobby) #bTutor:not([hidden]) + #bPanel{margin-inline-start:0}
+  #coachOv.live{padding:var(--coachTop,48px) 4px 0}
+  #coachOv.live .coachbox{width:100%;max-height:min(60dvh,560px);overflow:hidden}
+  #coachOv.live .coachhand{--cw:24px}
+  #coachOv.live .coachhand .chmeta{display:none}
+  #coachOv.live .coachlog{min-height:60px}
+  #coachOv.live .coachauto{font-size:calc(12px*var(--fs))}
+}
 </style>
 </head>
 <body>
@@ -982,6 +1001,7 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
         <input type="range" id="hdrVol" class="hdrvol" min="0" max="100" step="5" aria-label="Громкость" title="Громкость">
         <button class="btn small ghost icon" id="bKeys" type="button" title="Клавиши" aria-label="Клавиши">⌨️</button>
       </span>
+      <button class="btn small ghost tutor" id="bTutor" type="button" hidden title="Тренер за столом"><i class="pico" aria-hidden="true">🎓</i><span>Тренер</span></button>
       <button class="btn small ghost" id="bPanel" type="button"><i class="pico" aria-hidden="true">📊</i><span>Чат и статистика</span> <i id="chatDot" class="cdot" hidden></i></button>
       <button class="btn small ghost icon" id="bMenu" type="button" aria-label="Меню" aria-expanded="false">☰</button>
       <button class="btn small ghost" id="bExit" hidden>Выйти</button>
@@ -1138,7 +1158,7 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
           </div>
           <div data-lpane="learn" class="part" hidden>
             <h4 class="ptitle">Обучение</h4>
-            <p class="hint small">Курс из 14 уроков в трёх уровнях: от правил до выигрышной стратегии. В каждом уроке — короткая теория и практика на сгенерированных раздачах. Есть бесконечные тренажёры и тренер, который разбирает ваши сыгранные раздачи и отвечает на вопросы.</p>
+            <p class="hint small">Курс из 18 уроков: от правил до выигрышной стратегии, плюс отдельный уровень про Омаху. В каждом уроке — короткая теория и практика на сгенерированных раздачах. Есть бесконечные тренажёры и тренер, который разбирает сыгранные раздачи, а прямо за столом советует и рассуждает вместе с вами.</p>
             <div class="hint" id="learnProg2"></div>
             <div class="row"><button class="btn primary" id="bLearn2" type="button">Открыть курс</button><button class="btn" id="bDrills" type="button">Тренажёры</button><button class="btn" id="bCoach2" type="button">Разбор с тренером</button></div>
           </div>
@@ -1264,6 +1284,7 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
   <div class="box coachbox" role="dialog" aria-modal="true" aria-labelledby="coachTitle">
     <div class="sethead"><h3 id="coachTitle">Разбор с тренером</h3><select id="coachSel" class="coachsel" aria-label="Раздача"></select><button class="btn small primary" id="coachClose">Закрыть</button></div>
     <div class="scene coachhand" id="coachHand" hidden></div>
+    <label class="check small coachauto" id="coachAutoRow" for="coachAuto" hidden><input type="checkbox" id="coachAuto"> Советовать на каждом своём ходу</label>
     <div class="coachlog" id="coachLog" aria-live="polite"></div>
     <div class="qchips" id="coachChips"></div>
     <form class="coachform" id="coachForm" autocomplete="off"><input id="coachIn" maxlength="300" placeholder="Спросите тренера: «почему пас на флопе — ошибка?», «что такое ауты?»" aria-label="Вопрос тренеру"><button class="btn primary" type="submit">Спросить</button></form>
@@ -1358,6 +1379,6 @@ body{min-height:100vh;min-height:100dvh;background-attachment:fixed}
     </div>
   </div>
 </div>
-<script>(function(){var U={"ru":"assets/lang-ru.05e04049d5.js","en":"assets/lang-en.0d6efdbdd6.js","uk":"assets/lang-uk.9c99f83d2a.js","ka":"assets/lang-ka.3a8f69f82a.js","fr":"assets/lang-fr.9e62de3859.js","de":"assets/lang-de.894cfc9611.js","ro":"assets/lang-ro.ed8adbfa83.js","he":"assets/lang-he.0e0e2cac81.js","kk":"assets/lang-kk.1d871315e5.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.ad1a5ef2e6.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
+<script>(function(){var U={"ru":"assets/lang-ru.a9f571693a.js","en":"assets/lang-en.acf5e2d53a.js","uk":"assets/lang-uk.90a4a3fde8.js","ka":"assets/lang-ka.b7a6b47ea9.js","fr":"assets/lang-fr.56883f8975.js","de":"assets/lang-de.050f376682.js","ro":"assets/lang-ro.ad88d40768.js","he":"assets/lang-he.b5b40cb8a0.js","kk":"assets/lang-kk.2b7bc537ab.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pion-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PION_LANG_URL=U;["assets/peerjs.f69f573cb6.js",U[l],"assets/app.a74a13ac0c.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
 </body>
 </html>
