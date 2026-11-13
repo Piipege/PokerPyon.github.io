@@ -138,7 +138,7 @@ for(const f of pageFiles(PAGES)){
   writePage(route, JSON.parse(src.match(/^<!--meta (.*?) -->/)[1]), src.replace(/^<!--meta .*? -->\n?/, ''));
 }
 const LANDING = JSON.parse(read(path.join(PAGES, 'landing.json'))), landingTpl = read(path.join(PAGES, '_landing.html'));
-const landingLangs = Object.keys(LANDING), docsLang = l => /^(ru|uk|kk|be)$/.test(l) ? 'ru' : 'en';
+const landingLangs = Object.keys(LANDING), docsLang = l => /^(ru|kk|be)$/.test(l) ? 'ru' : 'en';
 const landingAlt = Object.fromEntries([...landingLangs.map(l => [l, l]), ['x-default', '']]);
 for(const l of landingLangs){
   const d = LANDING[l], missing = Object.keys(LANDING.ru).filter(k => d[k] == null);
@@ -156,7 +156,7 @@ writePage('', { title: LANDING.en.title, description: LANDING.en.description, la
 <div class="wrap"><main class="doc"><h1>PyonPoker</h1><p class="doclinks">${landingLangs.map(c => `<a class="btn small" href="${c}/">${escA(LANDING[c].name)}</a>`).join('')}</p></main></div>`);
 // /privacy/, /terms/, /refund/: open the Russian or the English document by the visitor's language
 for(const doc of ['privacy', 'terms', 'refund']){
-  const pick = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PyonPoker</title><meta name="robots" content="noindex"><script>(function(){var l="";try{l=(JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}")||{}).lang||""}catch(e){}l=l||(navigator.language||"en").slice(0,2).toLowerCase();location.replace((/^(ru|uk|be|kk)$/.test(l)?"../ru/":"../en/")+"${doc}/")})()</script></head><body style="background:#170912;color:#fff;font-family:system-ui,sans-serif;padding:24px"><a style="color:#ff8ac0" href="../ru/${doc}/">Русский</a> · <a style="color:#ff8ac0" href="../en/${doc}/">English</a></body></html>\n`;
+  const pick = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PyonPoker</title><meta name="robots" content="noindex"><script>(function(){var l="";try{l=(JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}")||{}).lang||""}catch(e){}l=l||(navigator.language||"en").slice(0,2).toLowerCase();location.replace((/^(ru|be|kk)$/.test(l)?"../ru/":"../en/")+"${doc}/")})()</script></head><body style="background:#170912;color:#fff;font-family:system-ui,sans-serif;padding:24px"><a style="color:#ff8ac0" href="../ru/${doc}/">Русский</a> · <a style="color:#ff8ac0" href="../en/${doc}/">English</a></body></html>\n`;
   fs.mkdirSync(path.join(ROOT, doc), { recursive: true }); fs.writeFileSync(path.join(ROOT, doc, 'index.html'), pick);
 }
 const precache = ['./play/', './' + appUrl, './' + peerUrl];
