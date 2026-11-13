@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const URL = 'file://' + path.join(ROOT, 'pyonpoker.html');
+const URL = 'file://' + path.join(ROOT, 'play', 'index.html');
 const SHOTS = process.argv.includes('--shots') ? path.join(ROOT, 'tools', 'shots') : null;
 const A11Y = process.argv.includes('--a11y');
 if(SHOTS) fs.mkdirSync(SHOTS, { recursive: true });

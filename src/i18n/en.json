@@ -1240,5 +1240,7 @@
  "{0} играет мало рук, но агрессивно — осторожнее с его ставками.": "{0} plays few hands, but aggressively — be careful with their bets.",
  "играет мало рук": "plays few hands",
  "играет много рук": "plays many hands",
- "чаще входит в банк рейзом, чем коллом": "enters pots with a raise more often than with a call"
+ "чаще входит в банк рейзом, чем коллом": "enters pots with a raise more often than with a call",
+ "Пользовательское соглашение": "Terms of Use",
+ "Конфиденциальность": "Privacy"
 }

@@ -9,11 +9,11 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const PAGE = process.argv[2] || 'pyonpoker.html';
+const PAGE = process.argv[2] || 'play/';
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.woff2': 'font/woff2', '.json': 'application/json', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
 let bytes = 0;
 const srv = http.createServer((q, r) => {
-  const f = path.join(ROOT, decodeURIComponent(q.url.split('?')[0]).replace(/^\/+/, ''));
+  const u = decodeURIComponent(q.url.split('?')[0]).replace(/^\/+/, ''), f = path.join(ROOT, !u || u.endsWith('/') ? u + 'index.html' : u);
   fs.readFile(f, (e, d) => {
     if(e){ r.writeHead(404); r.end(); return; }
     const ext = path.extname(f), gz = /html|js|css|json|manifest/.test(TYPES[ext] || '');

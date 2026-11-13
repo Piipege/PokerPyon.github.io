@@ -3,7 +3,7 @@
   "short_name": "PyonPoker",
   "description": "Texas Hold'em with friends and bots, a course and a coach. No money involved.",
   "id": "./pion-online.html",
-  "start_url": "./pyonpoker.html",
+  "start_url": "./play/",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",

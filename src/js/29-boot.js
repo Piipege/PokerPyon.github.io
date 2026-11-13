@@ -24,5 +24,5 @@ if(typeof Peer==='undefined'){
 if(window.PYONPOKER_TEST) window.__pyonpoker={buyIn, GEN, LESSONS, DRILLS, TERMS, openLiveCoach, liveSpot, weigh, oppInfo, omPct, equityVs, nutsOf, threatsOf, handPct, HIST:()=>HIST, reviewOf, get myUid(){ return myUid; }, coachAsk, openCoach, openLearn, get S(){ return S; }, get MODE(){ return MODE; }};
 // offline: on GitHub Pages (or any http server) a service worker keeps a copy of the game
 if('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && !window.PYONPOKER_TEST && !window.PYONPOKER_PEER_OPTS){
-  addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+  addEventListener('load', ()=>{ navigator.serviceWorker.register((window.PYONPOKER_ROOT||'')+'sw.js', {scope:window.PYONPOKER_ROOT||'./'}).catch(()=>{}); });
 }

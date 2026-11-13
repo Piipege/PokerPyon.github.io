@@ -15,10 +15,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PEER_PORT = 9411, WEB_PORT = 8411;
 { const app = express(); const srv = app.listen(PEER_PORT, '127.0.0.1'); app.use('/', ExpressPeerServer(srv, { path: '/' })); }
 http.createServer((q, r) => {
-  const f = path.join(ROOT, decodeURIComponent(q.url.split('?')[0].split('#')[0]).replace(/^\/+/, '') || 'index.html');
-  fs.readFile(f, (e, d) => { if(e){ r.writeHead(404); r.end(); return; } r.writeHead(200, {'content-type': f.endsWith('.html') ? 'text/html; charset=utf-8' : f.endsWith('.js') ? 'text/javascript' : 'application/octet-stream'}); r.end(d); });
+  const u = decodeURIComponent(q.url.split('?')[0].split('#')[0]).replace(/^\/+/, ''), f = path.join(ROOT, !u || u.endsWith('/') ? u + 'index.html' : u);
+  fs.readFile(f, (e, d) => { if(e){ r.writeHead(404); r.end(); return; } r.writeHead(200, {'content-type': f.endsWith('.html') ? 'text/html; charset=utf-8' : f.endsWith('.css') ? 'text/css' : f.endsWith('.js') ? 'text/javascript' : 'application/octet-stream'}); r.end(d); });
 }).listen(WEB_PORT, '127.0.0.1');
-const URL = `http://127.0.0.1:${WEB_PORT}/pyonpoker.html`;
+const URL = `http://127.0.0.1:${WEB_PORT}/play/`;
 
 const init = () => {
   window.PYONPOKER_PEER_OPTS = { host: '127.0.0.1', port: 9411, path: '/', secure: false, config: { iceServers: [] } };
@@ -166,13 +166,36 @@ console.log('8. old address and data from before the rename');
     rq.onsuccess = () => { const tx = rq.result.transaction('hands', 'readwrite'); tx.objectStore('hands').put({ id: 'old-1', at: Date.now(), net: 50 }); tx.oncomplete = () => { rq.result.close(); res(); }; };
   }));
   await p.goto(`http://127.0.0.1:${WEB_PORT}/pion-online.html?x=1#keep`);
-  ok(await waitFor(p, () => /\/pyonpoker\.html$/.test(location.pathname) && location.hash === '#keep' && location.search === '?x=1', 10000), 'the old address opens pyonpoker.html and keeps the link part');
+  ok(await waitFor(p, () => /\/play\/$/.test(location.pathname) && location.hash === '#keep' && location.search === '?x=1', 10000), 'the old address opens /play/ and keeps the link part');
   ok(await waitFor(p, () => document.getElementById('nick').value === 'Старый' && document.documentElement.dataset.theme === 'light', 10000), 'settings and nick moved to the new keys');
   ok(await p.evaluate(() => !Object.keys(localStorage).some(k => k.startsWith('pion-'))), 'no old keys left');
   const moved = await p.evaluate(() => new Promise(res => setTimeout(() => { const rq = indexedDB.open('pyonpoker-profile', 1); rq.onsuccess = () => { const g = rq.result.transaction('hands').objectStore('hands').getAll(); g.onsuccess = () => res(g.result.map(r => r.id)); }; rq.onerror = () => res([]); }, 2500)));
   ok(moved.includes('old-1'), 'saved hands moved to the new profile database');
+  await p.goto(`http://127.0.0.1:${WEB_PORT}/pyonpoker.html#t-abcd`);
+  ok(await waitFor(p, () => /\/play\/$/.test(location.pathname) && location.hash === '#t-abcd', 10000), 'pyonpoker.html (the previous address) opens /play/ too');
+  console.log('9. landing and legal pages');
+  for(const [lang, want] of [['ru-RU', 'Покер'], ['en-US', 'Poker']]){
+    const lc = await browser.newContext({ locale: lang }), lp = await lc.newPage();
+    lp.on('pageerror', e => { console.log('  ! landing error: ' + e.message); failed++; });
+    await lp.goto(`http://127.0.0.1:${WEB_PORT}/`);
+    const h = await lp.evaluate(() => { const v = [...document.querySelectorAll('h1')].find(e => e.offsetParent); return v ? v.textContent : ''; });
+    ok(h.includes(want) && await lp.evaluate(() => !!document.querySelector('a.btn.primary[href="play/"]')), `landing page in ${lang}: «${h.slice(0, 40)}», button to /play/`);
+    await lp.goto(`http://127.0.0.1:${WEB_PORT}/terms/`);
+    ok(await waitFor(lp, (l) => location.pathname === (l === 'ru-RU' ? '/ru/terms/' : '/en/terms/'), 8000, lang), `/terms/ opens the ${lang === 'ru-RU' ? 'Russian' : 'English'} document`);
+    await lc.close();
+  }
+  for(const doc of ['ru/terms', 'ru/privacy', 'ru/refund', 'en/terms', 'en/privacy', 'en/refund']){
+    await p.goto(`http://127.0.0.1:${WEB_PORT}/${doc}/`);
+    const r = await p.evaluate(() => ({ h1: document.querySelector('h1')?.textContent || '', broken: [...document.querySelectorAll('a[href]')].map(a => a.getAttribute('href')).filter(h => !/^(https?:|#|\.\.\/|\.\/|play\/)/.test(h)), fonts: document.fonts.size }));
+    ok(r.h1.length > 3 && !r.broken.length, `${doc}: «${r.h1}»` + (r.broken.length ? ' bad links: ' + r.broken.join(' ') : ''));
+  }
   await p.goto(`http://127.0.0.1:${WEB_PORT}/`);
-  ok(await waitFor(p, () => /\/pyonpoker\.html$/.test(location.pathname), 10000), 'the site root opens the game');
+  const links = await p.evaluate(() => [...new Set([...document.querySelectorAll('a[href]')].map(a => a.href).filter(h => h.startsWith(location.origin) && !h.includes('#')))]);
+  let dead = [];
+  for(const l of links){ const res = await p.request.get(l); if(res.status() !== 200) dead.push(l + ' ' + res.status()); }
+  const imgs = await p.evaluate(() => [...document.images].map(i => i.src));
+  for(const l of imgs){ const res = await p.request.get(l); if(res.status() !== 200) dead.push(l + ' ' + res.status()); }
+  ok(!dead.length, `all ${links.length} links and ${imgs.length} images on the landing page work` + (dead.length ? ': ' + dead.join(', ') : ''));
   await c.close();
 }
 await browser.close();
