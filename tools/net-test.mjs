@@ -178,8 +178,10 @@ console.log('8. old address and data from before the rename');
     const lc = await browser.newContext({ locale: lang }), lp = await lc.newPage();
     lp.on('pageerror', e => { console.log('  ! landing error: ' + e.message); failed++; });
     await lp.goto(`http://127.0.0.1:${WEB_PORT}/`);
-    const h = await lp.evaluate(() => { const v = [...document.querySelectorAll('h1')].find(e => e.offsetParent); return v ? v.textContent : ''; });
-    ok(h.includes(want) && await lp.evaluate(() => !!document.querySelector('a.btn.primary[href="play/"]')), `landing page in ${lang}: «${h.slice(0, 40)}», button to /play/`);
+    const code = lang.slice(0, 2);
+    ok(await waitFor(lp, c => location.pathname === '/' + c + '/', 8000, code), `the site root sends ${lang} to /${code}/`);
+    const h = await lp.evaluate(() => document.querySelector('h1')?.textContent || '');
+    ok(h.includes(want) && await lp.evaluate(() => !!document.querySelector('a.play[href="../play/"]')), `landing page in ${lang}: «${h.slice(0, 40)}», button to /play/`);
     await lp.goto(`http://127.0.0.1:${WEB_PORT}/terms/`);
     ok(await waitFor(lp, (l) => location.pathname === (l === 'ru-RU' ? '/ru/terms/' : '/en/terms/'), 8000, lang), `/terms/ opens the ${lang === 'ru-RU' ? 'Russian' : 'English'} document`);
     await lc.close();
@@ -189,7 +191,13 @@ console.log('8. old address and data from before the rename');
     const r = await p.evaluate(() => ({ h1: document.querySelector('h1')?.textContent || '', broken: [...document.querySelectorAll('a[href]')].map(a => a.getAttribute('href')).filter(h => !/^(https?:|#|\.\.\/|\.\/|play\/)/.test(h)), fonts: document.fonts.size }));
     ok(r.h1.length > 3 && !r.broken.length, `${doc}: «${r.h1}»` + (r.broken.length ? ' bad links: ' + r.broken.join(' ') : ''));
   }
-  await p.goto(`http://127.0.0.1:${WEB_PORT}/`);
+  for(const l of ['ru', 'en', 'uk', 'ka', 'fr', 'de', 'ro', 'he', 'kk']){
+    await p.goto(`http://127.0.0.1:${WEB_PORT}/${l}/`);
+    const r = await p.evaluate(() => ({ lang: document.documentElement.lang, dir: document.documentElement.dir, h1: document.querySelector('h1')?.textContent || '', img: document.querySelector('.shot img')?.getAttribute('src'), opts: document.querySelectorAll('#langsel option').length }));
+    const img = await p.request.get(new globalThis.URL(r.img, `http://127.0.0.1:${WEB_PORT}/${l}/`).href);
+    ok(r.lang === l && r.h1.length > 5 && r.opts === 9 && img.status() === 200 && (l !== 'he' || r.dir === 'rtl'), `/${l}/: «${r.h1.slice(0, 36)}»${l === 'he' ? ', right-to-left' : ''}`);
+  }
+  await p.goto(`http://127.0.0.1:${WEB_PORT}/ru/`);
   const links = await p.evaluate(() => [...new Set([...document.querySelectorAll('a[href]')].map(a => a.href).filter(h => h.startsWith(location.origin) && !h.includes('#')))]);
   let dead = [];
   for(const l of links){ const res = await p.request.get(l); if(res.status() !== 200) dead.push(l + ' ' + res.status()); }
