@@ -918,3 +918,6 @@ body.inlobby #bTutor{display:none}
   #coachOv.live .coachlog{min-height:60px}
   #coachOv.live .coachauto{font-size:calc(12px*var(--fs))}
 }
+.legal{margin:10px 0 0;font-size:calc(12px*var(--fs));color:var(--muted)}
+.legal a{color:inherit}
+.legal a:hover{color:var(--pink)}

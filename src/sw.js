@@ -13,7 +13,7 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request, url = new URL(req.url);
   if(req.method !== 'GET' || url.origin !== location.origin) return; // PeerJS signalling and the rest go to the network
-  const isMain = url.pathname.endsWith('/pyonpoker.html'), isPage = req.mode === 'navigate' || isMain;
+  const isMain = /\/play\/(index\.html)?$/.test(url.pathname), isPage = req.mode === 'navigate' || isMain;
   const isAsset = url.pathname.includes('/assets/');
   e.respondWith((async () => {
     const cache = await caches.open(CACHE);
@@ -24,7 +24,7 @@ self.addEventListener('fetch', e => {
       if(res.ok) cache.put(req, res.clone());
       return res;
     }
-    const key = isMain ? './pyonpoker.html' : req; // other pages (the old addresses) are small redirects, cached as they are
+    const key = isMain ? './play/' : req; // other pages (the old addresses) are small redirects, cached as they are
     try{
       const net = fetch(req);
       const res = await (isPage ? Promise.race([net, new Promise((_, rej) => setTimeout(() => rej(new Error('slow')), 4000))]) : net);
