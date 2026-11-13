@@ -108,17 +108,17 @@ fs.copyFileSync(path.join(SRC, 'manifest.webmanifest'), path.join(ROOT, 'manifes
 const redirect = to => `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PyonPoker</title><link rel="canonical" href="${to}"><script>location.replace("${to}"+location.search+location.hash)</script><meta http-equiv="refresh" content="1;url=${to}"></head><body style="background:#170912;color:#fff;font-family:system-ui,sans-serif;padding:24px"><a href="${to}" style="color:#ff8ac0">PyonPoker</a></body></html>\n`;
 for(const [from, to] of [['pyonpoker.html', 'play/'], ['pion-online.html', 'play/'], ['pion-offline.html', 'pyonpoker-offline.html']]) fs.writeFileSync(path.join(ROOT, from), redirect(to));
 
-// ---------- pages: src/pages/<route>.html → <route>/index.html (index.html → the site root) ----------
+// ---------- pages: src/pages/<route>.html → <route>/index.html ----------
 // The first line of a page is <!--meta {"title","description","lang","alt":{"ru":route,"en":route}} -->;
 // "@/" in a page is the way to the site root. Fonts are the game's (same hashed files), styles from src/pages/site.css.
+// The landing page is one template (src/pages/_landing.html, {{key}} placeholders) and one dictionary
+// (src/pages/landing.json), built into /<lang>/ for every language; the site root sends visitors to theirs.
 const PAGES = path.join(SRC, 'pages'), SITE = 'https://pyonpoker.com/', pageCss = read(path.join(PAGES, 'site.css'));
 const escA = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-function pageFiles(dir){ return fs.readdirSync(dir, { withFileTypes: true }).flatMap(e => e.isDirectory() ? pageFiles(path.join(dir, e.name)) : e.name.endsWith('.html') ? [path.join(dir, e.name)] : []); }
+function pageFiles(dir){ return fs.readdirSync(dir, { withFileTypes: true }).flatMap(e => e.isDirectory() ? pageFiles(path.join(dir, e.name)) : e.name.endsWith('.html') && !e.name.startsWith('_') ? [path.join(dir, e.name)] : []); }
 const pagesOut = [];
-for(const f of pageFiles(PAGES)){
-  const rel = path.relative(PAGES, f).replace(/\\/g, '/').replace(/\.html$/, ''), route = rel === 'index' ? '' : rel;
-  const depth = route ? route.split('/').length : 0, P = '../'.repeat(depth);
-  const src = read(f), m = JSON.parse(src.match(/^<!--meta (.*?) -->/)[1]), body = src.replace(/^<!--meta .*? -->\n?/, '').replace(/@\//g, P);
+function writePage(route, m, rawBody){
+  const depth = route ? route.split('/').length : 0, P = '../'.repeat(depth), body = rawBody.replace(/@\//g, P);
   const url = SITE + (route ? route + '/' : '');
   const alt = Object.entries(m.alt || {}).map(([l, r]) => `<link rel="alternate" hreflang="${l}" href="${SITE}${r ? r + '/' : ''}">`).join('');
   const html = `<!doctype html>
@@ -133,6 +133,27 @@ ${body}</body></html>
   const out = route ? path.join(ROOT, route, 'index.html') : path.join(ROOT, 'index.html');
   fs.mkdirSync(path.dirname(out), { recursive: true }); fs.writeFileSync(out, html); pagesOut.push(route || '/');
 }
+for(const f of pageFiles(PAGES)){
+  const route = path.relative(PAGES, f).replace(/\\/g, '/').replace(/\.html$/, ''), src = read(f);
+  writePage(route, JSON.parse(src.match(/^<!--meta (.*?) -->/)[1]), src.replace(/^<!--meta .*? -->\n?/, ''));
+}
+const LANDING = JSON.parse(read(path.join(PAGES, 'landing.json'))), landingTpl = read(path.join(PAGES, '_landing.html'));
+const landingLangs = Object.keys(LANDING), docsLang = l => /^(ru|uk|kk|be)$/.test(l) ? 'ru' : 'en';
+const landingAlt = Object.fromEntries([...landingLangs.map(l => [l, l]), ['x-default', '']]);
+for(const l of landingLangs){
+  const d = LANDING[l], missing = Object.keys(LANDING.ru).filter(k => d[k] == null);
+  if(missing.length) throw new Error(`landing.json: «${l}» has no ${missing.join(', ')}`);
+  const body = landingTpl.replace(/\{\{(\w+)\}\}/g, (_, k) =>
+    k === 'lang' ? l : k === 'docs' ? docsLang(l) :
+    k === 'badges' ? d.badges.map(x => `<li>${escA(x)}</li>`).join('') :
+    k === 'langOptions' ? landingLangs.map(c => `<option value="${c}"${c === l ? ' selected' : ''}>${escA(LANDING[c].name)}</option>`).join('') :
+    d[k] != null ? escA(d[k]) : (() => { throw new Error(`_landing.html: unknown key {{${k}}}`); })());
+  writePage(l, { title: d.title, description: d.description, lang: l, alt: landingAlt }, body);
+}
+// the site root: the visitor's language (chosen before, the game's, or the browser's), English by default
+writePage('', { title: LANDING.en.title, description: LANDING.en.description, lang: 'en', alt: landingAlt },
+  `<script>(function(){var A=${JSON.stringify(landingLangs)},l="";try{l=localStorage.getItem("pyonpoker-site-lang")||(JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}")||{}).lang||""}catch(e){}if(A.indexOf(l)<0){l=(navigator.language||"en").slice(0,2).toLowerCase();l=l==="iw"?"he":l==="be"?"ru":l}if(A.indexOf(l)<0)l="en";location.replace(l+"/"+location.search+location.hash)})()</script>
+<div class="wrap"><main class="doc"><h1>PyonPoker</h1><p class="doclinks">${landingLangs.map(c => `<a class="btn small" href="${c}/">${escA(LANDING[c].name)}</a>`).join('')}</p></main></div>`);
 // /privacy/, /terms/, /refund/: open the Russian or the English document by the visitor's language
 for(const doc of ['privacy', 'terms', 'refund']){
   const pick = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PyonPoker</title><meta name="robots" content="noindex"><script>(function(){var l="";try{l=(JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}")||{}).lang||""}catch(e){}l=l||(navigator.language||"en").slice(0,2).toLowerCase();location.replace((/^(ru|uk|be|kk)$/.test(l)?"../ru/":"../en/")+"${doc}/")})()</script></head><body style="background:#170912;color:#fff;font-family:system-ui,sans-serif;padding:24px"><a style="color:#ff8ac0" href="../ru/${doc}/">Русский</a> · <a style="color:#ff8ac0" href="../en/${doc}/">English</a></body></html>\n`;

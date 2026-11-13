@@ -1,0 +1,67 @@
+<div class="wrap">
+<header class="top">
+  <a class="logo" href="@/{{lang}}/" aria-label="PyonPoker"><svg viewBox="-230 -210 460 540" aria-hidden="true"><path fill="#ff8cc0" d="M0 -190 C70 -120 210 -50 210 70 C210 160 150 210 85 210 C50 210 22 196 8 176 C14 236 38 282 74 306 L-74 306 C-38 282 -14 236 -8 176 C-22 196 -50 210 -85 210 C-150 210 -210 160 -210 70 C-210 -50 -70 -120 0 -190 Z"/></svg><span>Pyon<b>Poker</b></span></a>
+  <nav>
+    <select class="langsel" aria-label="{{langLabel}}" id="langsel">{{langOptions}}</select>
+    <a class="btn primary small play" href="@/play/">{{play}}</a>
+  </nav>
+</header>
+
+<main>
+<div class="hero">
+  <div>
+    <h1>{{h1a}}<span>{{h1b}}</span>{{h1c}}</h1>
+    <p class="lead">{{lead}}</p>
+    <div class="cta">
+      <a class="btn primary play" href="@/play/">▶ {{cta}}</a>
+      <a class="btn" href="#how">{{how}}</a>
+    </div>
+    <ul class="badges">{{badges}}</ul>
+  </div>
+  <div class="shot"><img src="@/brand/screen-{{lang}}.jpg" width="1280" height="800" alt="{{shotAlt}}"></div>
+</div>
+
+<section id="how">
+  <h2>{{insideH}}</h2>
+  <div class="grid">
+    <div class="card"><div class="ic">🤖</div><h3>{{f1t}}</h3><p>{{f1d}}</p></div>
+    <div class="card"><div class="ic">🔗</div><h3>{{f2t}}</h3><p>{{f2d}}</p></div>
+    <div class="card"><div class="ic">♠️</div><h3>{{f3t}}</h3><p>{{f3d}}</p></div>
+    <div class="card"><div class="ic">📚</div><h3>{{f4t}}</h3><p>{{f4d}}</p></div>
+    <div class="card"><div class="ic">🎓</div><h3>{{f5t}}</h3><p>{{f5d}}</p></div>
+    <div class="card"><div class="ic">📊</div><h3>{{f6t}}</h3><p>{{f6d}}</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="nomoney">
+    <div class="big" dir="ltr">0 ₽ · $0</div>
+    <div><h2>{{noMoneyH}}</h2><p>{{noMoneyP}}</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>{{startH}}</h2>
+  <ol class="steps">
+    <li><b>{{s1t}}</b>{{s1d}}</li>
+    <li><b>{{s2t}}</b>{{s2d}}</li>
+    <li><b>{{s3t}}</b>{{s3d}}</li>
+  </ol>
+</section>
+
+<div class="final">
+  <h2>{{finalH}}</h2>
+  <p>{{finalP}}</p>
+  <a class="btn primary play" href="@/play/">▶ {{play}}</a>
+</div>
+</main>
+
+<footer>
+  <div class="row">
+    <span>© 2026 PyonPoker</span><span class="age">18+</span>
+    <a href="@/{{docs}}/terms/">{{terms}}</a><a href="@/{{docs}}/privacy/">{{privacy}}</a><a href="@/{{docs}}/refund/">{{refund}}</a>
+  </div>
+  <p>{{footNote}}</p>
+</footer>
+</div>
+<script>(function(){var L="{{lang}}";try{localStorage.setItem("pyonpoker-site-lang",L);var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}")||{};if(!c.lang){c.lang=L;localStorage.setItem("pyonpoker-cfg",JSON.stringify(c))}}catch(e){}document.getElementById("langsel").onchange=function(){try{localStorage.setItem("pyonpoker-site-lang",this.value)}catch(e){}location.href="@/"+this.value+"/"}})()</script>
