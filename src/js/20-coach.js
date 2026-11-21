@@ -424,7 +424,7 @@ function renderCoach(){
     let html=m.parts.filter(Boolean).map(p=>`<p>${esc(tr(p))}</p>`).join('');
     if(m.steps && R) html+=`<ol class="steps">${R.ds.map((d,j)=>`<li><button type="button" class="step v-${d.verdict}" data-step="${j}"><i aria-hidden="true">${VERDICT_ICON[d.verdict]}</i><span><b>${esc(t(STREET_SHORT[d.street]))}: ${esc(t(ACT_NAMES[d.a]))}${d.a==='raise'||d.a==='bet'?' '+esc(String(d.to)):d.a==='call'?' '+esc(String(d.paid)):''}</b> ${esc(tr(d.why))}</span></button></li>`).join('')}</ol>`;
     if(m.lesson!=null) html+=`<button type="button" class="btn small primary" data-golesson="${m.lesson}">${t('Открыть урок')}</button>`;
-    return `<div class="cm coach${m.verdict?' v-'+m.verdict:''}"><span class="cav" aria-hidden="true">🎓</span><div>${html}</div></div>`;
+    return `<div class="cm coach${m.verdict?' v-'+m.verdict:''}"><span class="cav" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#ic-peony"/></svg></span><div>${html}</div></div>`;
   }).join('');
   $('coachChips').innerHTML = (live ? LIVE_CHIPS : COACH_CHIPS).map(([id,label])=>`<button type="button" class="qchip" data-intent="${id}">${esc(t(label))}</button>`).join('');
   const log=$('coachLog'); log.scrollTop=log.scrollHeight;

@@ -117,8 +117,9 @@ const PAGES = path.join(SRC, 'pages'), SITE = 'https://pyonpoker.com/', pageCss 
 const escA = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 function pageFiles(dir){ return fs.readdirSync(dir, { withFileTypes: true }).flatMap(e => e.isDirectory() ? pageFiles(path.join(dir, e.name)) : e.name.endsWith('.html') && !e.name.startsWith('_') ? [path.join(dir, e.name)] : []); }
 const pagesOut = [];
+const peonySvg = read(path.join(SRC, 'assets', 'peony.svg')).trim();
 function writePage(route, m, rawBody){
-  const depth = route ? route.split('/').length : 0, P = '../'.repeat(depth), body = rawBody.replace(/@\//g, P);
+  const depth = route ? route.split('/').length : 0, P = '../'.repeat(depth), body = rawBody.replace(/<!--peony-->/g, peonySvg).replace(/@\//g, P);
   const url = SITE + (route ? route + '/' : '');
   const alt = Object.entries(m.alt || {}).map(([l, r]) => `<link rel="alternate" hreflang="${l}" href="${SITE}${r ? r + '/' : ''}">`).join('');
   const html = `<!doctype html>

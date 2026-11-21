@@ -17,13 +17,27 @@ try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.doc
 <style>@inline(css/main.css)</style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="ic-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.8-3.6 3.8-5.6 7.5-5.6s6.7 2 7.5 5.6"/></symbol>
+<symbol id="ic-learn" viewBox="0 0 24 24"><path d="M3 5.5c3-.8 6-.6 9 1.2 3-1.8 6-2 9-1.2V19c-3-.8-6-.6-9 1.2-3-1.8-6-2-9-1.2z"/><path d="M12 6.7v13.5"/></symbol>
+<symbol id="ic-gear" viewBox="0 0 24 24"><path d="M10.3 3.5h3.4l.5 2.3 1.6.9 2.2-.8 1.7 2.9-1.7 1.6v1.8l1.7 1.6-1.7 2.9-2.2-.8-1.6.9-.5 2.3h-3.4l-.5-2.3-1.6-.9-2.2.8-1.7-2.9 1.7-1.6v-1.8L4.1 8.8l1.7-2.9 2.2.8 1.6-.9z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+<symbol id="ic-mute" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></symbol>
+<symbol id="ic-sound" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/></symbol>
+<symbol id="ic-keys" viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="11" rx="2"/><path d="M6 10h.01M9.5 10h.01M13 10h.01M16.5 10h.01M7 14h10"/></symbol>
+<symbol id="ic-chart" viewBox="0 0 24 24"><path d="M4 20V4M4 20h16"/><path d="M8 16v-4M12 16V8M16 16v-6"/></symbol>
+<symbol id="ic-link" viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></symbol>
+<symbol id="ic-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+<symbol id="ic-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="M3.2 12h17.6M12 3.2c2.6 2.6 3.6 5.6 3.6 8.8s-1 6.2-3.6 8.8c-2.6-2.6-3.6-5.6-3.6-8.8s1-6.2 3.6-8.8z"/></symbol>
+<symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></symbol>
+<symbol id="ic-peony" viewBox="0 0 24 24"><path d="M3.6 13.2C2.9 10.6 5 8.6 7.2 9.4 7.4 6.6 10 5.2 12 6.6c2-1.4 4.6 0 4.8 2.8 2.2-.8 4.3 1.2 3.6 3.8"/><path d="M3.6 13.2C4.6 17.4 8 19.8 12 19.8s7.4-2.4 8.4-6.6"/><path d="M7 12.6c1.3 1.9 3 2.9 5 2.9s3.7-1 5-2.9"/><path d="M9.6 10.4c.7-.9 1.5-1.3 2.4-1.3s1.7.4 2.4 1.3"/></symbol>
+</defs></svg>
 <div class="bgfx" id="bgfx" aria-hidden="true" hidden><i></i><i></i><i></i></div>
 <canvas id="fxCanvas" class="fxcanvas" aria-hidden="true"></canvas>
 <div class="wrap">
   <header>
     <h1>PyonPoker <span>·</span> <span class="sub">Техасский холдем</span></h1>
     <div class="meta">
-      <span id="tableChip" class="chip" hidden>Стол <b id="tableCode"></b><span id="hostTag" class="tag" hidden>ведущий</span><button class="btn small ghost" id="bCopy">Позвать друзей</button></span>
+      <span id="tableChip" class="chip" hidden>Стол <b id="tableCode"></b><span id="hostTag" class="tag" hidden>ведущий</span><button class="btn small ghost" id="bCopy"><svg class="ic pico" aria-hidden="true"><use href="#ic-link"/></svg><span>Позвать друзей</span></button></span>
       <span class="gi">Блайнды <b id="blinds">10/20</b><span id="blindUp" class="up"></span></span>
       <span class="gi mhide">Раздача <b id="handNo">—</b></span>
       <span class="gi mhide">Улица <b id="street">—</b></span>
@@ -31,28 +45,28 @@ try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.doc
       <span id="netChip" class="netchip" hidden></span>
       <span id="watchChip" class="watchchip" hidden></span>
       <nav class="hnav" aria-label="Меню">
-        <button class="btn small nav" id="bProfile" type="button"><i aria-hidden="true">👤</i><span>Профиль</span></button>
-        <button class="btn small nav" id="bLearn" type="button"><i aria-hidden="true">🎓</i><span>Обучение</span></button>
-        <button class="btn small nav" id="bSettings" type="button"><i aria-hidden="true">⚙️</i><span>Настройки</span></button>
+        <button class="btn small nav" id="bProfile" type="button"><svg class="ic" aria-hidden="true"><use href="#ic-user"/></svg><span>Профиль</span></button>
+        <button class="btn small nav" id="bLearn" type="button"><svg class="ic" aria-hidden="true"><use href="#ic-learn"/></svg><span>Обучение</span></button>
+        <button class="btn small nav" id="bSettings" type="button"><svg class="ic" aria-hidden="true"><use href="#ic-gear"/></svg><span>Настройки</span></button>
       </nav>
       <span class="hmini">
         <select class="lang" id="langSel" aria-label="Язык"></select>
-        <button class="btn small ghost icon" id="bSound" type="button" aria-pressed="false" title="Звук: выкл" aria-label="Звук: выкл">🔇</button>
+        <button class="btn small ghost icon" id="bSound" type="button" aria-pressed="false" title="Звук: выкл" aria-label="Звук: выкл"><svg class="ic" aria-hidden="true"><use href="#ic-mute"/></svg></button>
         <input type="range" id="hdrVol" class="hdrvol" min="0" max="100" step="5" aria-label="Громкость" title="Громкость">
-        <button class="btn small ghost icon" id="bKeys" type="button" title="Клавиши" aria-label="Клавиши">⌨️</button>
+        <button class="btn small ghost icon" id="bKeys" type="button" title="Клавиши" aria-label="Клавиши"><svg class="ic" aria-hidden="true"><use href="#ic-keys"/></svg></button>
       </span>
-      <button class="btn small ghost tutor" id="bTutor" type="button" hidden title="Тренер за столом"><i class="pico" aria-hidden="true">🎓</i><span>Тренер</span></button>
-      <button class="btn small ghost" id="bPanel" type="button"><i class="pico" aria-hidden="true">📊</i><span>Чат и статистика</span> <i id="chatDot" class="cdot" hidden></i></button>
+      <button class="btn small ghost tutor" id="bTutor" type="button" hidden title="Тренер за столом"><svg class="ic pico" aria-hidden="true"><use href="#ic-peony"/></svg><span>Тренер</span></button>
+      <button class="btn small ghost" id="bPanel" type="button"><svg class="ic pico" aria-hidden="true"><use href="#ic-chart"/></svg><span>Чат и статистика</span> <i id="chatDot" class="cdot" hidden></i></button>
       <button class="btn small ghost icon" id="bMenu" type="button" aria-label="Меню" aria-expanded="false">☰</button>
       <button class="btn small ghost" id="bExit" hidden>Выйти</button>
     </div>
   </header>
   <div id="menuPop" class="menupop" hidden>
-    <button class="mitem" type="button" data-proxy="bProfile"><i aria-hidden="true">👤</i>Профиль и статистика</button>
-    <button class="mitem" type="button" data-proxy="bLearn"><i aria-hidden="true">🎓</i>Обучение и тренер</button>
-    <button class="mitem" type="button" data-proxy="bSettings"><i aria-hidden="true">⚙️</i>Настройки</button>
-    <button class="mitem" type="button" data-proxy="bSound" id="mSound"><i aria-hidden="true">🔇</i><span>Звук: выкл</span></button>
-    <button class="mitem" type="button" data-proxy="bCopy" id="mCopy"><i aria-hidden="true">🔗</i>Позвать друзей</button>
+    <button class="mitem" type="button" data-proxy="bProfile"><svg class="ic" aria-hidden="true"><use href="#ic-user"/></svg>Профиль и статистика</button>
+    <button class="mitem" type="button" data-proxy="bLearn"><svg class="ic" aria-hidden="true"><use href="#ic-learn"/></svg>Обучение и тренер</button>
+    <button class="mitem" type="button" data-proxy="bSettings"><svg class="ic" aria-hidden="true"><use href="#ic-gear"/></svg>Настройки</button>
+    <button class="mitem" type="button" data-proxy="bSound" id="mSound"><i aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#ic-mute"/></svg></i><span>Звук: выкл</span></button>
+    <button class="mitem" type="button" data-proxy="bCopy" id="mCopy"><svg class="ic" aria-hidden="true"><use href="#ic-link"/></svg>Позвать друзей</button>
     <button class="mitem danger" type="button" data-proxy="bExit" id="mExit"><i aria-hidden="true">✕</i>Выйти из-за стола</button>
   </div>
   <div id="netBar" class="netbar" role="status" aria-live="polite" hidden>
@@ -75,6 +89,7 @@ try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.doc
       <div id="fx"></div>
 
       <div id="lobby" class="overlay">
+        <div class="peony-deco" aria-hidden="true">@include(assets/peony.svg)</div>
         <div class="box lobbybox" data-view="home">
           <h3 id="lobbyTitle">Садитесь за стол</h3>
           <div class="who">
@@ -83,14 +98,14 @@ try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.doc
               <input id="nick" maxlength="16" autocomplete="nickname" placeholder="Например, Лиза">
             </label>
           </div>
-          <button class="pfline" id="bProfile2" type="button"><i aria-hidden="true">📊</i><span id="pfLine">Мой профиль и статистика</span><b aria-hidden="true">›</b></button>
+          <button class="pfline" id="bProfile2" type="button"><svg class="ic" aria-hidden="true"><use href="#ic-chart"/></svg><span id="pfLine">Мой профиль и статистика</span><b aria-hidden="true">›</b></button>
           <button class="btn primary" id="bResume" hidden></button>
           <button class="btn primary" id="bQuick" hidden></button>
           <div class="ltiles">
-            <button class="ltile primary" type="button" data-ltab="solo"><i aria-hidden="true">🤖</i><b>С ботами</b><span>Быстрая игра, работает и без интернета</span></button>
-            <button class="ltile" type="button" data-ltab="create"><i aria-hidden="true">🃏</i><b>Создать стол</b><span>Позовите друзей по ссылке</span></button>
-            <button class="ltile" type="button" data-ltab="open"><i aria-hidden="true">🤝</i><b>Войти к друзьям</b><span>Открытые столы и вход по коду</span></button>
-            <button class="ltile" type="button" data-ltab="learn"><i aria-hidden="true">🎓</i><b>Обучение</b><span>Уроки, тренажёры и разбор с тренером</span></button>
+            <button class="ltile primary" type="button" data-ltab="solo"><i class="suit" aria-hidden="true">♠</i><b>С ботами</b><span>Быстрая игра, работает и без интернета</span></button>
+            <button class="ltile" type="button" data-ltab="create"><i class="suit red" aria-hidden="true">♥</i><b>Создать стол</b><span>Позовите друзей по ссылке</span></button>
+            <button class="ltile" type="button" data-ltab="open"><i class="suit red" aria-hidden="true">♦</i><b>Войти к друзьям</b><span>Открытые столы и вход по коду</span></button>
+            <button class="ltile" type="button" data-ltab="learn"><i class="suit" aria-hidden="true">♣</i><b>Обучение</b><span>Уроки, тренажёры и разбор с тренером</span></button>
           </div>
           <button class="btn small ghost lback" type="button" id="lobbyBack">← Назад</button>
           <div data-lpane="open" class="part" hidden>
@@ -102,7 +117,7 @@ try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.doc
                 <input id="joinCode" class="code-in" maxlength="4" placeholder="K7QM" autocomplete="off">
               </label>
               <button class="btn" id="bJoin" style="align-self:end">Войти по коду</button>
-              <button class="btn ghost" id="bWatch" type="button" style="align-self:end">👁 Смотреть</button>
+              <button class="btn ghost" id="bWatch" type="button" style="align-self:end"><svg class="ic" aria-hidden="true"><use href="#ic-eye"/></svg>Смотреть</button>
             </div>
           </div>
           <div data-lpane="create" class="part" hidden>
@@ -124,8 +139,8 @@ try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.doc
               </label>
             </div>
             <fieldset class="seg" id="pubSeg"><legend>Кто может зайти</legend>
-              <label class="segopt"><input type="radio" name="pubMode" value="1"><b>🌐 Открытый</b><span>Стол виден всем в «Войти к друзьям»</span></label>
-              <label class="segopt"><input type="radio" name="pubMode" value="0"><b>🔒 Закрытый</b><span>Только по ссылке или коду</span></label>
+              <label class="segopt"><input type="radio" name="pubMode" value="1"><b><svg class="ic" aria-hidden="true"><use href="#ic-globe"/></svg>Открытый</b><span>Стол виден всем в «Войти к друзьям»</span></label>
+              <label class="segopt"><input type="radio" name="pubMode" value="0"><b><svg class="ic" aria-hidden="true"><use href="#ic-lock"/></svg>Закрытый</b><span>Только по ссылке или коду</span></label>
               <input type="checkbox" id="publicOn" checked hidden>
             </fieldset>
             <label class="check strong" for="hOn"><input type="checkbox" id="hOn"> Режим помощи</label>
@@ -244,7 +259,7 @@ try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.doc
       </div>
       <div class="sumbox" id="sumBox" hidden></div>
       <div class="odds" id="odds" hidden></div>
-      <div class="row watchrow" id="watchRow" hidden><span>👁 Вы смотрите игру. Карты игроков видны только на вскрытии.</span><button class="btn primary" id="bSit" type="button">Сесть за стол</button></div>
+      <div class="row watchrow" id="watchRow" hidden><span><svg class="ic" aria-hidden="true"><use href="#ic-eye"/></svg>Вы смотрите игру. Карты игроков видны только на вскрытии.</span><button class="btn primary" id="bSit" type="button">Сесть за стол</button></div>
       <div class="hint" id="hint">Выберите, как играть: с ботами или с друзьями.</div>
     </div>
   </div>

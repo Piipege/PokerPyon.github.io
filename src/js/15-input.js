@@ -82,8 +82,8 @@ $('preCA').onclick=()=>setPre('callany');
 $('bShow').onclick=()=>{ if(MODE==='guest') sendHost({t:'show'}); else showCards(mySeat()); };
 function updSound(){
   const label=t(snd.on ? 'Звук: вкл' : 'Звук: выкл'), b=$('bSound');
-  b.textContent = snd.on ? '🔊' : '🔇'; b.title=label; b.setAttribute('aria-label', label); b.setAttribute('aria-pressed', snd.on);
-  const m=$('mSound'); if(m){ m.querySelector('i').textContent=b.textContent; m.querySelector('span').textContent=label; }
+  b.innerHTML = `<svg class="ic" aria-hidden="true"><use href="#ic-${snd.on ? 'sound' : 'mute'}"/></svg>`; b.title=label; b.setAttribute('aria-label', label); b.setAttribute('aria-pressed', snd.on);
+  const m=$('mSound'); if(m){ m.querySelector('i').innerHTML=b.innerHTML; m.querySelector('span').textContent=label; }
 }
 $('bSound').onclick=()=>{ snd.on=!snd.on; store.set('pyonpoker-sound', snd.on?'1':'0'); updSound(); if(snd.on) SFX.turn(); };
 updSound();
