@@ -984,9 +984,7 @@
  "Проверить вибрацию": "Test vibration",
  "Этот браузер не поддерживает вибрацию (например, Safari на iPhone).": "This browser doesn't support vibration (for example, Safari on iPhone).",
  "Кто может зайти": "Who can join",
- "🌐 Открытый": "🌐 Open",
  "Стол виден всем в «Войти к друзьям»": "Everyone sees the table in «Join friends»",
- "🔒 Закрытый": "🔒 Private",
  "Только по ссылке или коду": "Only with the link or code",
  "Докупка всегда равна стартовому стеку в больших блайндах: когда блайнды растут, растёт и докупка.": "The rebuy always equals the starting stack in big blinds: when the blinds go up, so does the rebuy.",
  "Смотрят: {0}": "Watching: {0}",
@@ -995,8 +993,6 @@
  "Сыграйте хотя бы одну раздачу.": "Play at least one hand.",
  "Мой вечер": "My evening",
  "Чек бесплатный. Всё равно пас?": "Checking is free. Fold anyway?",
- "👁 Смотреть": "👁 Watch",
- "👁 Вы смотрите игру. Карты игроков видны только на вскрытии.": "👁 You are watching. Players' cards are shown only at showdown.",
  "Сесть за стол": "Take a seat",
  "Поделиться": "Share",
  "Спрашивать, если вы сбрасываете, когда можно бесплатно сделать чек": "Ask before folding when you could check for free",
@@ -1242,5 +1238,9 @@
  "играет много рук": "plays many hands",
  "чаще входит в банк рейзом, чем коллом": "enters pots with a raise more often than with a call",
  "Пользовательское соглашение": "Terms of Use",
- "Конфиденциальность": "Privacy"
+ "Конфиденциальность": "Privacy",
+ "Смотреть": "Watch",
+ "Открытый": "Open",
+ "Закрытый": "Private",
+ "Вы смотрите игру. Карты игроков видны только на вскрытии.": "You are watching. Players' cards are shown only at showdown."
 }

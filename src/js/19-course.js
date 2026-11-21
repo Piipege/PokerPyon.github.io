@@ -285,13 +285,13 @@ function renderLearn(){
     return `<div class="lvl"><span>${esc(t(lv.n))}</span><i>${n}/${lv.ids.length}</i></div>`+lv.ids.map(id=>{ const k=id-1, l=LESSONS[k]; return `<button type="button" class="lsn" data-l="${k}" aria-current="${['theory','practice','result'].includes(course.view) && k===course.i}"><span class="ln">${lessonDone(prog,l)?'✓':ORDER.indexOf(k)+1}</span><span>${esc(t('c'+l.id+'.title'))}</span></button>`; }).join('');
   }).join('')+`<div class="lvl"><span>${t('Практика')}</span></div>
     <button type="button" class="lsn" data-view="drills" aria-current="${cur('drills')}"><span class="ln">∞</span><span>${t('Тренажёры')}</span></button>
-    <button type="button" class="lsn" data-view="coach"><span class="ln">🎓</span><span>${t('Разбор с тренером')}</span></button>`;
+    <button type="button" class="lsn" data-view="coach"><span class="ln"><svg class="ic" aria-hidden="true"><use href="#ic-peony"/></svg></span><span>${t('Разбор с тренером')}</span></button>`;
   const box=$('lesson');
   if(course.view==='drills'){
     const bests=drillBest();
     box.innerHTML=`<div class="eyebrow">${t('Практика')}</div><h4>${t('Тренажёры')}</h4><p class="hint">${t('Бесконечные вопросы на одну тему. Отвечайте подряд без ошибок — серия растёт, лучший результат сохраняется.')}</p>
       <div class="drills">${DRILLS.map(d=>`<button type="button" class="drill" data-drill="${d.id}"><b>${esc(t(d.n))}</b><span>${esc(t(d.d))}</span>${bests[d.id]?`<i>${t('Рекорд: {0}', bests[d.id])}</i>`:''}</button>`).join('')}</div>
-      <div class="coachcta"><span class="cav" aria-hidden="true">🎓</span><div><b>${t('Разбор с тренером')}</b><p class="hint">${t('Тренер разберёт ваши сыгранные раздачи: где были ошибки, какие были шансы и что почитать. Ему можно задавать вопросы.')}</p></div><button type="button" class="btn primary" data-act="coach">${t('Открыть разбор')}</button></div>`;
+      <div class="coachcta"><span class="cav" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#ic-peony"/></svg></span><div><b>${t('Разбор с тренером')}</b><p class="hint">${t('Тренер разберёт ваши сыгранные раздачи: где были ошибки, какие были шансы и что почитать. Ему можно задавать вопросы.')}</p></div><button type="button" class="btn primary" data-act="coach">${t('Открыть разбор')}</button></div>`;
     return;
   }
   if(course.view==='drill'){

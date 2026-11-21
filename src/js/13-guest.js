@@ -204,5 +204,5 @@ function applyWatch(){
   $('watchRow').hidden=!watching;
   if(watching){ ['actRow','raiseRow','preRow','odds'].forEach(id=>$(id).hidden=true); $('hint').textContent=''; $('bSit').disabled = seats().filter(s=>!s.left).length>=MAX_SEATS || (S.ko && S.started); }
   const w=S && S.watchers ? Object.values(S.watchers) : [];
-  $('watchChip').hidden=!w.length; $('watchChip').textContent='👁 '+w.length; $('watchChip').title=t('Смотрят: {0}', w.join(', '));
+  $('watchChip').hidden=!w.length; $('watchChip').innerHTML='<svg class="ic" aria-hidden="true"><use href="#ic-eye"/></svg> '+w.length; $('watchChip').title=t('Смотрят: {0}', w.join(', '));
 }

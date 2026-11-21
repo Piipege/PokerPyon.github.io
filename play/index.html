@@ -14,7 +14,7 @@
 <script>try{var ks=[],i,k,n;for(i=0;i<localStorage.length;i++){k=localStorage.key(i);if(k&&k.slice(0,5)==="pion-")ks.push(k)}for(i=0;i<ks.length;i++){k=ks[i];n="pyonpoker-"+k.slice(5);if(localStorage.getItem(n)==null)localStorage.setItem(n,localStorage.getItem(k));localStorage.removeItem(k)}}catch(e){}
 try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <title>Покерный стол «PyonPoker»</title>
-<link rel="preload" href="../assets/app.a1cdf04fe8.js" as="script">
+<link rel="preload" href="../assets/app.258ffb9826.js" as="script">
 <link rel="preload" href="../assets/peerjs.f69f573cb6.js" as="script">
 <style>
 /* extra scripts: Noto Sans Georgian, Noto Sans Hebrew (SIL OFL) */
@@ -22,25 +22,17 @@ try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.doc
 @font-face{font-family:'Onest';font-style:normal;font-weight:500;font-display:swap;src:url(../assets/fonts/Onest-500-latin-ext.243d6b5b30.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 @font-face{font-family:'Onest';font-style:normal;font-weight:600;font-display:swap;src:url(../assets/fonts/Onest-600-latin-ext.6e99f31334.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 @font-face{font-family:'Onest';font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/Onest-700-latin-ext.ec627c6da4.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
-@font-face{font-family:'Unbounded';font-style:normal;font-weight:500;font-display:swap;src:url(../assets/fonts/Unbounded-500-latin-ext.3b916fe184.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
-@font-face{font-family:'Unbounded';font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/Unbounded-700-latin-ext.886ac002ab.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 @font-face{font-family:'Onest';font-style:normal;font-weight:400;font-display:swap;src:url(../assets/fonts/Onest-400-cyrillic-ext.8b11cd62df.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}
 @font-face{font-family:'Onest';font-style:normal;font-weight:500;font-display:swap;src:url(../assets/fonts/Onest-500-cyrillic-ext.af117cbc81.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}
 @font-face{font-family:'Onest';font-style:normal;font-weight:600;font-display:swap;src:url(../assets/fonts/Onest-600-cyrillic-ext.ebf52a6d26.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}
 @font-face{font-family:'Onest';font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/Onest-700-cyrillic-ext.0f80ad4e93.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}
-@font-face{font-family:'Unbounded';font-style:normal;font-weight:500;font-display:swap;src:url(../assets/fonts/Unbounded-500-cyrillic-ext.ccf7803898.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}
-@font-face{font-family:'Unbounded';font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/Unbounded-700-cyrillic-ext.296af6f0ab.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}
 @font-face{font-family:'Noto Sans Georgian';font-style:normal;font-weight:400;font-display:swap;src:url(../assets/fonts/NotoSansGeorgian-400-georgian.d33ac947d1.woff2) format('woff2');unicode-range:U+0589,U+10A0-10FF,U+1C90-1CBA,U+1CBD-1CBF,U+205A,U+2D00-2D2F,U+2E31}
 @font-face{font-family:'Noto Sans Hebrew';font-style:normal;font-weight:400;font-display:swap;src:url(../assets/fonts/NotoSansHebrew-400-hebrew.330b5c315e.woff2) format('woff2');unicode-range:U+0307-0308,U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F}
 @font-face{font-family:'Noto Sans Georgian';font-style:normal;font-weight:600;font-display:swap;src:url(../assets/fonts/NotoSansGeorgian-600-georgian.1e62b13870.woff2) format('woff2');unicode-range:U+0589,U+10A0-10FF,U+1C90-1CBA,U+1CBD-1CBF,U+205A,U+2D00-2D2F,U+2E31}
 @font-face{font-family:'Noto Sans Hebrew';font-style:normal;font-weight:600;font-display:swap;src:url(../assets/fonts/NotoSansHebrew-600-hebrew.6d5ef39806.woff2) format('woff2');unicode-range:U+0307-0308,U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F}
 @font-face{font-family:'Noto Sans Georgian';font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/NotoSansGeorgian-700-georgian.b21dd9acfd.woff2) format('woff2');unicode-range:U+0589,U+10A0-10FF,U+1C90-1CBA,U+1CBD-1CBF,U+205A,U+2D00-2D2F,U+2E31}
 @font-face{font-family:'Noto Sans Hebrew';font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/NotoSansHebrew-700-hebrew.09d244bd91.woff2) format('woff2');unicode-range:U+0307-0308,U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F}
-/* fonts embedded: Unbounded, Onest, JetBrains Mono (SIL Open Font License) */
-@font-face{font-family:'Unbounded';font-style:normal;font-weight:500;font-display:swap;src:url(../assets/fonts/Unbounded-500-cyrillic.22c6ac3bf0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
-@font-face{font-family:'Unbounded';font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/Unbounded-700-cyrillic.fdc2a84527.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
-@font-face{font-family:'Unbounded';font-style:normal;font-weight:500;font-display:swap;src:url(../assets/fonts/Unbounded-500-latin.be65bb9b1a.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-@font-face{font-family:'Unbounded';font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/Unbounded-700-latin.477fa23002.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+/* fonts embedded: Source Serif 4, Onest, JetBrains Mono (SIL Open Font License) */
 @font-face{font-family:'Onest';font-style:normal;font-weight:400;font-display:swap;src:url(../assets/fonts/Onest-400-cyrillic.51adb4c8c5.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
 @font-face{font-family:'Onest';font-style:normal;font-weight:500;font-display:swap;src:url(../assets/fonts/Onest-500-cyrillic.a345dcbda6.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
 @font-face{font-family:'Onest';font-style:normal;font-weight:600;font-display:swap;src:url(../assets/fonts/Onest-600-cyrillic.73984d20ad.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
@@ -53,37 +45,42 @@ try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.doc
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/JetBrainsMono-700-cyrillic.6251ef44d6.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:500;font-display:swap;src:url(../assets/fonts/JetBrainsMono-500-latin.cb182feeed.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/JetBrainsMono-700-latin.d0d4e81880.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:600;font-display:swap;src:url(../assets/fonts/SourceSerif4-600-latin.f2b7e1cf1d.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:600;font-display:swap;src:url(../assets/fonts/SourceSerif4-600-latin-ext.ba70bfd7a5.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:600;font-display:swap;src:url(../assets/fonts/SourceSerif4-600-cyrillic.881a5cd61b.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:600;font-display:swap;src:url(../assets/fonts/SourceSerif4-600-cyrillic-ext.424aad3c02.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}
 </style>
 <style>
 /* Layout: one-screen card room. Plum felt oval with up to six seats on the rim, action bar below, history aside on desktop and under the table on phones. One deliberate dark look in peony pink and wine. */
 :root{
   --fs:1;
-  --room:#170912;
-  --room-2:#24101d;
-  --felt:#4f1233;
-  --felt-hi:#7d2552;
-  --rim:#2a0c1e;
-  --rim-hi:#5a2445;
+  --room:#1c0e24;
+  --room-2:#281430;
+  --felt:#4c1439;
+  --felt-hi:#792b60;
+  --rim:#270c22;
+  --rim-hi:#58264f;
   --pink:#ff8cc0;
   --pink-soft:#f6b6d4;
   --wine:#9c2a5c;
   --ivory:#fff3f8;
-  --muted:#c49ab4;
+  --muted:#c3a2c2;
   --suit-red:#b0164a;
   --ink:#2a0d1f;
-  --panel:#210d1b;
-  --panel-2:#2e1327;
-  --line:#43203a;
+  --panel:#23112a;
+  --panel-2:#2f1736;
+  --line:#48294f;
   --ok:#8fe0b5;
-  --text-2:#e3c9d8;
-  --glow:#3a1430;
-  --glow2:#2a1240;
-  --hover:#3d1a33;
+  --text-2:#e6cde1;
+  --glow:#43183f;
+  --glow2:#22143a;
+  --hover:#3b1f43;
   --card:#fff3f8;
   --card-ink:#2a0d1f;
   --on-pink:#2a0d1f;
   --scrim:#12060ecc;
-  --f-display:"Unbounded","Noto Sans Georgian","Noto Sans Hebrew","Arial Black",system-ui,sans-serif;
+  --f-display:"Source Serif 4","Noto Sans Georgian","Noto Sans Hebrew",Georgia,serif;
   --f-body:"Onest","Noto Sans Georgian","Noto Sans Hebrew",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-num:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
   --ease:cubic-bezier(.22,.8,.24,1);
@@ -96,7 +93,7 @@ try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.doc
 html,body{background:var(--room);color:var(--ivory);margin:0}
 html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);-webkit-text-size-adjust:100%}
 body{font-family:var(--f-body);font-size:calc(15px*var(--fs));line-height:1.45;
-  background:radial-gradient(1200px 700px at 30% -10%,var(--glow) 0,transparent 60%),radial-gradient(1000px 800px at 105% 105%,var(--glow2) 0,transparent 62%),var(--room);background-attachment:fixed;
+  background:linear-gradient(168deg,var(--glow) 0%,var(--room) 52%,var(--glow2) 100%);background-attachment:fixed;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 28px;min-height:100%}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -105,13 +102,13 @@ button,input,select{font:inherit;color:inherit}
 
 .wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}
 header{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;justify-content:space-between}
-h1{font-family:var(--f-display);font-weight:700;font-size:clamp(20px,3vw,28px);margin:0;letter-spacing:.01em;text-wrap:balance}
+h1{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,3.2vw,31px);margin:0;letter-spacing:-.005em;text-wrap:balance}
 h1 span{color:var(--pink)}
 .meta{display:flex;gap:8px 16px;flex-wrap:wrap;align-items:center;font-size:calc(13px*var(--fs));color:var(--muted)}
 .meta b{font-family:var(--f-num);color:var(--ivory);font-weight:500}
-.chip{display:inline-flex;align-items:center;gap:8px;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 12px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:4px 6px 4px 12px}
 .chip b{font-family:var(--f-num);letter-spacing:.15em;color:var(--pink)}
-.tag{font-size:calc(11px*var(--fs));letter-spacing:.08em;text-transform:uppercase;background:var(--wine);color:var(--card);border-radius:999px;padding:2px 8px}
+.tag{font-size:calc(11px*var(--fs));letter-spacing:.08em;text-transform:uppercase;background:var(--wine);color:var(--card);border-radius:4px;padding:2px 8px}
 
 .stage{min-width:0;display:flex;flex-direction:column;gap:14px;position:relative}
 .table{position:relative;width:100%;aspect-ratio:16/10;max-width:100%}
@@ -122,7 +119,7 @@ h1 span{color:var(--pink)}
 .felt::after{content:"";position:absolute;inset:7%;border-radius:999px;border:1px solid #ff8cc033}
 .felt::before{content:var(--brand,"PYONPOKER");direction:ltr;position:absolute;left:50%;top:70%;transform:translate(-50%,-50%);font:700 clamp(12px,2vw,20px)/1 var(--f-display);letter-spacing:.28em;color:#ffffff10;white-space:nowrap}
 .tight .felt::before{top:64%;font-size:12px;letter-spacing:.2em}
-.table.myturn .felt{box-shadow:0 0 0 14px var(--rim),0 0 0 15px var(--pink),0 0 0 17px #0007,0 0 80px #ff8cc044,inset 0 0 70px #0008}
+.table.myturn .felt{box-shadow:0 0 0 14px var(--rim),0 0 0 15px var(--pink),0 0 0 17px #0007,inset 0 0 70px #0008}
 .center{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:2}
 .board{display:flex;gap:6px;perspective:700px}
 .slot{width:var(--cw);height:calc(var(--cw)*1.4);border-radius:7px;border:1px dashed #ff8cc040;flex:none}
@@ -145,10 +142,10 @@ h1 span{color:var(--pink)}
 .seat .act:empty{display:none}
 @keyframes pop{from{transform:translateX(-50%) scale(.6);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
 .seat.turn .plate{border-color:var(--pink);animation:glow 2.2s ease-in-out infinite}
-@keyframes glow{0%,100%{box-shadow:0 0 0 2px #ff8cc055,0 0 18px #ff8cc033}50%{box-shadow:0 0 0 3px #ff8cc088,0 0 34px #ff8cc066}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 2px #ff8cc055}50%{box-shadow:0 0 0 3px #ff8cc088}}
 .seat.folded{opacity:.42}
 .seat.out{opacity:.22}
-.seat.winner .plate{border-color:var(--ivory);background:var(--panel-2);box-shadow:0 0 0 2px var(--ivory),0 0 40px #ff8cc077}
+.seat.winner .plate{border-color:var(--ivory);background:var(--panel-2);box-shadow:0 0 0 2px var(--ivory)}
 .seat .hn{font-size:calc(11px*var(--fs));color:var(--muted);min-height:15px;text-align:center}
 .seat .hn.plus{color:var(--ok);font-family:var(--f-num);font-size:calc(12px*var(--fs))}
 .timer{height:3px;border-radius:2px;background:#ffffff14;margin-top:5px;overflow:hidden}
@@ -194,8 +191,8 @@ h1 span{color:var(--pink)}
 
 .controls{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.btn{border:1px solid var(--line);background:var(--panel-2);padding:11px 18px;border-radius:12px;font-weight:600;cursor:pointer;min-width:110px;transition:background .35s var(--ease),transform .2s var(--ease),opacity .35s,border-color .35s}
-.btn:hover:not(:disabled){background:var(--hover);transform:translateY(-1px)}
+.btn{border:1px solid var(--line);background:var(--panel-2);padding:11px 18px;border-radius:8px;font-weight:600;cursor:pointer;min-width:110px;transition:background .35s var(--ease),transform .2s var(--ease),opacity .35s,border-color .35s}
+.btn:hover:not(:disabled){background:var(--hover)}
 .btn:active:not(:disabled){transform:translateY(1px)}
 .btn:disabled{opacity:.35;cursor:not-allowed}
 .btn.primary{background:var(--pink);color:var(--on-pink);border-color:var(--pink)}
@@ -209,8 +206,8 @@ h1 span{color:var(--pink)}
 .hint{font-size:calc(13px*var(--fs));color:var(--muted)}
 .hint b{color:var(--ivory);font-family:var(--f-num);font-weight:500}
 
-aside{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
-aside h2{font-family:var(--f-display);font-size:calc(12px*var(--fs));font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
+aside{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+aside h2{font-family:var(--f-body);font-size:calc(12px*var(--fs));font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
 .log{list-style:none;margin:0;padding:0;font-size:calc(13px*var(--fs));max-height:520px;overflow:auto;display:flex;flex-direction:column;gap:5px}
 .log li{border-bottom:1px solid #ffffff0a;padding-bottom:4px;color:var(--text-2)}
 .log li.sep{color:var(--pink);font-family:var(--f-num);font-size:calc(12px*var(--fs));border:0;padding-top:6px}
@@ -221,8 +218,8 @@ aside h2{font-family:var(--f-display);font-size:calc(12px*var(--fs));font-weight
 
 .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;background:var(--scrim);border-radius:24px;animation:fadeIn .6s var(--ease) both;padding:12px}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.box{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:14px;width:min(460px,100%);box-shadow:0 30px 80px #000c;animation:fadeUp .8s var(--ease) both;max-height:100%;overflow:auto}
-.box h3{font-family:var(--f-display);margin:0;font-size:calc(19px*var(--fs));text-wrap:balance}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:14px;width:min(460px,100%);box-shadow:0 24px 60px #0009;animation:fadeUp .8s var(--ease) both;max-height:100%;overflow:auto}
+.box h3{font-family:var(--f-display);font-weight:600;margin:0;font-size:calc(21px*var(--fs));text-wrap:balance}
 .box.center-text{text-align:center;align-items:center}
 .field{display:flex;flex-direction:column;gap:5px;font-size:calc(13px*var(--fs));color:var(--muted)}
 .field input,.field select{background:var(--room-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ivory);min-width:0;width:100%}
@@ -234,7 +231,7 @@ aside h2{font-family:var(--f-display);font-size:calc(12px*var(--fs));font-weight
 .code-in{text-transform:uppercase;letter-spacing:.3em;font-family:var(--f-num)}
 .err{color:var(--pink-soft);font-size:calc(13px*var(--fs))}
 .err:empty{display:none}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ivory);color:var(--ink);padding:9px 16px;border-radius:999px;font-weight:600;font-size:calc(14px*var(--fs));z-index:50;animation:fadeUp .5s var(--ease) both;max-width:calc(100% - 32px);text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ivory);color:var(--ink);padding:9px 16px;border-radius:6px;font-weight:600;font-size:calc(14px*var(--fs));z-index:50;animation:fadeUp .5s var(--ease) both;max-width:calc(100% - 32px);text-align:center}
 
 .up{color:var(--muted);margin-left:6px;font-size:calc(12px*var(--fs))}
 .seat .vp{font:500 calc(10px*var(--fs))/1.3 var(--f-num);color:var(--muted);margin-top:2px}
@@ -243,7 +240,7 @@ aside h2{font-family:var(--f-display);font-size:calc(12px*var(--fs));font-weight
 .seat.me .bubble{bottom:calc(100% + 18px)}
 .bubble.show{opacity:1;transform:translate(-50%,0) scale(1)}
 .bubble::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ivory)}
-.btn.toggle[aria-pressed="true"]{background:var(--wine);border-color:var(--pink);color:var(--card);box-shadow:0 0 0 2px #ff8cc055}
+.btn.toggle[aria-pressed="true"]{background:var(--wine);border-color:var(--pink);color:var(--card)}
 .pre-label{font-size:calc(12px*var(--fs));color:var(--muted);letter-spacing:.08em;text-transform:uppercase;flex-basis:100%}
 .odds{font-size:calc(13px*var(--fs));color:var(--pink-soft)}
 .odds b{font-family:var(--f-num);color:var(--ivory)}
@@ -251,7 +248,7 @@ aside h2{font-family:var(--f-display);font-size:calc(12px*var(--fs));font-weight
 .odds .mini{font-family:var(--f-num);font-size:calc(12px*var(--fs));color:var(--muted)}
 .dist{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
 .dist .dl{font-size:calc(12px*var(--fs));color:var(--muted);margin-inline-end:4px}
-.dchip{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:calc(12px*var(--fs));color:var(--ivory);background:var(--panel-2)}
+.dchip{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:6px;padding:2px 9px;font-size:calc(12px*var(--fs));color:var(--ivory);background:var(--panel-2)}
 .dchip i{position:absolute;inset:0 auto 0 0;background:#ff8cc033;transition:width .8s var(--ease)}
 .dchip span{position:relative}
 .dchip.cur{border-color:var(--pink)}
@@ -273,7 +270,7 @@ aside section + section, aside section + h2{border-top:1px solid var(--line);pad
 .chatform input{flex:1;min-width:0;background:var(--room-2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--ivory)}
 .chatform input:focus{border-color:var(--pink);outline:none}
 .quick{display:flex;gap:6px;flex-wrap:wrap}
-.quick button{background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:3px 10px;cursor:pointer;font-size:calc(13px*var(--fs));transition:background .3s var(--ease),transform .2s var(--ease)}
+.quick button{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:calc(13px*var(--fs));transition:background .3s var(--ease),transform .2s var(--ease)}
 .quick button:hover{background:var(--hover);transform:translateY(-1px)}
 .statwrap{overflow-x:auto}
 .stats{width:100%;border-collapse:collapse;font-size:calc(12px*var(--fs));font-variant-numeric:tabular-nums}
@@ -302,7 +299,7 @@ aside section + section, aside section + h2{border-top:1px solid var(--line);pad
 .setbox{width:min(620px,100%);max-height:calc(100vh - 40px)}
 .sethead{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:8px}
-.tab{background:transparent;border:1px solid transparent;border-radius:999px;padding:6px 12px;cursor:pointer;color:var(--muted);font-weight:500;font-size:calc(13px*var(--fs));transition:background .3s var(--ease),color .3s}
+.tab{background:transparent;border:1px solid transparent;border-radius:6px;padding:6px 12px;cursor:pointer;color:var(--muted);font-weight:500;font-size:calc(13px*var(--fs));transition:background .3s var(--ease),color .3s}
 .tab[aria-selected="true"]{background:var(--panel-2);border-color:var(--line);color:var(--ivory)}
 .tab:hover{color:var(--ivory)}
 .avedit{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:start}
@@ -333,14 +330,14 @@ aside section + section, aside section + h2{border-top:1px solid var(--line);pad
 .tinfo b{font-size:calc(14px*var(--fs));color:var(--ivory);font-weight:600}
 .tables .btn{flex:none}
 
-.lang{background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:5px 10px;color:var(--ivory);font-size:calc(13px*var(--fs))}
+.lang{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;color:var(--ivory);font-size:calc(13px*var(--fs))}
 .learnbox{width:min(980px,100%);max-height:calc(100vh - 40px)}
 .learn{display:grid;grid-template-columns:230px minmax(0,1fr);gap:18px;min-height:0;overflow:hidden}
 .lessons{display:flex;flex-direction:column;gap:4px;overflow:auto;max-height:calc(100vh - 170px)}
 .lsn{display:flex;gap:10px;align-items:center;text-align:start;background:transparent;border:1px solid transparent;border-radius:10px;padding:7px 9px;cursor:pointer;color:var(--text-2);font-size:calc(13px*var(--fs));transition:background .3s var(--ease)}
 .lsn:hover{background:var(--hover)}
 .lsn[aria-current="true"]{background:var(--panel-2);border-color:var(--line);color:var(--ivory)}
-.ln{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--wine);color:var(--card);font:600 calc(11px*var(--fs)) var(--f-num)}
+.ln{flex:none;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;background:var(--wine);color:var(--card);font:600 calc(11px*var(--fs)) var(--f-num)}
 .lesson{overflow:auto;max-height:calc(100vh - 170px);display:flex;flex-direction:column;gap:12px;padding-inline-end:4px;min-width:0}
 .lesson h4{font-family:var(--f-display);font-size:calc(20px*var(--fs));margin:0;text-wrap:balance}
 .eyebrow{font-size:calc(12px*var(--fs));letter-spacing:.1em;text-transform:uppercase;color:var(--pink)}
@@ -372,7 +369,7 @@ aside section + section, aside section + h2{border-top:1px solid var(--line);pad
 [dir="rtl"] .dealer{right:auto;left:-10px}
 
 .hdrvol{width:80px;accent-color:var(--pink)}
-.fair,.netchip{font-size:calc(12px*var(--fs));border-radius:999px;padding:3px 10px;border:1px solid var(--line);background:var(--panel-2);white-space:nowrap;cursor:default}
+.fair,.netchip{font-size:calc(12px*var(--fs));border-radius:6px;padding:3px 10px;border:1px solid var(--line);background:var(--panel-2);white-space:nowrap;cursor:default}
 .fair.ok{color:var(--ok)}
 .fair.bad{color:#ff6b6b;border-color:#ff6b6b}
 .netchip.good{color:var(--ok)}
@@ -498,7 +495,7 @@ button,.btn,input,select{touch-action:manipulation}
   :root{--cw:36px}
   .table{aspect-ratio:3/4}
   .felt{inset:9% 10%;box-shadow:0 0 0 10px var(--rim),0 0 0 11px var(--rim-hi),0 0 0 13px #0007,0 20px 40px #000a,inset 0 0 40px #0007}
-  .table.myturn .felt{box-shadow:0 0 0 10px var(--rim),0 0 0 11px var(--pink),0 0 50px #ff8cc044,inset 0 0 40px #0007}
+  .table.myturn .felt{box-shadow:0 0 0 10px var(--rim),0 0 0 11px var(--pink),inset 0 0 40px #0007}
   .seat{width:88px}
   .seat.me{--cw:50px;width:128px}
   .seat .name,.seat .stack{font-size:calc(12px*var(--fs))}
@@ -531,7 +528,7 @@ button,.btn,input,select{touch-action:manipulation}
   #langSel{display:none}
   #bExit,#bCopy{font-size:0;padding:6px 9px;min-width:34px}
   #bExit::before{content:"✕";font-size:calc(14px*var(--fs))}
-  #bCopy::before{content:"🔗";font-size:calc(14px*var(--fs))}
+  #bCopy span{display:none}
   #bPanel .cdot{position:absolute;margin:0;transform:translate(10px,-8px)}
   #bPanel{position:relative}
   .chip{padding:2px 4px 2px 9px;gap:5px}
@@ -631,7 +628,7 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
 .coachcta{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--panel-2);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
 .coachcta > div{flex:1 1 220px}
 .coachcta p{margin:4px 0 0}
-.cav{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--wine);font-size:calc(18px*var(--fs))}
+.cav{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--panel-2);border:1px solid var(--line);color:var(--pink);font-size:calc(19px*var(--fs))}
 /* coach review */
 .coachbox{width:min(760px,100%);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px)}
 .coachsel{flex:1 1 auto;min-width:0;max-width:340px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:6px 8px;font-size:calc(13px*var(--fs))}
@@ -660,7 +657,7 @@ body.netlost .controls{opacity:.45;pointer-events:none;filter:saturate(.4)}
 .step.v-bad i{background:#ff6b6b;color:#fff}
 .step b{font-weight:600}
 .qchips{display:flex;gap:6px;flex-wrap:wrap;flex:none}
-.qchip{background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:calc(13px*var(--fs));cursor:pointer;color:var(--text-2);transition:background .3s var(--ease),border-color .3s}
+.qchip{background:transparent;border:1px solid var(--line);border-radius:6px;padding:6px 12px;font-size:calc(13px*var(--fs));cursor:pointer;color:var(--text-2);transition:background .3s var(--ease),border-color .3s}
 .qchip:hover{background:var(--hover);border-color:var(--pink);color:var(--ivory)}
 .coachform{display:flex;gap:8px;flex:none}
 .coachform input{flex:1;min-width:0;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
@@ -808,18 +805,19 @@ body.inlobby aside > section:not(:last-child),body.inlobby aside > section:last-
 /* ---------- main menu tiles ---------- */
 .lobbybox{gap:12px}
 .ltiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ltile{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:start;background:var(--panel-2);border:1px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;color:var(--ivory);transition:transform .2s var(--ease),border-color .3s,background .3s}
-.ltile:hover{transform:translateY(-2px);border-color:var(--pink);background:var(--hover)}
-.ltile i{font-style:normal;font-size:calc(24px*var(--fs));line-height:1;margin-bottom:4px}
+.ltile{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:start;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:14px;cursor:pointer;color:var(--ivory);transition:transform .2s var(--ease),border-color .3s,background .3s}
+.ltile:hover{border-color:var(--pink);background:var(--hover)}
+.ltile i{font:600 calc(26px*var(--fs))/1 var(--f-display);font-style:normal;margin-bottom:6px;color:var(--ivory)}
+.ltile i.red{color:var(--pink)}
 .ltile b{font-weight:700;font-size:calc(15px*var(--fs))}
 .ltile span{color:var(--muted);font-size:calc(12.5px*var(--fs));line-height:1.35}
-.ltile.primary{background:linear-gradient(140deg,var(--wine),var(--panel-2));border-color:var(--pink)}
+.ltile.primary{background:var(--hover);border-color:var(--pink)}
 .ltile.primary span{color:var(--text-2)}
 .lobbybox:not([data-view="home"]) .ltiles,.lobbybox[data-view="home"] .lback{display:none}
 .lobbybox:not([data-view="home"]) #bResume,.lobbybox:not([data-view="home"]) #bQuick{display:none}
 .lback{align-self:flex-start;margin:-4px 0 -6px}
 .ptitle{font-family:var(--f-display);font-size:calc(16px*var(--fs));margin:0}
-.pfline{display:flex;align-items:center;gap:10px;width:100%;text-align:start;background:transparent;border:1px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;color:var(--text-2);font-size:calc(13.5px*var(--fs))}
+.pfline{display:flex;align-items:center;gap:10px;width:100%;text-align:start;background:transparent;border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer;color:var(--text-2);font-size:calc(13.5px*var(--fs))}
 .pfline:hover{border-color:var(--pink);color:var(--ivory)}
 .pfline i{font-style:normal}
 .pfline span{flex:1;min-width:0}
@@ -894,7 +892,7 @@ body.mehidden #odds{visibility:hidden}
 #sessOv .box{width:min(620px,100%);max-height:calc(100dvh - 24px);overflow:auto}
 .watchrow{align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .watchrow span{color:var(--text-2);flex:1 1 200px}
-.watchchip{font-size:calc(12px*var(--fs));border-radius:999px;padding:3px 10px;border:1px solid var(--line);background:var(--panel-2);white-space:nowrap}
+.watchchip{font-size:calc(12px*var(--fs));border-radius:6px;padding:3px 10px;border:1px solid var(--line);background:var(--panel-2);white-space:nowrap}
 /* ---------- main menu on computers: one centred column, the box at its natural height ---------- */
 @media (min-width:621px) and (min-height:501px){
   body.inlobby .wrap{grid-template-columns:minmax(0,1fr)}
@@ -977,16 +975,44 @@ body.inlobby #bTutor{display:none}
 .legal{margin:10px 0 0;font-size:calc(12px*var(--fs));color:var(--muted)}
 .legal a{color:inherit}
 .legal a:hover{color:var(--pink)}
+
+/* line icons (the sprite at the top of the page): one stroke style everywhere */
+.ic{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.btn .ic,.mitem .ic,.pfline .ic,.segopt b .ic,.watchrow .ic{margin-inline-end:6px}
+.btn.icon .ic{margin:0;width:1.25em;height:1.25em}
+.btn.nav .ic{margin:0;width:1.2em;height:1.2em;opacity:.85}
+.cav .ic,.ln .ic{width:1.05em;height:1.05em;margin:0}
+#bCopy .ic{font-size:calc(14px*var(--fs))}
+/* the line-art peony behind the main menu */
+.peony-deco{position:absolute;left:calc(50% + 250px);top:50%;transform:translateY(-38%);width:min(460px,34vw);color:var(--pink);opacity:.22;pointer-events:none;z-index:0}
+@media (max-width:980px){.peony-deco{display:none}}
+.peony-deco svg{width:100%;height:auto;display:block}
+.peony-deco svg path,.peony-deco svg use{stroke-width:2.4}
+#lobby > .box{position:relative;z-index:1}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="ic-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.8-3.6 3.8-5.6 7.5-5.6s6.7 2 7.5 5.6"/></symbol>
+<symbol id="ic-learn" viewBox="0 0 24 24"><path d="M3 5.5c3-.8 6-.6 9 1.2 3-1.8 6-2 9-1.2V19c-3-.8-6-.6-9 1.2-3-1.8-6-2-9-1.2z"/><path d="M12 6.7v13.5"/></symbol>
+<symbol id="ic-gear" viewBox="0 0 24 24"><path d="M10.3 3.5h3.4l.5 2.3 1.6.9 2.2-.8 1.7 2.9-1.7 1.6v1.8l1.7 1.6-1.7 2.9-2.2-.8-1.6.9-.5 2.3h-3.4l-.5-2.3-1.6-.9-2.2.8-1.7-2.9 1.7-1.6v-1.8L4.1 8.8l1.7-2.9 2.2.8 1.6-.9z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+<symbol id="ic-mute" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></symbol>
+<symbol id="ic-sound" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/></symbol>
+<symbol id="ic-keys" viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="11" rx="2"/><path d="M6 10h.01M9.5 10h.01M13 10h.01M16.5 10h.01M7 14h10"/></symbol>
+<symbol id="ic-chart" viewBox="0 0 24 24"><path d="M4 20V4M4 20h16"/><path d="M8 16v-4M12 16V8M16 16v-6"/></symbol>
+<symbol id="ic-link" viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></symbol>
+<symbol id="ic-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+<symbol id="ic-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="M3.2 12h17.6M12 3.2c2.6 2.6 3.6 5.6 3.6 8.8s-1 6.2-3.6 8.8c-2.6-2.6-3.6-5.6-3.6-8.8s1-6.2 3.6-8.8z"/></symbol>
+<symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></symbol>
+<symbol id="ic-peony" viewBox="0 0 24 24"><path d="M3.6 13.2C2.9 10.6 5 8.6 7.2 9.4 7.4 6.6 10 5.2 12 6.6c2-1.4 4.6 0 4.8 2.8 2.2-.8 4.3 1.2 3.6 3.8"/><path d="M3.6 13.2C4.6 17.4 8 19.8 12 19.8s7.4-2.4 8.4-6.6"/><path d="M7 12.6c1.3 1.9 3 2.9 5 2.9s3.7-1 5-2.9"/><path d="M9.6 10.4c.7-.9 1.5-1.3 2.4-1.3s1.7.4 2.4 1.3"/></symbol>
+</defs></svg>
 <div class="bgfx" id="bgfx" aria-hidden="true" hidden><i></i><i></i><i></i></div>
 <canvas id="fxCanvas" class="fxcanvas" aria-hidden="true"></canvas>
 <div class="wrap">
   <header>
     <h1>PyonPoker <span>·</span> <span class="sub">Техасский холдем</span></h1>
     <div class="meta">
-      <span id="tableChip" class="chip" hidden>Стол <b id="tableCode"></b><span id="hostTag" class="tag" hidden>ведущий</span><button class="btn small ghost" id="bCopy">Позвать друзей</button></span>
+      <span id="tableChip" class="chip" hidden>Стол <b id="tableCode"></b><span id="hostTag" class="tag" hidden>ведущий</span><button class="btn small ghost" id="bCopy"><svg class="ic pico" aria-hidden="true"><use href="#ic-link"/></svg><span>Позвать друзей</span></button></span>
       <span class="gi">Блайнды <b id="blinds">10/20</b><span id="blindUp" class="up"></span></span>
       <span class="gi mhide">Раздача <b id="handNo">—</b></span>
       <span class="gi mhide">Улица <b id="street">—</b></span>
@@ -994,28 +1020,28 @@ body.inlobby #bTutor{display:none}
       <span id="netChip" class="netchip" hidden></span>
       <span id="watchChip" class="watchchip" hidden></span>
       <nav class="hnav" aria-label="Меню">
-        <button class="btn small nav" id="bProfile" type="button"><i aria-hidden="true">👤</i><span>Профиль</span></button>
-        <button class="btn small nav" id="bLearn" type="button"><i aria-hidden="true">🎓</i><span>Обучение</span></button>
-        <button class="btn small nav" id="bSettings" type="button"><i aria-hidden="true">⚙️</i><span>Настройки</span></button>
+        <button class="btn small nav" id="bProfile" type="button"><svg class="ic" aria-hidden="true"><use href="#ic-user"/></svg><span>Профиль</span></button>
+        <button class="btn small nav" id="bLearn" type="button"><svg class="ic" aria-hidden="true"><use href="#ic-learn"/></svg><span>Обучение</span></button>
+        <button class="btn small nav" id="bSettings" type="button"><svg class="ic" aria-hidden="true"><use href="#ic-gear"/></svg><span>Настройки</span></button>
       </nav>
       <span class="hmini">
         <select class="lang" id="langSel" aria-label="Язык"></select>
-        <button class="btn small ghost icon" id="bSound" type="button" aria-pressed="false" title="Звук: выкл" aria-label="Звук: выкл">🔇</button>
+        <button class="btn small ghost icon" id="bSound" type="button" aria-pressed="false" title="Звук: выкл" aria-label="Звук: выкл"><svg class="ic" aria-hidden="true"><use href="#ic-mute"/></svg></button>
         <input type="range" id="hdrVol" class="hdrvol" min="0" max="100" step="5" aria-label="Громкость" title="Громкость">
-        <button class="btn small ghost icon" id="bKeys" type="button" title="Клавиши" aria-label="Клавиши">⌨️</button>
+        <button class="btn small ghost icon" id="bKeys" type="button" title="Клавиши" aria-label="Клавиши"><svg class="ic" aria-hidden="true"><use href="#ic-keys"/></svg></button>
       </span>
-      <button class="btn small ghost tutor" id="bTutor" type="button" hidden title="Тренер за столом"><i class="pico" aria-hidden="true">🎓</i><span>Тренер</span></button>
-      <button class="btn small ghost" id="bPanel" type="button"><i class="pico" aria-hidden="true">📊</i><span>Чат и статистика</span> <i id="chatDot" class="cdot" hidden></i></button>
+      <button class="btn small ghost tutor" id="bTutor" type="button" hidden title="Тренер за столом"><svg class="ic pico" aria-hidden="true"><use href="#ic-peony"/></svg><span>Тренер</span></button>
+      <button class="btn small ghost" id="bPanel" type="button"><svg class="ic pico" aria-hidden="true"><use href="#ic-chart"/></svg><span>Чат и статистика</span> <i id="chatDot" class="cdot" hidden></i></button>
       <button class="btn small ghost icon" id="bMenu" type="button" aria-label="Меню" aria-expanded="false">☰</button>
       <button class="btn small ghost" id="bExit" hidden>Выйти</button>
     </div>
   </header>
   <div id="menuPop" class="menupop" hidden>
-    <button class="mitem" type="button" data-proxy="bProfile"><i aria-hidden="true">👤</i>Профиль и статистика</button>
-    <button class="mitem" type="button" data-proxy="bLearn"><i aria-hidden="true">🎓</i>Обучение и тренер</button>
-    <button class="mitem" type="button" data-proxy="bSettings"><i aria-hidden="true">⚙️</i>Настройки</button>
-    <button class="mitem" type="button" data-proxy="bSound" id="mSound"><i aria-hidden="true">🔇</i><span>Звук: выкл</span></button>
-    <button class="mitem" type="button" data-proxy="bCopy" id="mCopy"><i aria-hidden="true">🔗</i>Позвать друзей</button>
+    <button class="mitem" type="button" data-proxy="bProfile"><svg class="ic" aria-hidden="true"><use href="#ic-user"/></svg>Профиль и статистика</button>
+    <button class="mitem" type="button" data-proxy="bLearn"><svg class="ic" aria-hidden="true"><use href="#ic-learn"/></svg>Обучение и тренер</button>
+    <button class="mitem" type="button" data-proxy="bSettings"><svg class="ic" aria-hidden="true"><use href="#ic-gear"/></svg>Настройки</button>
+    <button class="mitem" type="button" data-proxy="bSound" id="mSound"><i aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#ic-mute"/></svg></i><span>Звук: выкл</span></button>
+    <button class="mitem" type="button" data-proxy="bCopy" id="mCopy"><svg class="ic" aria-hidden="true"><use href="#ic-link"/></svg>Позвать друзей</button>
     <button class="mitem danger" type="button" data-proxy="bExit" id="mExit"><i aria-hidden="true">✕</i>Выйти из-за стола</button>
   </div>
   <div id="netBar" class="netbar" role="status" aria-live="polite" hidden>
@@ -1038,6 +1064,7 @@ body.inlobby #bTutor{display:none}
       <div id="fx"></div>
 
       <div id="lobby" class="overlay">
+        <div class="peony-deco" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="50 60 412 400" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><defs><path id="pp0" d="M256 250 C176.2 288.3 114.7 266.6 108.2 218.1 C106.8 191.9 119.1 181.5 126.2 181 C122.7 174.9 124.4 158.8 146.9 145.3 C190.7 123.6 243.1 162.4 256 250Z"/><path id="pp1" d="M256 246 C167.6 231.6 124.5 176 142.7 130 C154.3 106.4 170.2 104.7 177 109.2 C176.5 101.1 185.9 88.2 212.2 89.8 C261.1 97.1 287.7 162.2 256 246Z"/><path id="pp2" d="M256 244 C184.8 189.4 175 122.3 214.8 92.7 C237.3 78.6 252.3 84.9 256 91.1 C259.8 84.9 274.8 78.6 297.3 92.7 C337 122.3 327.3 189.4 256 244Z"/><path id="pp3" d="M256 246 C224.3 162.2 250.9 97.1 299.8 89.8 C326.1 88.2 335.5 101.1 335 109.2 C341.8 104.7 357.7 106.4 369.3 130 C387.5 176 344.4 231.6 256 246Z"/><path id="pp4" d="M256 250 C268.9 162.4 321.3 123.6 365.1 145.3 C387.6 158.8 389.3 174.9 385.8 181 C392.9 181.5 405.2 191.9 403.8 218.1 C397.3 266.6 335.8 288.3 256 250Z"/><path id="pp5" d="M246 270 C197.1 359.6 122 384 80.2 346.2 C59.7 324.2 63.9 306.4 71.2 300.8 C62.5 298.1 52.4 282.8 64.1 255.2 C90.4 205.3 169.4 202.5 246 270Z"/><path id="pp6" d="M266 270 C342.6 202.5 421.6 205.3 447.9 255.2 C459.6 282.8 449.5 298.1 440.8 300.8 C448.1 306.4 452.3 324.2 431.8 346.2 C390 384 314.9 359.6 266 270Z"/><path id="pp7" d="M236 286 C283.1 381.1 257.5 449.7 198.8 452.7 C167.1 451.8 154.3 436.7 153.7 428.6 C146.3 432.1 126.8 428.6 110.2 401.6 C83.5 349.3 130.1 292.7 236 286Z"/><path id="pp8" d="M276 286 C381.9 292.7 428.5 349.3 401.8 401.6 C385.2 428.6 365.7 432.1 358.3 428.6 C357.7 436.7 344.9 451.8 313.2 452.7 C254.5 449.7 228.9 381.1 276 286Z"/><path id="pp9" d="M256 236 C198.6 253.8 161.2 233.2 163.5 200 C166.1 182.3 175.6 176.5 179.9 176.6 C178.8 172.4 182.1 161.8 198.7 154.9 C230.3 144.7 259.4 176 256 236Z"/><path id="pp10" d="M256 234 C199.6 214.1 179.6 173.5 198.7 146.6 C210 133 220.8 133.9 224.3 136.6 C225.6 132.3 233.8 125.3 251 129.6 C282.3 140.2 289.9 184.7 256 234Z"/><path id="pp11" d="M256 234 C222.1 184.7 229.7 140.2 261 129.6 C278.2 125.3 286.4 132.3 287.7 136.6 C291.2 133.9 302 133 313.3 146.6 C332.4 173.5 312.4 214.1 256 234Z"/><path id="pp12" d="M256 236 C252.6 176 281.7 144.7 313.3 154.9 C329.9 161.8 333.2 172.4 332.1 176.6 C336.4 176.5 345.9 182.3 348.5 200 C350.8 233.2 313.4 253.8 256 236Z"/><path id="pp13" d="M254.5 163 C263.9 179.3 261.4 198.3 249 205.4 C236.6 212.6 218.9 205.3 209.5 189 C200.1 172.7 202.6 153.7 215 146.6 C227.4 139.4 245.1 146.7 254.5 163Z"/><path id="pp14" d="M304.5 189 C295.1 205.3 277.4 212.6 265 205.4 C252.6 198.3 250.1 179.3 259.5 163 C268.9 146.7 286.6 139.4 299 146.6 C311.4 153.7 313.9 172.7 304.5 189Z"/><path id="pp15" d="M290 196 C290 210.4 274.8 222 256 222 C237.2 222 222 210.4 222 196 C222 181.6 237.2 170 256 170 C274.8 170 290 181.6 290 196Z"/><path id="pp16" d="M250.7 232.9 C262.2 254.3 246.9 284.8 216.7 300.8 C186.4 316.9 152.7 312.6 141.3 291.1 C129.8 269.7 145.1 239.2 175.3 223.2 C205.6 207.1 239.3 211.4 250.7 232.9Z"/><path id="pp17" d="M370.7 291.1 C359.3 312.6 325.6 316.9 295.3 300.8 C265.1 284.8 249.8 254.3 261.3 232.9 C272.7 211.4 306.4 207.1 336.7 223.2 C366.9 239.2 382.2 269.7 370.7 291.1Z"/><path id="pp18" d="M308 250 C308 272.1 284.7 290 256 290 C227.3 290 204 272.1 204 250 C204 227.9 227.3 210 256 210 C284.7 210 308 227.9 308 250Z"/><path id="pp19" d="M287 288.5 C291 311.4 265.2 335 229.3 341.4 C193.4 347.7 161 334.3 157 311.5 C153 288.6 178.8 265 214.7 258.6 C250.6 252.3 283 265.7 287 288.5Z"/><path id="pp20" d="M357 311.5 C353 334.3 320.6 347.7 284.7 341.4 C248.8 335 223 311.4 227 288.5 C231 265.7 263.4 252.3 299.3 258.6 C335.2 265 361 288.6 357 311.5Z"/><mask id="pm0" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp1" fill="#000"/><use href="#pp2" fill="#000"/><use href="#pp3" fill="#000"/><use href="#pp4" fill="#000"/><use href="#pp5" fill="#000"/><use href="#pp6" fill="#000"/><use href="#pp7" fill="#000"/><use href="#pp8" fill="#000"/><use href="#pp9" fill="#000"/><use href="#pp10" fill="#000"/><use href="#pp11" fill="#000"/><use href="#pp12" fill="#000"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm1" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp2" fill="#000"/><use href="#pp3" fill="#000"/><use href="#pp4" fill="#000"/><use href="#pp5" fill="#000"/><use href="#pp6" fill="#000"/><use href="#pp7" fill="#000"/><use href="#pp8" fill="#000"/><use href="#pp9" fill="#000"/><use href="#pp10" fill="#000"/><use href="#pp11" fill="#000"/><use href="#pp12" fill="#000"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm2" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp3" fill="#000"/><use href="#pp4" fill="#000"/><use href="#pp5" fill="#000"/><use href="#pp6" fill="#000"/><use href="#pp7" fill="#000"/><use href="#pp8" fill="#000"/><use href="#pp9" fill="#000"/><use href="#pp10" fill="#000"/><use href="#pp11" fill="#000"/><use href="#pp12" fill="#000"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm3" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp4" fill="#000"/><use href="#pp5" fill="#000"/><use href="#pp6" fill="#000"/><use href="#pp7" fill="#000"/><use href="#pp8" fill="#000"/><use href="#pp9" fill="#000"/><use href="#pp10" fill="#000"/><use href="#pp11" fill="#000"/><use href="#pp12" fill="#000"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm4" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp5" fill="#000"/><use href="#pp6" fill="#000"/><use href="#pp7" fill="#000"/><use href="#pp8" fill="#000"/><use href="#pp9" fill="#000"/><use href="#pp10" fill="#000"/><use href="#pp11" fill="#000"/><use href="#pp12" fill="#000"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm5" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp6" fill="#000"/><use href="#pp7" fill="#000"/><use href="#pp8" fill="#000"/><use href="#pp9" fill="#000"/><use href="#pp10" fill="#000"/><use href="#pp11" fill="#000"/><use href="#pp12" fill="#000"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm6" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp7" fill="#000"/><use href="#pp8" fill="#000"/><use href="#pp9" fill="#000"/><use href="#pp10" fill="#000"/><use href="#pp11" fill="#000"/><use href="#pp12" fill="#000"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm7" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp8" fill="#000"/><use href="#pp9" fill="#000"/><use href="#pp10" fill="#000"/><use href="#pp11" fill="#000"/><use href="#pp12" fill="#000"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm8" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp9" fill="#000"/><use href="#pp10" fill="#000"/><use href="#pp11" fill="#000"/><use href="#pp12" fill="#000"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm9" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp10" fill="#000"/><use href="#pp11" fill="#000"/><use href="#pp12" fill="#000"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm10" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp11" fill="#000"/><use href="#pp12" fill="#000"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm11" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp12" fill="#000"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm12" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp13" fill="#000"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm13" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp14" fill="#000"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm14" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp15" fill="#000"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm15" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp16" fill="#000"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm16" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp17" fill="#000"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm17" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp18" fill="#000"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm18" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp19" fill="#000"/><use href="#pp20" fill="#000"/></mask><mask id="pm19" maskUnits="userSpaceOnUse" x="-40" y="-40" width="600" height="600"><rect x="-40" y="-40" width="600" height="600" fill="#fff"/><use href="#pp20" fill="#000"/></mask></defs><g mask="url(#pm0)"><use href="#pp0"/><path d="M150 190 C166 200 182 212 196 226"/></g><g mask="url(#pm1)"><use href="#pp1"/></g><g mask="url(#pm2)"><use href="#pp2"/></g><g mask="url(#pm3)"><use href="#pp3"/></g><g mask="url(#pm4)"><use href="#pp4"/><path d="M362 190 C346 200 330 212 316 226"/></g><g mask="url(#pm5)"><use href="#pp5"/><path d="M96 296 C126 284 162 286 190 298"/></g><g mask="url(#pm6)"><use href="#pp6"/><path d="M416 296 C386 284 350 286 322 298"/></g><g mask="url(#pm7)"><use href="#pp7"/><path d="M150 410 C162 384 184 366 208 356"/></g><g mask="url(#pm8)"><use href="#pp8"/><path d="M362 410 C350 384 328 366 304 356"/></g><g mask="url(#pm9)"><use href="#pp9"/></g><g mask="url(#pm10)"><use href="#pp10"/></g><g mask="url(#pm11)"><use href="#pp11"/></g><g mask="url(#pm12)"><use href="#pp12"/></g><g mask="url(#pm13)"><use href="#pp13"/></g><g mask="url(#pm14)"><use href="#pp14"/></g><g mask="url(#pm15)"><use href="#pp15"/></g><g mask="url(#pm16)"><use href="#pp16"/></g><g mask="url(#pm17)"><use href="#pp17"/></g><g mask="url(#pm18)"><use href="#pp18"/></g><g mask="url(#pm19)"><use href="#pp19"/></g><g><use href="#pp20"/></g></svg></div>
         <div class="box lobbybox" data-view="home">
           <h3 id="lobbyTitle">Садитесь за стол</h3>
           <div class="who">
@@ -1046,14 +1073,14 @@ body.inlobby #bTutor{display:none}
               <input id="nick" maxlength="16" autocomplete="nickname" placeholder="Например, Лиза">
             </label>
           </div>
-          <button class="pfline" id="bProfile2" type="button"><i aria-hidden="true">📊</i><span id="pfLine">Мой профиль и статистика</span><b aria-hidden="true">›</b></button>
+          <button class="pfline" id="bProfile2" type="button"><svg class="ic" aria-hidden="true"><use href="#ic-chart"/></svg><span id="pfLine">Мой профиль и статистика</span><b aria-hidden="true">›</b></button>
           <button class="btn primary" id="bResume" hidden></button>
           <button class="btn primary" id="bQuick" hidden></button>
           <div class="ltiles">
-            <button class="ltile primary" type="button" data-ltab="solo"><i aria-hidden="true">🤖</i><b>С ботами</b><span>Быстрая игра, работает и без интернета</span></button>
-            <button class="ltile" type="button" data-ltab="create"><i aria-hidden="true">🃏</i><b>Создать стол</b><span>Позовите друзей по ссылке</span></button>
-            <button class="ltile" type="button" data-ltab="open"><i aria-hidden="true">🤝</i><b>Войти к друзьям</b><span>Открытые столы и вход по коду</span></button>
-            <button class="ltile" type="button" data-ltab="learn"><i aria-hidden="true">🎓</i><b>Обучение</b><span>Уроки, тренажёры и разбор с тренером</span></button>
+            <button class="ltile primary" type="button" data-ltab="solo"><i class="suit" aria-hidden="true">♠</i><b>С ботами</b><span>Быстрая игра, работает и без интернета</span></button>
+            <button class="ltile" type="button" data-ltab="create"><i class="suit red" aria-hidden="true">♥</i><b>Создать стол</b><span>Позовите друзей по ссылке</span></button>
+            <button class="ltile" type="button" data-ltab="open"><i class="suit red" aria-hidden="true">♦</i><b>Войти к друзьям</b><span>Открытые столы и вход по коду</span></button>
+            <button class="ltile" type="button" data-ltab="learn"><i class="suit" aria-hidden="true">♣</i><b>Обучение</b><span>Уроки, тренажёры и разбор с тренером</span></button>
           </div>
           <button class="btn small ghost lback" type="button" id="lobbyBack">← Назад</button>
           <div data-lpane="open" class="part" hidden>
@@ -1065,7 +1092,7 @@ body.inlobby #bTutor{display:none}
                 <input id="joinCode" class="code-in" maxlength="4" placeholder="K7QM" autocomplete="off">
               </label>
               <button class="btn" id="bJoin" style="align-self:end">Войти по коду</button>
-              <button class="btn ghost" id="bWatch" type="button" style="align-self:end">👁 Смотреть</button>
+              <button class="btn ghost" id="bWatch" type="button" style="align-self:end"><svg class="ic" aria-hidden="true"><use href="#ic-eye"/></svg>Смотреть</button>
             </div>
           </div>
           <div data-lpane="create" class="part" hidden>
@@ -1087,8 +1114,8 @@ body.inlobby #bTutor{display:none}
               </label>
             </div>
             <fieldset class="seg" id="pubSeg"><legend>Кто может зайти</legend>
-              <label class="segopt"><input type="radio" name="pubMode" value="1"><b>🌐 Открытый</b><span>Стол виден всем в «Войти к друзьям»</span></label>
-              <label class="segopt"><input type="radio" name="pubMode" value="0"><b>🔒 Закрытый</b><span>Только по ссылке или коду</span></label>
+              <label class="segopt"><input type="radio" name="pubMode" value="1"><b><svg class="ic" aria-hidden="true"><use href="#ic-globe"/></svg>Открытый</b><span>Стол виден всем в «Войти к друзьям»</span></label>
+              <label class="segopt"><input type="radio" name="pubMode" value="0"><b><svg class="ic" aria-hidden="true"><use href="#ic-lock"/></svg>Закрытый</b><span>Только по ссылке или коду</span></label>
               <input type="checkbox" id="publicOn" checked hidden>
             </fieldset>
             <label class="check strong" for="hOn"><input type="checkbox" id="hOn"> Режим помощи</label>
@@ -1207,7 +1234,7 @@ body.inlobby #bTutor{display:none}
       </div>
       <div class="sumbox" id="sumBox" hidden></div>
       <div class="odds" id="odds" hidden></div>
-      <div class="row watchrow" id="watchRow" hidden><span>👁 Вы смотрите игру. Карты игроков видны только на вскрытии.</span><button class="btn primary" id="bSit" type="button">Сесть за стол</button></div>
+      <div class="row watchrow" id="watchRow" hidden><span><svg class="ic" aria-hidden="true"><use href="#ic-eye"/></svg>Вы смотрите игру. Карты игроков видны только на вскрытии.</span><button class="btn primary" id="bSit" type="button">Сесть за стол</button></div>
       <div class="hint" id="hint">Выберите, как играть: с ботами или с друзьями.</div>
     </div>
   </div>
@@ -1383,6 +1410,6 @@ body.inlobby #bTutor{display:none}
     </div>
   </div>
 </div>
-<script>(function(){window.PYONPOKER_ROOT="../";var U={"ru":"../assets/lang-ru.f32d3a7593.js","en":"../assets/lang-en.ac8837227c.js","uk":"../assets/lang-uk.075fa780f7.js","ka":"../assets/lang-ka.bb4916bcef.js","fr":"../assets/lang-fr.531fbb145a.js","de":"../assets/lang-de.beca1e3f1c.js","ro":"../assets/lang-ro.d15182373e.js","he":"../assets/lang-he.ec7c8d65d0.js","kk":"../assets/lang-kk.cc7356bd45.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PYONPOKER_LANG_URL=U;["../assets/peerjs.f69f573cb6.js",U[l],"../assets/app.a1cdf04fe8.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
+<script>(function(){window.PYONPOKER_ROOT="../";var U={"ru":"../assets/lang-ru.f32d3a7593.js","en":"../assets/lang-en.37884f3302.js","uk":"../assets/lang-uk.39436ddb40.js","ka":"../assets/lang-ka.2a1ae8da1e.js","fr":"../assets/lang-fr.202afbd219.js","de":"../assets/lang-de.0d57e9a6f3.js","ro":"../assets/lang-ro.1a0efac2e5.js","he":"../assets/lang-he.ff49acd2cc.js","kk":"../assets/lang-kk.bf9ecbb667.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PYONPOKER_LANG_URL=U;["../assets/peerjs.f69f573cb6.js",U[l],"../assets/app.258ffb9826.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
 </body>
 </html>
