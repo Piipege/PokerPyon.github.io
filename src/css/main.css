@@ -919,7 +919,7 @@ body.inlobby #bTutor{display:none}
   #coachOv.live .coachlog{min-height:60px}
   #coachOv.live .coachauto{font-size:calc(12px*var(--fs))}
 }
-.legal{margin:10px 0 0;font-size:calc(12px*var(--fs));color:var(--muted)}
+.legal{margin:0;font-size:calc(12px*var(--fs));color:var(--muted)}
 .legal a{color:inherit}
 .legal a:hover{color:var(--pink)}
 
@@ -930,8 +930,48 @@ body.inlobby #bTutor{display:none}
 .btn.nav .ic{margin:0;width:1.2em;height:1.2em;opacity:.85}
 .cav .ic,.ln .ic{width:1.05em;height:1.05em;margin:0}
 #bCopy .ic{font-size:calc(14px*var(--fs))}
-/* the line-art peony behind the main menu */
-.peony-deco{position:absolute;left:calc(50% + 250px);top:50%;transform:translateY(-38%);width:min(460px,34vw);color:var(--pink);opacity:.22;pointer-events:none;z-index:0}
-@media (max-width:980px){.peony-deco{display:none}}
-.peony-deco svg{width:100%;height:auto;display:block}
 #lobby > .box{position:relative;z-index:1}
+/* ---------- main menu: a bigger box, peonies in two corners, plain (unboxed) header controls ---------- */
+.peony-corner{position:fixed;z-index:0;display:none;width:min(540px,40vw);color:var(--pink);opacity:.2;pointer-events:none}
+.peony-corner svg{display:block;width:100%;height:auto}
+body.inlobby .peony-corner{display:block}
+body.inlobby .wrap{z-index:1}
+.peony-corner.br{right:-7vw;bottom:-11vh}
+.peony-corner.tl{left:-8vw;top:-12vh;transform:rotate(180deg)}
+@media (max-width:620px){.peony-corner{width:70vw;opacity:.13}.peony-corner.br{right:-26vw;bottom:-6vh}.peony-corner.tl{left:-28vw;top:-8vh}}
+@media (min-width:621px) and (min-height:501px){
+  body.inlobby .stage,body.inlobby aside{max-width:820px}
+  body.inlobby .lobbybox{padding:36px 40px 32px;gap:16px}
+  body.inlobby .lobbybox h3{font-size:calc(31px*var(--fs))}
+  body.inlobby .ltiles{gap:14px}
+  body.inlobby .ltile{padding:22px 22px 20px;min-height:156px;gap:4px}
+  body.inlobby .ltile i{font-size:calc(34px*var(--fs));margin-bottom:auto}
+  body.inlobby .ltile b{font-size:calc(19px*var(--fs))}
+  body.inlobby .ltile span{font-size:calc(14px*var(--fs))}
+  body.inlobby aside{border:0;background:transparent;padding:4px 2px}
+}
+@media (min-width:621px) and (max-height:760px){
+  body.inlobby .lobbybox{padding:22px 28px 20px;gap:10px}
+  body.inlobby .lobbybox h3{font-size:calc(25px*var(--fs))}
+  body.inlobby .ltile{min-height:112px;padding:14px 16px}
+  body.inlobby .ltile i{font-size:calc(26px*var(--fs))}
+}
+/* header: text links with an icon, no boxes; key hints only on the table's action buttons */
+.btn.nav,.btn.nav:hover:not(:disabled){background:transparent;border-color:transparent}
+.btn.nav{color:var(--text-2);padding:7px 9px}
+.btn.nav:hover:not(:disabled){color:var(--pink)}
+.hnav .btn::after,.hmini .btn::after,header .btn::after{display:none}
+.hmini .btn.icon,.hmini .lang,header .btn.ghost{background:transparent;border-color:transparent}
+.hmini .btn.icon:hover:not(:disabled),header .btn.ghost:hover:not(:disabled){background:transparent;color:var(--pink)}
+#bTutor{color:var(--pink);border-color:transparent}
+/* the profile line: a plain row with a rule under it, not a framed bar */
+.pfline{border:0;border-bottom:1px solid var(--line);border-radius:0;padding:10px 2px}
+.pfline:hover{border-bottom-color:var(--pink)}
+@media (max-width:620px), (orientation:landscape) and (max-height:500px){
+  body.inlobby .table{background:transparent;box-shadow:none;border:0}
+  body.inlobby .table::before,body.inlobby .table::after{display:none}
+}
+@media (max-width:620px), (orientation:landscape) and (max-height:500px){
+  body.inlobby .table .felt,body.inlobby .table #seats,body.inlobby .table #bets,body.inlobby .table .center{display:none}
+  body.inlobby #lobby.overlay{background:transparent;border-radius:0;padding:0}
+}

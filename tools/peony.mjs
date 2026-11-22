@@ -67,14 +67,16 @@ add(cup(236, 226, 74, 46, -14, 2)); add(cup(280, 226, 74, 46, 14, 2)); add(cup(2
 add(cup(204, 270, 140, 104, -14, 3)); add(cup(310, 272, 140, 104, 14, 3));
 add(cup(256, 304, 186, 100, 0, 4));
 
-function svg(viewBox, sw){
-  const ids = shapes.map((_, i) => `pp${i}`);
+function svg(viewBox, sw, pre = 'p', rot = -14){
+  const ids = shapes.map((_, i) => `${pre}p${i}`);
   const defs = shapes.map(([d], i) => `<path id="${ids[i]}" d="${d}"/>`).join('');
   const last = shapes.length - 1;
-  const masks = shapes.map((_, i) => i === last ? '' : `<mask id="pm${i}" maskUnits="userSpaceOnUse" x="-60" y="-60" width="640" height="640"><rect x="-60" y="-60" width="640" height="640" fill="#fff"/>${ids.slice(i + 1).map(id => `<use href="#${id}" fill="#000"/>`).join('')}</mask>`).join('');
-  const body = shapes.map(([, line], i) => `<g${i === last ? '' : ` mask="url(#pm${i})"`}><use href="#${ids[i]}"/>${line ? `<path d="${line}" stroke-width="${f(sw * .7)}"/>` : ''}</g>`).join('');
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"><defs>${defs}${masks}</defs><g transform="rotate(-14 256 262)">${body}</g></svg>\n`;
+  const masks = shapes.map((_, i) => i === last ? '' : `<mask id="${pre}m${i}" maskUnits="userSpaceOnUse" x="-60" y="-60" width="640" height="640"><rect x="-60" y="-60" width="640" height="640" fill="#fff"/>${ids.slice(i + 1).map(id => `<use href="#${id}" fill="#000"/>`).join('')}</mask>`).join('');
+  const body = shapes.map(([, line], i) => `<g${i === last ? '' : ` mask="url(#${pre}m${i})"`}><use href="#${ids[i]}"/>${line ? `<path d="${line}" stroke-width="${f(sw * .7)}"/>` : ''}</g>`).join('');
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"><defs>${defs}${masks}</defs><g transform="rotate(${rot} 256 262)">${body}</g></svg>\n`;
 }
 fs.writeFileSync(OUT + 'peony.svg', svg('16 16 480 500', 7.5));
-fs.writeFileSync(OUT + 'peony-bud.svg', svg('16 16 480 500', 16));
+fs.writeFileSync(OUT + 'peony-bud.svg', svg('16 16 480 500', 16, 'b'));
+// a second copy for pages that show two flowers (its own ids, turned the other way)
+fs.writeFileSync(OUT + 'peony-2.svg', svg('16 16 480 500', 7.5, 'q', 22));
 console.log(fs.statSync(OUT + 'peony.svg').size, 'bytes');
