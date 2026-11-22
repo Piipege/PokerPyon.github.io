@@ -1,7 +1,7 @@
 // PyonPoker service worker: the installed app opens and plays offline (bots, course, coach).
 // The page: network first (fresh version when online, 4 s timeout), cache when offline.
 // assets/*: file names contain a content hash, so they never change — cache first.
-const CACHE = 'pyonpoker-2d55215b1f';
+const CACHE = 'pyonpoker-eb5d46cbdb';
 const PRECACHE = ["./play/","./assets/app.258ffb9826.js","./assets/peerjs.f69f573cb6.js"].concat(['./manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png']);
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting()));

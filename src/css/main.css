@@ -934,5 +934,4 @@ body.inlobby #bTutor{display:none}
 .peony-deco{position:absolute;left:calc(50% + 250px);top:50%;transform:translateY(-38%);width:min(460px,34vw);color:var(--pink);opacity:.22;pointer-events:none;z-index:0}
 @media (max-width:980px){.peony-deco{display:none}}
 .peony-deco svg{width:100%;height:auto;display:block}
-.peony-deco svg path,.peony-deco svg use{stroke-width:2.4}
 #lobby > .box{position:relative;z-index:1}
