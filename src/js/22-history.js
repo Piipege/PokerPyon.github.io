@@ -178,8 +178,8 @@ function recapCanvas(){
   const {list,facts}=sessionData(), me=myRecap(), W=1080, H=1350, cv=document.createElement('canvas'); cv.width=W; cv.height=H;
   const g=cv.getContext('2d'), F=(w,s,f)=>`${w} ${s}px ${f==='d'?'Unbounded':f==='n'?'"JetBrains Mono"':'Onest'}, "Noto Sans Georgian", "Noto Sans Hebrew", sans-serif`;
   const rtl = LANG==='he'; g.direction = rtl ? 'rtl' : 'ltr'; const X = x => rtl ? W-x : x; g.textAlign = rtl ? 'right' : 'left';
-  const grd=g.createLinearGradient(0,0,W,H); grd.addColorStop(0,'#5a1438'); grd.addColorStop(.55,'#2a0c1e'); grd.addColorStop(1,'#170912'); g.fillStyle=grd; g.fillRect(0,0,W,H);
-  g.fillStyle='#ff8cc0'; g.font=F(700,30,'d'); g.fillText('PyonPoker', X(72), 96);
+  const grd=g.createLinearGradient(0,0,W,H); grd.addColorStop(0,'#573299'); grd.addColorStop(.55,'#2c2081'); grd.addColorStop(1,'#121c69'); g.fillStyle=grd; g.fillRect(0,0,W,H);
+  g.fillStyle='#f89bdd'; g.font=F(700,30,'d'); g.fillText('PyonPoker', X(72), 96);
   g.fillStyle='#fff3f8'; g.font=F(700,58,'d'); g.fillText(t('Мой вечер'), X(72), 176);
   g.fillStyle='#c49ab4'; g.font=F(500,30); g.fillText(`${myName()} · ${fmtDate(Date.now())}`, X(72), 226);
   const round=(x,y,w,h,r)=>{ g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); };
@@ -202,7 +202,7 @@ function recapCanvas(){
     list.slice(0,5).forEach((p,k)=>{ g.fillStyle=k===0?'#ffd86b':'#fff3f8'; g.font=F(600,32); g.fillText(`${k+1}. ${p.name}`, X(72), y);
       g.font=F(700,32,'n'); g.fillStyle=p.net>0?'#8fe0b5':p.net<0?'#ff8fa8':'#fff3f8'; g.textAlign = rtl ? 'left' : 'right'; g.fillText((p.net>0?'+':'')+p.net, rtl?72:W-72, y); g.textAlign = rtl ? 'right' : 'left'; y+=52; });
   }
-  if(facts[0] && y<H-120){ g.fillStyle='#f6b6d4'; g.font=F(500,26); g.fillText(facts[0].slice(0,60), X(72), Math.min(H-110, y+30)); }
+  if(facts[0] && y<H-120){ g.fillStyle='#fbc4ea'; g.font=F(500,26); g.fillText(facts[0].slice(0,60), X(72), Math.min(H-110, y+30)); }
   g.fillStyle='#c49ab4'; g.font=F(500,24); g.fillText('piipege.github.io/PokerPyon.github.io', X(72), H-60);
   return cv;
 }

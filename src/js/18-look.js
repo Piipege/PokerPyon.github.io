@@ -40,7 +40,7 @@ const PFX={parts:[], raf:0, last:0, acc:0};
 const pcv=$('fxCanvas'), pg=pcv.getContext('2d');
 function pfxSize(){ const r=devicePixelRatio||1; pcv.width=innerWidth*r; pcv.height=innerHeight*r; pg.setTransform(r,0,0,r,0,0); }
 pfxSize(); addEventListener('resize', pfxSize);
-const CONF=['#ff8cc0','#f6b6d4','#ffd86b','#8fe0b5','#9f86ff','#ffffff'];
+const CONF=['#f89bdd','#e07bda','#ffd86b','#8fe0b5','#9f86ff','#ffffff'];
 function burstAt(x,y,kind,n){
   if(reducedMotion()) n=Math.min(n,12);
   for(let k=0;k<n;k++){
@@ -89,7 +89,7 @@ function celebrate(items){
   });
 }
 
-const TABLES={pion:{n:'Пион',c:['#7d2552','#4f1233']},lavender:{n:'Лаванда',c:['#8a6fc4','#5b4391','#2e2150','#6a55a0']},sakura:{n:'Сакура',c:['#e38ab5','#b04f84','#5a1f42','#d48aae']},emerald:{n:'Изумруд',c:['#1f8063','#11503f','#0b2a22','#2f6f5c']},midnight:{n:'Полночь',c:['#33467f','#1b2547','#0e1328','#3b4a7a']},cherry:{n:'Вишня',c:['#951e3b','#5e0f22','#2d0710','#6b1a2e']}};
+const TABLES={pion:{n:'Пион',c:['#8547b0','#573299']},lavender:{n:'Лаванда',c:['#8a6fc4','#5b4391','#2e2150','#6a55a0']},sakura:{n:'Сакура',c:['#e38ab5','#b04f84','#5a1f42','#d48aae']},emerald:{n:'Изумруд',c:['#1f8063','#11503f','#0b2a22','#2f6f5c']},midnight:{n:'Полночь',c:['#33467f','#1b2547','#0e1328','#3b4a7a']},cherry:{n:'Вишня',c:['#951e3b','#5e0f22','#2d0710','#6b1a2e']}};
 const BACKS={pion:'Пион',lilac:'Лиловый узор',classic:'Классика',stars:'Звёзды',mono:'Минимал'};
 const FACES={std:'Обычные',big:'Крупные индексы'};
 function applyLook(){

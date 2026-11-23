@@ -105,7 +105,7 @@ fs.mkdirSync(path.join(ROOT, 'icons'), { recursive: true });
 for(const f of ['icon-192.png', 'icon-512.png', 'apple-touch-icon.png']) fs.copyFileSync(path.join(SRC, 'assets', f), path.join(ROOT, 'icons', f));
 fs.copyFileSync(path.join(SRC, 'manifest.webmanifest'), path.join(ROOT, 'manifest.webmanifest'));
 // the old addresses lead to the game, keeping #t-CODE invite links working
-const redirect = to => `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PyonPoker</title><link rel="canonical" href="${to}"><script>location.replace("${to}"+location.search+location.hash)</script><meta http-equiv="refresh" content="1;url=${to}"></head><body style="background:#170912;color:#fff;font-family:system-ui,sans-serif;padding:24px"><a href="${to}" style="color:#ff8ac0">PyonPoker</a></body></html>\n`;
+const redirect = to => `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PyonPoker</title><link rel="canonical" href="${to}"><script>location.replace("${to}"+location.search+location.hash)</script><meta http-equiv="refresh" content="1;url=${to}"></head><body style="background:#121c69;color:#fff;font-family:system-ui,sans-serif;padding:24px"><a href="${to}" style="color:#f89bdd">PyonPoker</a></body></html>\n`;
 for(const [from, to] of [['pyonpoker.html', 'play/'], ['pion-online.html', 'play/'], ['pion-offline.html', 'pyonpoker-offline.html']]) fs.writeFileSync(path.join(ROOT, from), redirect(to));
 
 // ---------- pages: src/pages/<route>.html → <route>/index.html ----------
@@ -125,7 +125,7 @@ function writePage(route, m, rawBody){
   const html = `<!doctype html>
 <html lang="${m.lang}"${m.lang === 'he' ? ' dir="rtl"' : ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>${escA(m.title)}</title><meta name="description" content="${escA(m.description)}"><link rel="canonical" href="${url}">${alt}
-<meta name="theme-color" content="#170912"><link rel="icon" href="${P}icons/icon-192.png"><link rel="apple-touch-icon" href="${P}icons/apple-touch-icon.png"><link rel="manifest" href="${P}manifest.webmanifest">
+<meta name="theme-color" content="#121c69"><link rel="icon" href="${P}icons/icon-192.png"><link rel="apple-touch-icon" href="${P}icons/apple-touch-icon.png"><link rel="manifest" href="${P}manifest.webmanifest">
 <meta property="og:type" content="website"><meta property="og:url" content="${url}"><meta property="og:title" content="${escA(m.title)}"><meta property="og:description" content="${escA(m.description)}"><meta property="og:image" content="${SITE}brand/pyonpoker-og.png"><meta name="twitter:card" content="summary_large_image">
 <style>${atRoot(siteFonts, P)}${pageCss}</style></head>
 <body class="${m.body || ''}">
@@ -157,7 +157,7 @@ writePage('', { title: LANDING.en.title, description: LANDING.en.description, la
 <div class="wrap"><main class="doc"><h1>PyonPoker</h1><p class="doclinks">${landingLangs.map(c => `<a class="btn small" href="${c}/">${escA(LANDING[c].name)}</a>`).join('')}</p></main></div>`);
 // /privacy/, /terms/, /refund/: open the Russian or the English document by the visitor's language
 for(const doc of ['privacy', 'terms', 'refund']){
-  const pick = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PyonPoker</title><meta name="robots" content="noindex"><script>(function(){var l="";try{l=(JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}")||{}).lang||""}catch(e){}l=l||(navigator.language||"en").slice(0,2).toLowerCase();location.replace((/^(ru|be|kk)$/.test(l)?"../ru/":"../en/")+"${doc}/")})()</script></head><body style="background:#170912;color:#fff;font-family:system-ui,sans-serif;padding:24px"><a style="color:#ff8ac0" href="../ru/${doc}/">Русский</a> · <a style="color:#ff8ac0" href="../en/${doc}/">English</a></body></html>\n`;
+  const pick = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PyonPoker</title><meta name="robots" content="noindex"><script>(function(){var l="";try{l=(JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}")||{}).lang||""}catch(e){}l=l||(navigator.language||"en").slice(0,2).toLowerCase();location.replace((/^(ru|be|kk)$/.test(l)?"../ru/":"../en/")+"${doc}/")})()</script></head><body style="background:#121c69;color:#fff;font-family:system-ui,sans-serif;padding:24px"><a style="color:#f89bdd" href="../ru/${doc}/">Русский</a> · <a style="color:#f89bdd" href="../en/${doc}/">English</a></body></html>\n`;
   fs.mkdirSync(path.join(ROOT, doc), { recursive: true }); fs.writeFileSync(path.join(ROOT, doc, 'index.html'), pick);
 }
 const precache = ['./play/', './' + appUrl, './' + peerUrl];

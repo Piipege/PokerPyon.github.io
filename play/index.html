@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#170912">
+<meta name="theme-color" content="#121c69">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,7 +14,7 @@
 <script>try{var ks=[],i,k,n;for(i=0;i<localStorage.length;i++){k=localStorage.key(i);if(k&&k.slice(0,5)==="pion-")ks.push(k)}for(i=0;i<ks.length;i++){k=ks[i];n="pyonpoker-"+k.slice(5);if(localStorage.getItem(n)==null)localStorage.setItem(n,localStorage.getItem(k));localStorage.removeItem(k)}}catch(e){}
 try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.documentElement;d.dataset.theme=c.theme||"dark";d.dataset.face=c.face||"std";if(c.fs>1)d.dataset.fs=c.fs;if(c.contrast)d.dataset.contrast="1";if(c.calm)d.classList.add("calm")}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <title>Покерный стол «PyonPoker»</title>
-<link rel="preload" href="../assets/app.258ffb9826.js" as="script">
+<link rel="preload" href="../assets/app.470a5c96c4.js" as="script">
 <link rel="preload" href="../assets/peerjs.f69f573cb6.js" as="script">
 <style>
 /* extra scripts: Noto Sans Georgian, Noto Sans Hebrew (SIL OFL) */
@@ -55,31 +55,31 @@ try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.doc
 /* Layout: one-screen card room. Plum felt oval with up to six seats on the rim, action bar below, history aside on desktop and under the table on phones. One deliberate dark look in peony pink and wine. */
 :root{
   --fs:1;
-  --room:#1c0e24;
-  --room-2:#281430;
-  --felt:#4c1439;
-  --felt-hi:#792b60;
-  --rim:#270c22;
-  --rim-hi:#58264f;
-  --pink:#ff8cc0;
-  --pink-soft:#f6b6d4;
-  --wine:#9c2a5c;
-  --ivory:#fff3f8;
-  --muted:#c3a2c2;
+  --room:#121c69;
+  --room-2:#1a1f78;
+  --felt:#573299;
+  --felt-hi:#8547b0;
+  --rim:#1b1760;
+  --rim-hi:#573299;
+  --pink:#f89bdd;
+  --pink-soft:#fbc4ea;
+  --wine:#8547b0;
+  --ivory:#fdf3fb;
+  --muted:#b8a8e2;
   --suit-red:#b0164a;
-  --ink:#2a0d1f;
-  --panel:#23112a;
-  --panel-2:#2f1736;
-  --line:#48294f;
+  --ink:#1a1560;
+  --panel:#1a1d72;
+  --panel-2:#25207f;
+  --line:#3d2f98;
   --ok:#8fe0b5;
-  --text-2:#e6cde1;
-  --glow:#43183f;
-  --glow2:#22143a;
-  --hover:#3b1f43;
-  --card:#fff3f8;
-  --card-ink:#2a0d1f;
-  --on-pink:#2a0d1f;
-  --scrim:#12060ecc;
+  --text-2:#e3d6f6;
+  --glow:#2c2081;
+  --glow2:#0c1356;
+  --hover:#2f2690;
+  --card:#fdf3fb;
+  --card-ink:#1a1560;
+  --on-pink:#1a1560;
+  --scrim:#080c3acc;
   --f-display:"Source Serif 4","Noto Sans Georgian","Noto Sans Hebrew",Georgia,serif;
   --f-body:"Onest","Noto Sans Georgian","Noto Sans Hebrew",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-num:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
@@ -87,9 +87,9 @@ try{var c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}"),d=document.doc
   --cw:54px;
   color-scheme:dark;
 }
-:root[data-theme="night"]{--room:#0a0508;--room-2:#120a10;--felt:#2a0c1d;--felt-hi:#3d1630;--rim:#150610;--rim-hi:#2f1427;--pink:#d9709f;--pink-soft:#c99ab2;--wine:#6e2246;--ivory:#e6d3de;--muted:#9a7a8d;--ink:#1a0913;--panel:#130910;--panel-2:#1c0e18;--line:#2e1828;--ok:#79c49c;--text-2:#cdb3c2;--glow:#2a0f22;--glow2:#1a0d26;--hover:#2a1424;--card:#e8dde2;--card-hi:#efe7eb;--on-pink:#1a0913;--scrim:#05020499;color-scheme:dark}
-:root[data-theme="light"]{--room:#f1e0f0;--room-2:#fbf2f9;--felt:#8e3a74;--felt-hi:#c46aa3;--rim:#4f2348;--rim-hi:#dcaad2;--pink:#c4246c;--pink-soft:#f7b8d6;--wine:#9c2a5c;--ivory:#35102c;--muted:#86607f;--ink:#fff6fb;--panel:#fcf3fa;--panel-2:#f2def0;--line:#e2c2dc;--ok:#16794a;--text-2:#552c4a;--glow:#f9c2de;--glow2:#d6c3f3;--hover:#ecd0e6;--on-pink:#ffffff;--scrim:#4a1a4066;color-scheme:light}
-@media (prefers-color-scheme: light){:root[data-theme="auto"]{--room:#f1e0f0;--room-2:#fbf2f9;--felt:#8e3a74;--felt-hi:#c46aa3;--rim:#4f2348;--rim-hi:#dcaad2;--pink:#c4246c;--pink-soft:#f7b8d6;--wine:#9c2a5c;--ivory:#35102c;--muted:#86607f;--ink:#fff6fb;--panel:#fcf3fa;--panel-2:#f2def0;--line:#e2c2dc;--ok:#16794a;--text-2:#552c4a;--glow:#f9c2de;--glow2:#d6c3f3;--hover:#ecd0e6;--on-pink:#ffffff;--scrim:#4a1a4066;color-scheme:light}}
+:root[data-theme="night"]{--room:#090d38;--room-2:#0f1347;--felt:#2c2081;--felt-hi:#3d2b92;--rim:#0b0d36;--rim-hi:#2c2081;--pink:#e07bda;--pink-soft:#c9a2e0;--wine:#573299;--ivory:#e6def3;--muted:#8f86b8;--ink:#0b0d36;--panel:#0e1246;--panel-2:#151a58;--line:#262a6e;--ok:#79c49c;--text-2:#cbc2e6;--glow:#1a1866;--glow2:#070a2e;--hover:#1c2163;--card:#e6e0f0;--card-hi:#efeaf6;--on-pink:#0b0d36;--scrim:#04061ecc;color-scheme:dark}
+:root[data-theme="light"]{--room:#f6eefc;--room-2:#fdf8ff;--felt:#8547b0;--felt-hi:#b65fc8;--rim:#2c2081;--rim-hi:#e07bda;--pink:#8547b0;--pink-soft:#f89bdd;--wine:#573299;--ivory:#1d1a5e;--muted:#6b5f9e;--ink:#fdf8ff;--panel:#fbf6ff;--panel-2:#efe3fb;--line:#d9c7f0;--ok:#16794a;--text-2:#3d2f7a;--glow:#f8d4f0;--glow2:#d9d4fb;--hover:#eadcf9;--on-pink:#ffffff;--scrim:#2c208166;color-scheme:light}
+@media (prefers-color-scheme: light){:root[data-theme="auto"]{--room:#f6eefc;--room-2:#fdf8ff;--felt:#8547b0;--felt-hi:#b65fc8;--rim:#2c2081;--rim-hi:#e07bda;--pink:#8547b0;--pink-soft:#f89bdd;--wine:#573299;--ivory:#1d1a5e;--muted:#6b5f9e;--ink:#fdf8ff;--panel:#fbf6ff;--panel-2:#efe3fb;--line:#d9c7f0;--ok:#16794a;--text-2:#3d2f7a;--glow:#f8d4f0;--glow2:#d9d4fb;--hover:#eadcf9;--on-pink:#ffffff;--scrim:#2c208166;color-scheme:light}}
 html,body{background:var(--room);color:var(--ivory);margin:0}
 html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);-webkit-text-size-adjust:100%}
 body{font-family:var(--f-body);font-size:calc(15px*var(--fs));line-height:1.45;
@@ -116,14 +116,14 @@ h1 span{color:var(--pink)}
   background:var(--felt-pat,none),radial-gradient(ellipse at 50% 38%,var(--felt-hi),var(--felt) 64%);
   box-shadow:0 0 0 14px var(--rim),0 0 0 15px var(--rim-hi),0 0 0 17px #0007,0 30px 70px #000c,inset 0 0 70px #0008;
   transition:box-shadow 1.2s var(--ease)}
-.felt::after{content:"";position:absolute;inset:7%;border-radius:999px;border:1px solid #ff8cc033}
+.felt::after{content:"";position:absolute;inset:7%;border-radius:999px;border:1px solid #f89bdd33}
 .felt::before{content:var(--brand,"PYONPOKER");direction:ltr;position:absolute;left:50%;top:70%;transform:translate(-50%,-50%);font:700 clamp(12px,2vw,20px)/1 var(--f-display);letter-spacing:.28em;color:#ffffff10;white-space:nowrap}
 .tight .felt::before{top:64%;font-size:12px;letter-spacing:.2em}
 .table.myturn .felt{box-shadow:0 0 0 14px var(--rim),0 0 0 15px var(--pink),0 0 0 17px #0007,inset 0 0 70px #0008}
 .center{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:2}
 .board{display:flex;gap:6px;perspective:700px}
-.slot{width:var(--cw);height:calc(var(--cw)*1.4);border-radius:7px;border:1px dashed #ff8cc040;flex:none}
-.pot{font-family:var(--f-num);font-size:calc(14px*var(--fs));background:#0009;border:1px solid #ff8cc055;padding:3px 12px;border-radius:999px;color:var(--pink);transition:transform .5s var(--ease)}
+.slot{width:var(--cw);height:calc(var(--cw)*1.4);border-radius:7px;border:1px dashed #f89bdd40;flex:none}
+.pot{font-family:var(--f-num);font-size:calc(14px*var(--fs));background:#0009;border:1px solid #f89bdd55;padding:3px 12px;border-radius:999px;color:var(--pink);transition:transform .5s var(--ease)}
 .pot.bump{transform:scale(1.12)}
 .pot small{color:var(--muted);font-family:var(--f-body);margin-right:6px}
 .banner{font-family:var(--f-display);font-size:calc(13px*var(--fs));font-weight:500;text-align:center;color:var(--card);background:#000b;padding:7px 14px;border-radius:10px;max-width:360px;text-wrap:balance;animation:fadeUp .8s var(--ease) both}
@@ -142,7 +142,7 @@ h1 span{color:var(--pink)}
 .seat .act:empty{display:none}
 @keyframes pop{from{transform:translateX(-50%) scale(.6);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
 .seat.turn .plate{border-color:var(--pink);animation:glow 2.2s ease-in-out infinite}
-@keyframes glow{0%,100%{box-shadow:0 0 0 2px #ff8cc055}50%{box-shadow:0 0 0 3px #ff8cc088}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 2px #f89bdd55}50%{box-shadow:0 0 0 3px #f89bdd88}}
 .seat.folded{opacity:.42}
 .seat.out{opacity:.22}
 .seat.winner .plate{border-color:var(--ivory);background:var(--panel-2);box-shadow:0 0 0 2px var(--ivory)}
@@ -164,7 +164,7 @@ h1 span{color:var(--pink)}
 .card .r{position:absolute;left:5px;top:3px;font:700 calc(var(--cw)*.3)/1 var(--f-num)}
 .card .s1{position:absolute;left:5px;top:calc(var(--cw)*.34);font-size:calc(var(--cw)*.24);line-height:1}
 .card .s2{position:absolute;right:4px;bottom:2px;font-size:calc(var(--cw)*.55);line-height:1}
-.card.back{background:radial-gradient(circle at 50% 50%,#ff8cc055 0 18%,transparent 19%),repeating-linear-gradient(45deg,var(--wine) 0 5px,#7a1d47 5px 10px);border:3px solid var(--card)}
+.card.back{background:radial-gradient(circle at 50% 50%,#f89bdd55 0 18%,transparent 19%),repeating-linear-gradient(45deg,var(--wine) 0 5px,#573299 5px 10px);border:3px solid var(--card)}
 .card.back.bk-lilac{background:radial-gradient(circle at 50% 50%,#ffffff40 0 14%,transparent 15%),repeating-linear-gradient(45deg,#ffffff1f 0 2px,transparent 2px 7px),repeating-linear-gradient(-45deg,#ffffff1f 0 2px,transparent 2px 7px),linear-gradient(160deg,#a185d6,#6c4ab6)}
 .card.back.bk-classic{background:repeating-linear-gradient(45deg,#ffffff38 0 1.5px,transparent 1.5px 6px),repeating-linear-gradient(-45deg,#ffffff38 0 1.5px,transparent 1.5px 6px),#b3263c;box-shadow:inset 0 0 0 2px #b3263c,inset 0 0 0 3px #fff8,0 4px 10px #0009}
 .card.back.bk-stars{background:radial-gradient(circle,#ffd86b 0 1px,transparent 1.5px) 0 0/11px 11px,radial-gradient(circle,#ffffffcc 0 .7px,transparent 1.2px) 5px 6px/9px 9px,linear-gradient(160deg,#232a63,#4a2370)}
@@ -175,7 +175,7 @@ h1 span{color:var(--pink)}
 :root[data-face="big"] .card .s2{font-size:calc(var(--cw)*.46)}
 .pick{display:flex;gap:6px;flex-wrap:wrap}
 .pick button{display:flex;align-items:center;gap:7px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:6px 10px;cursor:pointer;font-size:calc(13px*var(--fs));color:var(--ivory)}
-.pick button[aria-pressed="true"]{border-color:var(--pink);box-shadow:0 0 0 2px #ff8cc044}
+.pick button[aria-pressed="true"]{border-color:var(--pink);box-shadow:0 0 0 2px #f89bdd44}
 .pick .swf{width:22px;height:16px;border-radius:8px;box-shadow:0 0 0 2px #0003 inset}
 .pick .card{--cw:18px;animation:none;box-shadow:0 1px 3px #0006}
 .pick .card.back{border-width:2px}
@@ -249,7 +249,7 @@ aside h2{font-family:var(--f-body);font-size:calc(12px*var(--fs));font-weight:60
 .dist{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
 .dist .dl{font-size:calc(12px*var(--fs));color:var(--muted);margin-inline-end:4px}
 .dchip{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:6px;padding:2px 9px;font-size:calc(12px*var(--fs));color:var(--ivory);background:var(--panel-2)}
-.dchip i{position:absolute;inset:0 auto 0 0;background:#ff8cc033;transition:width .8s var(--ease)}
+.dchip i{position:absolute;inset:0 auto 0 0;background:#f89bdd33;transition:width .8s var(--ease)}
 .dchip span{position:relative}
 .dchip.cur{border-color:var(--pink)}
 .adv{font-size:calc(13px*var(--fs));color:var(--text-2)}
@@ -316,7 +316,7 @@ aside section + section, aside section + h2{border-top:1px solid var(--line);pad
 .stepper .btn{min-width:34px;flex:none;padding:4px 10px}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
 .seg button{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
-.seg button[aria-pressed="true"]{border-color:var(--pink);box-shadow:0 0 0 2px #ff8cc044}
+.seg button[aria-pressed="true"]{border-color:var(--pink);box-shadow:0 0 0 2px #f89bdd44}
 .rebind{max-height:52vh;overflow:auto;padding-right:4px}
 .keybtn{min-width:70px;font-family:var(--f-num)}
 .keybtn.wait{border-color:var(--pink);color:var(--pink);animation:glow 1.6s ease-in-out infinite}
@@ -1450,6 +1450,6 @@ body.inlobby .wrap{z-index:1}
     </div>
   </div>
 </div>
-<script>(function(){window.PYONPOKER_ROOT="../";var U={"ru":"../assets/lang-ru.f32d3a7593.js","en":"../assets/lang-en.37884f3302.js","uk":"../assets/lang-uk.39436ddb40.js","ka":"../assets/lang-ka.2a1ae8da1e.js","fr":"../assets/lang-fr.202afbd219.js","de":"../assets/lang-de.0d57e9a6f3.js","ro":"../assets/lang-ro.1a0efac2e5.js","he":"../assets/lang-he.ff49acd2cc.js","kk":"../assets/lang-kk.bf9ecbb667.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PYONPOKER_LANG_URL=U;["../assets/peerjs.f69f573cb6.js",U[l],"../assets/app.258ffb9826.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
+<script>(function(){window.PYONPOKER_ROOT="../";var U={"ru":"../assets/lang-ru.f32d3a7593.js","en":"../assets/lang-en.37884f3302.js","uk":"../assets/lang-uk.39436ddb40.js","ka":"../assets/lang-ka.2a1ae8da1e.js","fr":"../assets/lang-fr.202afbd219.js","de":"../assets/lang-de.0d57e9a6f3.js","ro":"../assets/lang-ro.1a0efac2e5.js","he":"../assets/lang-he.ff49acd2cc.js","kk":"../assets/lang-kk.bf9ecbb667.js"},c={},l;try{c=JSON.parse(localStorage.getItem("pyonpoker-cfg")||"{}")||{}}catch(e){}l=c.lang;if(!U[l]){var n=(navigator.language||"ru").slice(0,2).toLowerCase();n=n==="iw"?"he":n;l=U[n]?n:n==="be"?"ru":"en"}window.PYONPOKER_LANG_URL=U;["../assets/peerjs.f69f573cb6.js",U[l],"../assets/app.470a5c96c4.js"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})})();</script>
 </body>
 </html>
